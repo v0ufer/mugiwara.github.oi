@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mugiwara — Карта Мира</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .pixel-font {
+            font-family: 'Pixelify Sans', sans-serif;
+        }
+        .map-container {
+            height: calc(100vh - 130px); /* Увеличил отступы */
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #27272a;
+            background: #111;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">M</div>
+                <span class="pixel-font text-3xl tracking-wider">MUGIWARA</span>
+            </div>
+
+            <!-- Меню -->
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="index.html" class="hover:text-emerald-400 transition">Главная</a>
+                <a href="wiki.html" class="hover:text-emerald-400 transition">📖 Вики</a>
+                <a href="mapa.html" class="text-emerald-400 font-semibold">🗺️ Карта Мира</a>
+                <a href="rules.html" class="hover:text-emerald-400 transition">📜 Правила</a>
+            </div>
+
+            <!-- IP -->
+            <button onclick="copyIP()" 
+                    class="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 rounded-2xl text-sm flex items-center gap-2">
+                <i class="fa-solid fa-copy"></i>
+                <span>moogivaracraft.joinmc.cloud</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-neutral-900 border-t border-neutral-800 py-5 px-5">
+            <div class="flex flex-col gap-4 text-lg">
+                <a href="index.html" class="py-2 hover:text-emerald-400">Главная</a>
+                <a href="wiki.html" class="py-2 hover:text-emerald-400">📖 Вики</a>
+                <a href="mapa.html" class="py-2 text-emerald-400">🗺️ Карта</a>
+                <a href="rules.html" class="py-2 hover:text-emerald-400">📜 Правила</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-16 px-6 max-w-7xl mx-auto">   <!-- ← Увеличенные отступы сверху и снизу -->
+        
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h1 class="text-5xl font-semibold">Карта Мира</h1>
+                <p class="text-neutral-400">BlueMap — просмотр мира в реальном времени</p>
+            </div>
+            <button onclick="refreshMap()" 
+                    class="flex items-center gap-2 px-5 py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-2xl text-sm">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                Обновить карту
+            </button>
+        </div>
+
+        <!-- Карта -->
+        <div class="map-container shadow-2xl">
+            <iframe id="bluemap" 
+                    src="http://epyc2.worldhosts.fun:27267/" 
+                    allowfullscreen 
+                    allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking">
+            </iframe>
+        </div>
+
+        <div class="mt-8 text-center text-neutral-500 text-sm">
+            Перетаскивай карту • Крути колёсиком для приближения • Нажми F11 для полноэкранного режима
+        </div>
+    </div>
+
+    <script>
+        function copyIP() {
+            navigator.clipboard.writeText("moogivaracraft.joinmc.cloud");
+            alert("✅ IP скопирован: moogivaracraft.joinmc.cloud");
+        }
+
+        function refreshMap() {
+            const iframe = document.getElementById('bluemap');
+            iframe.src = iframe.src;
+        }
+
+        window.onload = () => {
+            const iframe = document.getElementById('bluemap');
+            setTimeout(() => {
+                if (iframe) iframe.src = iframe.src;
+            }, 1500);
+        };
+    </script>
+</body>
+</html>

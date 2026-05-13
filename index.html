@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mugiwara — Ванильное Выживание</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@400;700&display=swap');
+        
+        :root {
+            --green: #22c55e;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: background-color 0.6s ease, color 0.6s ease;
+        }
+        
+        .pixel-font {
+            font-family: 'Pixelify Sans', sans-serif;
+        }
+
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1611996575749-79a3ae1a8c9a?q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.4s ease,
+                        padding 0.4s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 240px;
+            opacity: 1;
+            padding-top: 20px;
+            padding-bottom: 24px;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200">
+
+    <!-- NAVBAR (единый стиль) -->
+    <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">M</div>
+                <span class="pixel-font text-3xl tracking-wider">MUGIWARA</span>
+            </div>
+
+            <!-- Единое меню как на других страницах -->
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="index.html" class="text-emerald-400 font-semibold">Главная</a>
+                <a href="wiki.html" class="hover:text-emerald-400 transition">📖 Вики</a>
+                <a href="mapa.html" class="hover:text-emerald-400 transition">🗺️ Карта Мира</a>
+                <a href="rules.html" class="hover:text-emerald-400 transition">📜 Правила</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+
+                <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-copy"></i>
+                    <span id="ip-text">moogivaracraft.joinmc.cloud</span>
+                </button>
+                
+                <a href="https://discord.gg/mugiwara" target="_blank" 
+                   class="px-6 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] rounded-2xl text-sm font-medium flex items-center gap-2 transition-all">
+                    <i class="fa-brands fa-discord"></i> DISCORD
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-neutral-900 border-t border-neutral-800 py-5 px-5">
+            <div class="flex flex-col gap-4 text-lg">
+                <a href="index.html" class="py-2 text-emerald-400">Главная</a>
+                <a href="wiki.html" class="py-2 hover:text-emerald-400">📖 Вики</a>
+                <a href="mapa.html" class="py-2 hover:text-emerald-400">🗺️ Карта Мира</a>
+                <a href="rules.html" class="py-2 hover:text-emerald-400">📜 Правила</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero-bg h-screen flex items-center relative">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 bg-neutral-900/70 px-5 py-2 rounded-3xl border border-emerald-500/30 mb-6">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-emerald-400 text-sm font-medium tracking-widest">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
+            </div>
+            
+            <h1 class="text-7xl md:text-8xl font-bold pixel-font tracking-widest mb-4" style="text-shadow: 0 0 30px rgb(34 197 94 / 0.6);">
+                MUGIWARA
+            </h1>
+            <p class="text-2xl md:text-3xl text-neutral-300 mb-10 max-w-2xl mx-auto">
+                Ванильное выживание без PvP.<br>
+                Спокойная атмосфера и настоящие приключения
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="copyIP()" class="px-10 py-5 bg-emerald-500 hover:bg-emerald-600 text-black font-semibold rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
+                    ПРИСОЕДИНЯЙСЯ
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <a href="#wiki" class="px-10 py-5 bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700 rounded-3xl text-xl font-medium transition-all">
+                    УЗНАТЬ БОЛЬШЕ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT / ПРЕИМУЩЕСТВА -->
+    <section id="about" class="section py-24 bg-neutral-900">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-5xl font-semibold mb-6">Настоящее ванильное выживание</h2>
+                    <div class="space-y-6 text-lg text-neutral-400">
+                        <p>Mugiwara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
+                        <p class="text-emerald-400">Версия: 1.21.11</p>
+                    </div>
+                    
+                    <div class="mt-12 grid grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-emerald-400">∞</div>
+                            <div class="text-sm text-neutral-500">Мир</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-emerald-400">0</div>
+                            <div class="text-sm text-neutral-500">PvP</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-emerald-400">100%</div>
+                            <div class="text-sm text-neutral-500">Ваниль</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-neutral-950 border border-neutral-800 rounded-3xl p-8">
+                    <h3 class="text-emerald-400 uppercase tracking-widest text-sm mb-4">Наши преимущества</h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-4 items-start"><i class="fa-solid fa-leaf text-emerald-500 mt-1"></i><span>Спокойное выживание в красивом мире</span></li>
+                        <li class="flex gap-4 items-start"><i class="fa-solid fa-users text-emerald-500 mt-1"></i><span>Дружелюбное сообщество</span></li>
+                        <li class="flex gap-4 items-start"><i class="fa-solid fa-house text-emerald-500 mt-1"></i><span>Полная свобода строительства</span></li>
+                        <li class="flex gap-4 items-start"><i class="fa-solid fa-shield-halved text-emerald-500 mt-1"></i><span>Без привата</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WIKI / РЕКОМЕНДАЦИИ -->
+    <section id="wiki" class="section py-24">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-semibold">Рекомендации для приятной игры</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <!-- Ресурс-паки -->
+                <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
+                    <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-palette text-emerald-500"></i>
+                        Ресурс-паки
+                    </h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="font-medium">Vanilla Tweaks</div>
+                            <p class="text-neutral-400 text-sm">Улучшенные текстуры, звуки и удобства без изменения ванильного стиля.</p>
+                            <a href="https://vanillatweaks.net" target="_blank" class="text-emerald-400 text-sm hover:underline">Скачать →</a>
+                        </div>
+                        <div>
+                            <div class="font-medium">Faithful 32x / 64x</div>
+                            <p class="text-neutral-400 text-sm">Классический Faithful в высоком разрешении.</p>
+                        </div>
+                        <div>
+                            <div class="font-medium">Bare Bones</div>
+                            <p class="text-neutral-400 text-sm">Минималистичный пак для максимальной производительности.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Моды -->
+                <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
+                    <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-puzzle-piece text-emerald-500"></i>
+                        Рекомендуемые моды (Fabric)
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between"><span>Sodium + Iris</span><span class="text-emerald-400 text-sm">Обязательно</span></div>
+                        <div>Xaero's Minimap</div>
+                        <div>AppleSkin</div>
+                        <div>ReplayMod</div>
+                        <div>Entity Culling</div>
+                    </div>
+                    <p class="text-xs text-neutral-500 mt-8">Сервер полностью ванильный. Моды ставятся только на клиент.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section py-24 bg-neutral-900">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-semibold">Часто задаваемые вопросы</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="faq-item bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden">
+                    <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-neutral-900">
+                        <span class="font-medium text-lg">Можно ли играть с модами?</span>
+                        <i class="faq-icon fa-solid fa-chevron-down text-emerald-500 transition-transform duration-500"></i>
+                    </button>
+                    <div class="faq-answer px-8 text-neutral-400">
+                        Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.
+                    </div>
+                </div>
+
+                <div class="faq-item bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden">
+                    <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-neutral-900">
+                        <span class="font-medium text-lg">Есть ли приват?</span>
+                        <i class="faq-icon fa-solid fa-chevron-down text-emerald-500 transition-transform duration-500"></i>
+                    </button>
+                    <div class="faq-answer px-8 text-neutral-400">
+                        Да, работает Residence. Приват бесплатный.
+                    </div>
+                </div>
+
+                <div class="faq-item bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden">
+                    <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-neutral-900">
+                        <span class="font-medium text-lg">Есть ли донат и привилегии?</span>
+                        <i class="faq-icon fa-solid fa-chevron-down text-emerald-500 transition-transform duration-500"></i>
+                    </button>
+                    <div class="faq-answer px-8 text-neutral-400">
+                        Нет. Сервер полностью бесплатный и честный.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY -->
+    <section id="community" class="section py-24">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <h2 class="text-5xl font-semibold mb-6">Присоединяйся к сообществу</h2>
+            <p class="text-neutral-400 mb-12">Следи за обновлениями и общайся с другими игроками</p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <a href="https://discord.gg/mugiwara" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#5865F2] rounded-3xl p-8 transition-all">
+                    <i class="fa-brands fa-discord text-6xl text-[#5865F2] mb-6"></i>
+                    <div class="text-2xl font-semibold">Discord</div>
+                    <div class="text-neutral-400">Общение и поддержка</div>
+                </a>
+                
+                <a href="https://tiktok.com/@mugiwara_mc" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#FF0050] rounded-3xl p-8 transition-all">
+                    <i class="fa-brands fa-tiktok text-6xl text-[#FF0050] mb-6"></i>
+                    <div class="text-2xl font-semibold">TikTok</div>
+                    <div class="text-neutral-400">Видео с сервера</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-12 border-t border-neutral-800">
+        <div class="max-w-6xl mx-auto px-6 text-center text-neutral-500">
+            <p>© 2026 Mugiwara • Чистое ванильное выживание</p>
+            <p class="mt-1">IP: moogivaracraft.joinmc.cloud • Версия 1.21.11</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFAQ(btn) {
+            const item = btn.parentElement;
+            const isOpen = item.classList.contains('open');
+
+            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+            
+            if (!isOpen) item.classList.add('open');
+        }
+
+        function copyIP() {
+            navigator.clipboard.writeText("moogivaracraft.joinmc.cloud").then(() => {
+                const el = document.getElementById("ip-text");
+                const old = el.textContent;
+                el.textContent = "СКОПИРОВАНО ✓";
+                setTimeout(() => el.textContent = old, 2000);
+            });
+        }
+
+        window.onload = () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.section').forEach(section => observer.observe(section));
+        };
+    </script>
+</body>
+</html>
