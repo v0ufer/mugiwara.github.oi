@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugiwara — Ванильное Выживание</title>
+    <title>Mugivara — Zа ванильное Выживание</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -26,10 +26,55 @@
             font-family: 'Pixelify Sans', sans-serif;
         }
 
+        /* Анимированный ванильный фон */
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1611996575749-79a3ae1a8c9a?q=80&w=1920');
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)),
+                        url('https://images.unsplash.com/photo-1611996575749-79a3ae1a8c9a?q=80&w=1920');
             background-size: cover;
             background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(74, 222, 128, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(74, 222, 128, 0.10) 0%, transparent 50%),
+                linear-gradient(transparent, rgba(34, 197, 94, 0.05));
+            animation: gentleFloat 25s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(163, 230, 187, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(163, 230, 187, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 40s linear infinite;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(15px, 20px) scale(1.03); }
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 60px 60px; }
         }
 
         .nav-link {
@@ -80,15 +125,14 @@
 </head>
 <body class="bg-neutral-950 text-neutral-200">
 
-    <!-- NAVBAR (единый стиль) -->
+    <!-- NAVBAR -->
     <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">M</div>
-                <span class="pixel-font text-3xl tracking-wider">MUGIWARA</span>
+                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">Z</div>
+                <span class="pixel-font text-3xl tracking-wider">MUGIVARA</span>
             </div>
 
-            <!-- Единое меню как на других страницах -->
             <div class="flex items-center gap-8 text-sm font-medium">
                 <a href="index.html" class="text-emerald-400 font-semibold">Главная</a>
                 <a href="wiki.html" class="hover:text-emerald-400 transition">📖 Вики</a>
@@ -97,27 +141,21 @@
             </div>
 
             <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 bg-neutral-900 px-4 py-2.5 rounded-2xl border border-emerald-500/20">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full online-dot"></div>
+                    <span class="text-sm font-medium text-emerald-400">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
+                </div>
 
                 <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy"></i>
-                    <span id="ip-text">moogivaracraft.joinmc.cloud</span>
+                    <span id="ip-text">play.mugivaracraft.ru</span>
                 </button>
                 
                 <a href="https://discord.gg/W226UHyv6f" target="_blank" 
                    class="px-6 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] rounded-2xl text-sm font-medium flex items-center gap-2 transition-all">
                     <i class="fa-brands fa-discord"></i> DISCORD
                 </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-neutral-900 border-t border-neutral-800 py-5 px-5">
-            <div class="flex flex-col gap-4 text-lg">
-                <a href="index.html" class="py-2 text-emerald-400">Главная</a>
-                <a href="wiki.html" class="py-2 hover:text-emerald-400">📖 Вики</a>
-                <a href="mapa.html" class="py-2 hover:text-emerald-400">🗺️ Карта</a>
-                <a href="rules.html" class="py-2 hover:text-emerald-400">📜 Правила</a>
             </div>
         </div>
     </nav>
@@ -131,7 +169,7 @@
             </div>
             
             <h1 class="text-7xl md:text-8xl font-bold pixel-font tracking-widest mb-4" style="text-shadow: 0 0 30px rgb(34 197 94 / 0.6);">
-                MUGIWARA
+                MUGIVARA
             </h1>
             <p class="text-2xl md:text-3xl text-neutral-300 mb-10 max-w-2xl mx-auto">
                 Ванильное выживание без PvP.<br>
@@ -142,7 +180,7 @@
                 <a href="https://discord.gg/W226UHyv6f" class="px-10 py-5 bg-emerald-500 hover:bg-emerald-600 text-black font-semibold rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
                     ПРИСОЕДИНЯЙСЯ
                     <i class="fa-solid fa-arrow-right"></i>
-                </button>
+                </a>
                 <a href="#wiki" class="px-10 py-5 bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700 rounded-3xl text-xl font-medium transition-all">
                     УЗНАТЬ БОЛЬШЕ
                 </a>
@@ -150,14 +188,14 @@
         </div>
     </section>
 
-    <!-- ABOUT / ПРЕИМУЩЕСТВА -->
+    <!-- ABOUT -->
     <section id="about" class="section py-24 bg-neutral-900">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-16 items-center">
                 <div>
                     <h2 class="text-5xl font-semibold mb-6">Настоящее ванильное выживание</h2>
                     <div class="space-y-6 text-lg text-neutral-400">
-                        <p>Mugiwara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
+                        <p>Mugivara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
                         <p class="text-emerald-400">Версия: 1.21.11</p>
                     </div>
                     
@@ -198,7 +236,6 @@
             </div>
             
             <div class="grid md:grid-cols-2 gap-10">
-                <!-- Ресурс-паки -->
                 <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
                     <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
                         <i class="fa-solid fa-palette text-emerald-500"></i>
@@ -221,7 +258,6 @@
                     </div>
                 </div>
 
-                <!-- Моды -->
                 <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
                     <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
                         <i class="fa-solid fa-puzzle-piece text-emerald-500"></i>
@@ -294,7 +330,7 @@
                     <div class="text-neutral-400">Общение и поддержка</div>
                 </a>
                 
-                <a href="https://tiktok.com/@mugiwaracraft94" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#FF0050] rounded-3xl p-8 transition-all">
+                <a href="https://tiktok.com/@mugiwara_craft" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#FF0050] rounded-3xl p-8 transition-all">
                     <i class="fa-brands fa-tiktok text-6xl text-[#FF0050] mb-6"></i>
                     <div class="text-2xl font-semibold">TikTok</div>
                     <div class="text-neutral-400">Видео с сервера</div>
@@ -306,23 +342,33 @@
     <!-- FOOTER -->
     <footer class="bg-black py-12 border-t border-neutral-800">
         <div class="max-w-6xl mx-auto px-6 text-center text-neutral-500">
-            <p>© 2026 Mugiwara • Чистое ванильное выживание</p>
-            <p class="mt-1">IP: moogivaracraft.joinmc.cloud • Версия 1.21.11</p>
+            <p>© 2026 Mugivara • Чистое ванильное выживание</p>
+            <p class="mt-1">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
         </div>
     </footer>
 
     <script>
-        function toggleFAQ(btn) {
-            const item = btn.parentElement;
-            const isOpen = item.classList.contains('open');
+        async function updateOnline() {
+            const onlineEl = document.getElementById('online-count');
+            try {
+                const response = await fetch('https://api.mcsrvstat.us/2/play.mugivaracraft.ru');
+                const data = await response.json();
 
-            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
-            
-            if (!isOpen) item.classList.add('open');
+                if (data.online) {
+                    onlineEl.textContent = `${data.players.online}/${data.players.max}`;
+                    onlineEl.className = "font-semibold text-emerald-400";
+                } else {
+                    onlineEl.textContent = "0/100";
+                    onlineEl.className = "font-semibold text-neutral-500";
+                }
+            } catch (e) {
+                onlineEl.textContent = "—";
+                onlineEl.className = "font-semibold text-neutral-500";
+            }
         }
 
         function copyIP() {
-            navigator.clipboard.writeText("moogivaracraft.joinmc.cloud").then(() => {
+            navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
                 const old = el.textContent;
                 el.textContent = "СКОПИРОВАНО ✓";
@@ -330,7 +376,17 @@
             });
         }
 
+        function toggleFAQ(btn) {
+            const item = btn.parentElement;
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        }
+
         window.onload = () => {
+            updateOnline();
+            setInterval(updateOnline, 8000);
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) entry.target.classList.add('visible');

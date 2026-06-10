@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugiwara — Карта Мира</title>
+    <title>Mugivara — Карта Мира</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -20,7 +20,7 @@
         <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">M</div>
-                <span class="pixel-font text-3xl tracking-wider">MUGIWARA</span>
+                <span class="pixel-font text-3xl tracking-wider">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -33,7 +33,7 @@
             <div class="flex items-center gap-3">
                 <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy"></i>
-                    <span id="ip-text">moogivaracraft.joinmc.cloud</span>
+                    <span id="ip-text">play.mugivaracraft.ru</span>
                 </button>
                 <button onclick="toggleMobileMenu()" class="md:hidden text-2xl p-2">
                     <i class="fa-solid fa-bars"></i>
@@ -55,7 +55,7 @@
         <h1 class="text-5xl font-semibold mb-3">Карта Мира</h1>
         <p class="text-neutral-400 mb-10">Просмотр мира в реальном времени</p>
 
-        <a href="http://epyc2.worldhosts.fun:27267/" target="_blank"
+        <a href="http://map.mugivaracraft.ru:25981/" target="_blank"
            class="inline-flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-black font-semibold text-xl px-10 py-6 rounded-3xl transition-all">
             <i class="fa-solid fa-map text-2xl"></i>
             <span>Открыть карту мира</span>
@@ -73,7 +73,7 @@
         }
 
         function copyIP() {
-            navigator.clipboard.writeText("moogivaracraft.joinmc.cloud").then(() => {
+            navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
                 const old = el.textContent;
                 el.textContent = "СКОПИРОВАНО ✓";

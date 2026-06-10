@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugiwara — Правила Сервера</title>
+    <title>Mugivara — Правила Сервера</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -42,7 +42,7 @@
 
                 <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy"></i>
-                    <span id="ip-text">moogivaracraft.joinmc.cloud</span>
+                    <span id="ip-text">play.mugivaracraft.ru</span>
                 </button>
         </div>
     </nav>
@@ -130,7 +130,7 @@
 
     <script>
         function copyIP() {
-            navigator.clipboard.writeText("moogivaracraft.joinmc.cloud").then(() => {
+            navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
                 const old = el.textContent;
                 el.textContent = "СКОПИРОВАНО ✓";
