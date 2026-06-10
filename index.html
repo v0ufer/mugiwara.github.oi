@@ -351,7 +351,7 @@
         async function updateOnline() {
             const onlineEl = document.getElementById('online-count');
             try {
-                const response = await fetch('https://api.mcsrvstat.us/2/mc.mugivaracraft.ru');
+                const response = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru');
                 const data = await response.json();
 
                 if (data.online) {
