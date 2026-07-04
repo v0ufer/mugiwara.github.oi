@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Zа ванильное Выживание</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            content: ["./**/*.{html,js}"],
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@400;700&display=swap');
@@ -121,67 +129,103 @@
         .faq-item.open .faq-icon {
             transform: rotate(180deg);
         }
+
+        /* Mobile menu */
+        #mobile-menu {
+            animation: slideDown 0.3s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-neutral-950 text-neutral-200">
 
     <!-- NAVBAR -->
     <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">Z</div>
-                <span class="pixel-font text-3xl tracking-wider">MUGIVARA</span>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl">Z</div>
+                <span class="pixel-font text-2xl sm:text-3xl tracking-wider">MUGIVARA</span>
             </div>
 
-            <div class="flex items-center gap-8 text-sm font-medium">
-                <a href="index.html" class="text-emerald-400 font-semibold">Главная</a>
-                <a href="wiki.html" class="hover:text-emerald-400 transition">📖 Вики</a>
-                <a href="mapa.html" class="hover:text-emerald-400 transition">🗺️ Карта</a>
-                <a href="rules.html" class="hover:text-emerald-400 transition">📜 Правила</a>
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="index.html" class="text-emerald-400 font-semibold nav-link">Главная</a>
+                <a href="wiki.html" class="hover:text-emerald-400 transition nav-link">📖 Вики</a>
+                <a href="mapa.html" class="hover:text-emerald-400 transition nav-link">🗺️ Карта</a>
+                <a href="rules.html" class="hover:text-emerald-400 transition nav-link">📜 Правила</a>
             </div>
 
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex items-center gap-2 bg-neutral-900 px-4 py-2.5 rounded-2xl border border-emerald-500/20">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <!-- Online counter -->
+                <div class="hidden sm:flex items-center gap-2 bg-neutral-900 px-3 sm:px-4 py-2 rounded-2xl border border-emerald-500/20 text-xs sm:text-sm">
                     <div class="w-2 h-2 bg-emerald-500 rounded-full online-dot"></div>
-                    <span class="text-sm font-medium text-emerald-400">Онлайн:</span>
+                    <span class="font-medium text-emerald-400">Онлайн:</span>
                     <span id="online-count" class="font-semibold text-white">Загрузка...</span>
                 </div>
 
-                <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+                <button onclick="copyIP()" class="px-4 sm:px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy"></i>
-                    <span id="ip-text">play.mugivaracraft.ru</span>
+                    <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
+                    <span class="sm:hidden">IP</span>
                 </button>
                 
                 <a href="https://discord.gg/W226UHyv6f" target="_blank" 
-                   class="px-6 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] rounded-2xl text-sm font-medium flex items-center gap-2 transition-all">
-                    <i class="fa-brands fa-discord"></i> DISCORD
+                   class="px-4 sm:px-6 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-2 transition-all">
+                    <i class="fa-brands fa-discord"></i> 
+                    <span class="hidden sm:inline">DISCORD</span>
                 </a>
+
+                <!-- Mobile Hamburger -->
+                <button id="mobile-menu-button" class="md:hidden p-2 text-neutral-300 hover:text-white">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
+            <div class="flex flex-col gap-4 text-base font-medium">
+                <a href="index.html" class="text-emerald-400 py-2">Главная</a>
+                <a href="wiki.html" class="hover:text-emerald-400 transition py-2">📖 Вики</a>
+                <a href="mapa.html" class="hover:text-emerald-400 transition py-2">🗺️ Карта</a>
+                <a href="rules.html" class="hover:text-emerald-400 transition py-2">📜 Правила</a>
+                
+                <div class="pt-4 border-t border-neutral-800">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-3 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 rounded-2xl flex items-center gap-3">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Скопировать IP: play.mugivaracraft.ru</span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- HERO -->
-    <section class="hero-bg h-screen flex items-center relative">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <div class="inline-flex items-center gap-2 bg-neutral-900/70 px-5 py-2 rounded-3xl border border-emerald-500/30 mb-6">
+    <section class="hero-bg min-h-[100dvh] flex items-center relative pt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+            <div class="inline-flex items-center gap-2 bg-neutral-900/70 px-4 sm:px-5 py-2 rounded-3xl border border-emerald-500/30 mb-6 text-sm">
                 <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span class="text-emerald-400 text-sm font-medium tracking-widest">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
+                <span class="text-emerald-400 font-medium tracking-widest">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
             </div>
             
-            <h1 class="text-7xl md:text-8xl font-bold pixel-font tracking-widest mb-4" style="text-shadow: 0 0 30px rgb(34 197 94 / 0.6);">
+            <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold pixel-font tracking-widest mb-4 leading-tight" style="text-shadow: 0 0 30px rgb(34 197 94 / 0.6);">
                 MUGIVARA
             </h1>
-            <p class="text-2xl md:text-3xl text-neutral-300 mb-10 max-w-2xl mx-auto">
+            <p class="text-xl sm:text-2xl md:text-3xl text-neutral-300 mb-10 max-w-2xl mx-auto px-4">
                 Ванильное выживание без PvP.<br>
                 Спокойная атмосфера и настоящие приключения
             </p>
             
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://discord.gg/W226UHyv6f" class="px-10 py-5 bg-emerald-500 hover:bg-emerald-600 text-black font-semibold rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center px-4">
+                <a href="https://discord.gg/W226UHyv6f" class="px-8 sm:px-10 py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-600 text-black font-semibold rounded-3xl text-lg sm:text-xl transition-all flex items-center justify-center gap-3">
                     ПРИСОЕДИНЯЙСЯ
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="#wiki" class="px-10 py-5 bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700 rounded-3xl text-xl font-medium transition-all">
+                <a href="#wiki" class="px-8 sm:px-10 py-4 sm:py-5 bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700 rounded-3xl text-lg sm:text-xl font-medium transition-all">
                     УЗНАТЬ БОЛЬШЕ
                 </a>
             </div>
@@ -189,35 +233,35 @@
     </section>
 
     <!-- ABOUT -->
-    <section id="about" class="section py-24 bg-neutral-900">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
+    <section id="about" class="section py-16 sm:py-24 bg-neutral-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="grid md:grid-cols-2 gap-10 sm:gap-16 items-center">
                 <div>
-                    <h2 class="text-5xl font-semibold mb-6">Настоящее ванильное выживание</h2>
-                    <div class="space-y-6 text-lg text-neutral-400">
+                    <h2 class="text-4xl sm:text-5xl font-semibold mb-6">Настоящее ванильное выживание</h2>
+                    <div class="space-y-6 text-base sm:text-lg text-neutral-400">
                         <p>Mugivara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
                         <p class="text-emerald-400">Версия: 1.21.11</p>
                     </div>
                     
-                    <div class="mt-12 grid grid-cols-3 gap-6">
+                    <div class="mt-10 sm:mt-12 grid grid-cols-3 gap-4 sm:gap-6">
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-emerald-400">10к на 10к</div>
-                            <div class="text-sm text-neutral-500">Мир</div>
+                            <div class="text-2xl sm:text-3xl font-bold text-emerald-400">10к на 10к</div>
+                            <div class="text-xs sm:text-sm text-neutral-500">Мир</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-emerald-400">0.01%</div>
-                            <div class="text-sm text-neutral-500">PvP</div>
+                            <div class="text-2xl sm:text-3xl font-bold text-emerald-400">0.01%</div>
+                            <div class="text-xs sm:text-sm text-neutral-500">PvP</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-emerald-400">99.9%</div>
-                            <div class="text-sm text-neutral-500">Ванилла</div>
+                            <div class="text-2xl sm:text-3xl font-bold text-emerald-400">99.9%</div>
+                            <div class="text-xs sm:text-sm text-neutral-500">Ванилла</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-neutral-950 border border-neutral-800 rounded-3xl p-8">
+                <div class="bg-neutral-950 border border-neutral-800 rounded-3xl p-6 sm:p-8">
                     <h3 class="text-emerald-400 uppercase tracking-widest text-sm mb-4">Наши преимущества</h3>
-                    <ul class="space-y-4">
+                    <ul class="space-y-4 text-base">
                         <li class="flex gap-4 items-start"><i class="fa-solid fa-leaf text-emerald-500 mt-1"></i><span>Спокойное выживание в красивом мире</span></li>
                         <li class="flex gap-4 items-start"><i class="fa-solid fa-users text-emerald-500 mt-1"></i><span>Дружелюбное сообщество</span></li>
                         <li class="flex gap-4 items-start"><i class="fa-solid fa-house text-emerald-500 mt-1"></i><span>Полная свобода строительства</span></li>
@@ -229,41 +273,41 @@
     </section>
 
     <!-- WIKI / РЕКОМЕНДАЦИИ -->
-    <section id="wiki" class="section py-24">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-5xl font-semibold">Рекомендации для приятной игры</h2>
+    <section id="wiki" class="section py-16 sm:py-24">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-4xl sm:text-5xl font-semibold">Рекомендации для приятной игры</h2>
             </div>
             
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
-                    <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-10">
+                <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8">
+                    <h3 class="text-xl sm:text-2xl font-semibold mb-6 flex items-center gap-3">
                         <i class="fa-solid fa-palette text-emerald-500"></i>
                         Ресурс-паки
                     </h3>
-                    <div class="space-y-6">
+                    <div class="space-y-6 text-sm sm:text-base">
                         <div>
                             <div class="font-medium">Vanilla Tweaks</div>
-                            <p class="text-neutral-400 text-sm">Улучшенные текстуры, звуки и удобства без изменения ванильного стиля.</p>
+                            <p class="text-neutral-400">Улучшенные текстуры, звуки и удобства без изменения ванильного стиля.</p>
                             <a href="https://vanillatweaks.net" target="_blank" class="text-emerald-400 text-sm hover:underline">Скачать →</a>
                         </div>
                         <div>
                             <div class="font-medium">Faithful 32x / 64x</div>
-                            <p class="text-neutral-400 text-sm">Классический Faithful в высоком разрешении.</p>
+                            <p class="text-neutral-400">Классический Faithful в высоком разрешении.</p>
                         </div>
                         <div>
                             <div class="font-medium">Bare Bones</div>
-                            <p class="text-neutral-400 text-sm">Минималистичный пак для максимальной производительности.</p>
+                            <p class="text-neutral-400">Минималистичный пак для максимальной производительности.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
-                    <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                <div class="card bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8">
+                    <h3 class="text-xl sm:text-2xl font-semibold mb-6 flex items-center gap-3">
                         <i class="fa-solid fa-puzzle-piece text-emerald-500"></i>
                         Рекомендуемые моды (Fabric)
                     </h3>
-                    <div class="space-y-4">
+                    <div class="space-y-4 text-sm sm:text-base">
                         <div class="flex justify-between"><span>Sodium + Iris</span><span class="text-emerald-400 text-sm">Обязательно</span></div>
                         <div>Xaero's Minimap</div>
                         <div>AppleSkin</div>
@@ -277,39 +321,39 @@
     </section>
 
     <!-- FAQ -->
-    <section id="faq" class="section py-24 bg-neutral-900">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-5xl font-semibold">Часто задаваемые вопросы</h2>
+    <section id="faq" class="section py-16 sm:py-24 bg-neutral-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-4xl sm:text-5xl font-semibold">Часто задаваемые вопросы</h2>
             </div>
             
             <div class="space-y-4">
                 <div class="faq-item bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden">
-                    <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-neutral-900">
-                        <span class="font-medium text-lg">Можно ли играть с модами?</span>
+                    <button onclick="toggleFAQ(this)" class="w-full px-6 sm:px-8 py-5 sm:py-6 text-left flex justify-between items-center hover:bg-neutral-900">
+                        <span class="font-medium text-base sm:text-lg">Можно ли играть с модами?</span>
                         <i class="faq-icon fa-solid fa-chevron-down text-emerald-500 transition-transform duration-500"></i>
                     </button>
-                    <div class="faq-answer px-8 text-neutral-400">
+                    <div class="faq-answer px-6 sm:px-8 text-neutral-400 text-sm sm:text-base">
                         Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.
                     </div>
                 </div>
 
                 <div class="faq-item bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden">
-                    <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-neutral-900">
-                        <span class="font-medium text-lg">Нужна ли официалка?</span>
+                    <button onclick="toggleFAQ(this)" class="w-full px-6 sm:px-8 py-5 sm:py-6 text-left flex justify-between items-center hover:bg-neutral-900">
+                        <span class="font-medium text-base sm:text-lg">Нужна ли официалка?</span>
                         <i class="faq-icon fa-solid fa-chevron-down text-emerald-500 transition-transform duration-500"></i>
                     </button>
-                    <div class="faq-answer px-8 text-neutral-400">
+                    <div class="faq-answer px-6 sm:px-8 text-neutral-400 text-sm sm:text-base">
                         Нет, на нашем сервере можно играть как с лицензии, так и с пиратки.
                     </div>
                 </div>
 
                 <div class="faq-item bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden">
-                    <button onclick="toggleFAQ(this)" class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-neutral-900">
-                        <span class="font-medium text-lg">Есть ли донат и привилегии?</span>
+                    <button onclick="toggleFAQ(this)" class="w-full px-6 sm:px-8 py-5 sm:py-6 text-left flex justify-between items-center hover:bg-neutral-900">
+                        <span class="font-medium text-base sm:text-lg">Есть ли донат и привилегии?</span>
                         <i class="faq-icon fa-solid fa-chevron-down text-emerald-500 transition-transform duration-500"></i>
                     </button>
-                    <div class="faq-answer px-8 text-neutral-400">
+                    <div class="faq-answer px-6 sm:px-8 text-neutral-400 text-sm sm:text-base">
                         Нет. Сервер полностью бесплатный и честный.
                     </div>
                 </div>
@@ -318,21 +362,21 @@
     </section>
 
     <!-- COMMUNITY -->
-    <section id="community" class="section py-24">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h2 class="text-5xl font-semibold mb-6">Присоединяйся к сообществу</h2>
-            <p class="text-neutral-400 mb-12">Следи за обновлениями и общайся с другими игроками</p>
+    <section id="community" class="section py-16 sm:py-24">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+            <h2 class="text-4xl sm:text-5xl font-semibold mb-6">Присоединяйся к сообществу</h2>
+            <p class="text-neutral-400 mb-12 px-4">Следи за обновлениями и общайся с другими игроками</p>
             
             <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                <a href="https://discord.gg/W226UHyv6f" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#5865F2] rounded-3xl p-8 transition-all">
-                    <i class="fa-brands fa-discord text-6xl text-[#5865F2] mb-6"></i>
-                    <div class="text-2xl font-semibold">Discord</div>
+                <a href="https://discord.gg/W226UHyv6f" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#5865F2] rounded-3xl p-6 sm:p-8 transition-all">
+                    <i class="fa-brands fa-discord text-5xl sm:text-6xl text-[#5865F2] mb-6"></i>
+                    <div class="text-xl sm:text-2xl font-semibold">Discord</div>
                     <div class="text-neutral-400">Общение и поддержка</div>
                 </a>
                 
-                <a href="https://tiktok.com/@mugiwara_craft" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#FF0050] rounded-3xl p-8 transition-all">
-                    <i class="fa-brands fa-tiktok text-6xl text-[#FF0050] mb-6"></i>
-                    <div class="text-2xl font-semibold">TikTok</div>
+                <a href="https://tiktok.com/@mugiwara_craft" target="_blank" class="card flex-1 max-w-xs mx-auto bg-neutral-900 border border-neutral-700 hover:border-[#FF0050] rounded-3xl p-6 sm:p-8 transition-all">
+                    <i class="fa-brands fa-tiktok text-5xl sm:text-6xl text-[#FF0050] mb-6"></i>
+                    <div class="text-xl sm:text-2xl font-semibold">TikTok</div>
                     <div class="text-neutral-400">Видео с сервера</div>
                 </a>
             </div>
@@ -340,8 +384,8 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-black py-12 border-t border-neutral-800">
-        <div class="max-w-6xl mx-auto px-6 text-center text-neutral-500">
+    <footer class="bg-black py-10 sm:py-12 border-t border-neutral-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-neutral-500 text-sm">
             <p>© 2026 Mugivara • Чистое ванильное выживание</p>
             <p class="mt-1">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
         </div>
@@ -372,7 +416,15 @@
                 const el = document.getElementById("ip-text");
                 const old = el.textContent;
                 el.textContent = "СКОПИРОВАНО ✓";
-                setTimeout(() => el.textContent = old, 2000);
+                setTimeout(() => {
+                    if (el.classList.contains('hidden')) {
+                        // For mobile version
+                        const ipText = document.getElementById("ip-text");
+                        if (ipText) ipText.textContent = "IP";
+                    } else {
+                        el.textContent = old;
+                    }
+                }, 2000);
             });
         }
 
@@ -383,9 +435,32 @@
             if (!isOpen) item.classList.add('open');
         }
 
+        // Mobile menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuButton = document.getElementById('mobile-menu-button');
+            const icon = menuButton.querySelector('i');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                mobileMenu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
         window.onload = () => {
             updateOnline();
             setInterval(updateOnline, 8000);
+
+            // Mobile menu
+            const mobileButton = document.getElementById('mobile-menu-button');
+            if (mobileButton) {
+                mobileButton.addEventListener('click', toggleMobileMenu);
+            }
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
