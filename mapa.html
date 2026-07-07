@@ -9,20 +9,34 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@400;700&display=swap');
         
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .pixel-font {
+            font-family: 'Pixelify Sans', sans-serif;
+        }
+
+        /* Анимация мобильного меню */
+        #mobile-menu {
+            animation: slideDown 0.3s ease forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-neutral-950 text-neutral-200">
 
-    <!-- NAVBAR (тот же, что и раньше) -->
+    <!-- NAVBAR -->
     <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
-        <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">M</div>
-                <span class="pixel-font text-3xl tracking-wider">MUGIVARA</span>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl">M</div>
+                <span class="pixel-font text-2xl sm:text-3xl tracking-wider">MUGIWARA</span>
             </div>
 
+            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                 <a href="index.html" class="hover:text-emerald-400 transition">Главная</a>
                 <a href="wiki.html" class="hover:text-emerald-400 transition">📖 Вики</a>
@@ -31,18 +45,23 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+                <button onclick="copyIP()" 
+                        class="px-4 sm:px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy"></i>
-                    <span id="ip-text">play.mugivaracraft.ru</span>
+                    <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
+                    <span class="sm:hidden">IP</span>
                 </button>
-                <button onclick="toggleMobileMenu()" class="md:hidden text-2xl p-2">
+
+                <!-- Hamburger -->
+                <button id="mobile-menu-button" class="md:hidden p-2 text-2xl text-neutral-300 hover:text-white">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-neutral-900 border-t border-neutral-800 py-5 px-5">
-            <div class="flex flex-col gap-4 text-lg">
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-5 px-6">
+            <div class="flex flex-col gap-4 text-base font-medium">
                 <a href="index.html" class="py-2 hover:text-emerald-400">Главная</a>
                 <a href="wiki.html" class="py-2 hover:text-emerald-400">📖 Вики</a>
                 <a href="mapa.html" class="py-2 text-emerald-400">🗺️ Карта</a>
@@ -51,27 +70,34 @@
         </div>
     </nav>
 
-    <div class="pt-24 pb-12 px-5 max-w-5xl mx-auto text-center">
-        <h1 class="text-5xl font-semibold mb-3">Карта Мира</h1>
-        <p class="text-neutral-400 mb-10">Просмотр мира в реальном времени</p>
+    <div class="min-h-[calc(100vh-80px)] pt-20 pb-16 px-4 sm:px-6 flex items-center justify-center">
+        <div class="max-w-2xl mx-auto text-center">
+            <div class="mb-12">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-emerald-500/10 rounded-full mb-6">
+                    <i class="fa-solid fa-map text-5xl text-emerald-500"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-semibold mb-4">Карта Мира</h1>
+                <p class="text-neutral-400 text-lg">Просмотр мира в реальном времени</p>
+            </div>
 
-        <a href="http://map.mugivaracraft.ru:25981/" target="_blank"
-           class="inline-flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-black font-semibold text-xl px-10 py-6 rounded-3xl transition-all">
-            <i class="fa-solid fa-map text-2xl"></i>
-            <span>Открыть карту мира</span>
-        </a>
+            <a href="http://map.mugivaracraft.ru:25981/" target="_blank"
+               class="inline-flex items-center gap-4 bg-emerald-600 hover:bg-emerald-500 text-black font-semibold text-xl px-10 sm:px-14 py-6 rounded-3xl transition-all shadow-lg shadow-emerald-500/30">
+                <i class="fa-solid fa-map text-3xl"></i>
+                <span>Открыть карту мира</span>
+            </a>
 
-        <p class="text-neutral-500 mt-8 text-sm">
-            Карта откроется в новой вкладке<br>
-            (Так работает стабильнее всего)
-        </p>
+            <div class="mt-10 text-neutral-500 text-sm max-w-xs mx-auto">
+                Карта открывается в новой вкладке<br>
+                (Так работает стабильнее всего)
+            </div>
+
+            <div class="mt-16 text-xs text-neutral-600">
+                Обновляется в реальном времени • Dynmap
+            </div>
+        </div>
     </div>
 
     <script>
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-
         function copyIP() {
             navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
@@ -80,6 +106,29 @@
                 setTimeout(() => el.textContent = old, 2000);
             });
         }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.querySelector('#mobile-menu-button i');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('mobile-menu-button');
+            if (hamburger) {
+                hamburger.addEventListener('click', toggleMobileMenu);
+            }
+        });
     </script>
 </body>
 </html>

@@ -15,6 +15,7 @@
         .pixel-font {
             font-family: 'Pixelify Sans', sans-serif;
         }
+        
         .wiki-sidebar {
             background: #171717;
         }
@@ -23,18 +24,28 @@
             color: black;
             font-weight: 600;
         }
+
+        /* Mobile menu animation */
+        #mobile-menu {
+            animation: slideDown 0.3s ease forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-neutral-950 text-neutral-200">
 
 <!-- NAVBAR -->
     <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
-        <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">M</div>
-                <span class="pixel-font text-3xl tracking-wider">MUGIVARA</span>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl">M</div>
+                <span class="pixel-font text-2xl sm:text-3xl tracking-wider">MUGIVARA</span>
             </div>
 
+            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                 <a href="index.html" class="hover:text-emerald-400 transition">Главная</a>
                 <a href="wiki.html" class="text-emerald-400 font-semibold">📖 Вики</a>
@@ -43,31 +54,34 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="copyIP()" class="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+                <button onclick="copyIP()" 
+                        class="px-4 sm:px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy"></i>
-                    <span id="ip-text">play.mugivaracraft.ru</span>
+                    <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
+                    <span class="sm:hidden">IP</span>
                 </button>
 
-                <button onclick="toggleMobileMenu()" class="md:hidden text-2xl p-2">
+                <!-- Hamburger -->
+                <button id="mobile-menu-button" class="md:hidden p-2 text-2xl text-neutral-300 hover:text-white">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-neutral-900 border-t border-neutral-800 py-5 px-5">
-            <div class="flex flex-col gap-4 text-lg">
+        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-5 px-6">
+            <div class="flex flex-col gap-4 text-base font-medium">
                 <a href="index.html" class="py-2 hover:text-emerald-400">Главная</a>
                 <a href="wiki.html" class="py-2 text-emerald-400">📖 Вики</a>
-                <a href="http://epyc2.worldhosts.fun:27267/" class="py-2 hover:text-emerald-400">🗺️ Карта</a>
+                <a href="mapa.html" class="py-2 hover:text-emerald-400">🗺️ Карта</a>
                 <a href="rules.html" class="py-2 hover:text-emerald-400">📜 Правила</a>
             </div>
         </div>
     </nav>
 
-    <div class="flex min-h-screen pt-20">
-        <!-- БОКОВОЕ МЕНЮ -->
-        <div class="wiki-sidebar w-72 border-r border-neutral-800 p-6 hidden lg:block fixed h-full overflow-y-auto">
+    <div class="flex min-h-screen pt-16 lg:pt-20">
+        <!-- БОКОВОЕ МЕНЮ (скрыто на мобильных) -->
+        <div class="wiki-sidebar w-72 border-r border-neutral-800 p-6 hidden lg:block fixed h-[calc(100vh-4rem)] overflow-y-auto">
             <div class="mb-8">
                 <h1 class="text-2xl font-semibold text-emerald-400">📖 ВИКИ</h1>
                 <p class="text-sm text-neutral-500">Mugivara • 1.21.11</p>
@@ -99,8 +113,8 @@
             </div>
         </div>
 
-        <!-- КОНТЕНТ -->
-        <div class="flex-1 lg:ml-72 p-6 lg:p-12 max-w-4xl" id="main-content"></div>
+        <!-- Основной контент -->
+        <div class="flex-1 lg:ml-72 p-4 sm:p-6 lg:p-12 max-w-4xl mx-auto" id="main-content"></div>
     </div>
 
     <script>
@@ -114,10 +128,10 @@
 
             if (page === 'home') {
                 html = `
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-10">
-                        <h1 class="text-5xl font-semibold mb-4">Добро пожаловать в вики Mugiwara</h1>
-                        <p class="text-xl text-neutral-400">Здесь собрана вся полезная информация для комфортной игры на сервере.</p>
-                        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 sm:p-10">
+                        <h1 class="text-4xl sm:text-5xl font-semibold mb-4">Добро пожаловать в вики Mugiwara</h1>
+                        <p class="text-lg sm:text-xl text-neutral-400">Здесь собрана вся полезная информация для комфортной игры на сервере.</p>
+                        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div onclick="loadPage('resourcepacks');" class="cursor-pointer bg-neutral-950 p-6 rounded-3xl border border-neutral-700 hover:border-emerald-500 transition-all">
                                 <i class="fa-solid fa-palette text-4xl text-emerald-500 mb-4"></i>
                                 <h3 class="text-xl font-semibold">Ресурс-паки</h3>
@@ -131,8 +145,10 @@
                 `;
             } else if (page === 'resourcepacks') {
                 html = `
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-10">
-                        <h1 class="text-4xl font-semibold mb-8 flex items-center gap-3"><i class="fa-solid fa-palette text-emerald-500"></i> Ресурс-паки</h1>
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 sm:p-10">
+                        <h1 class="text-3xl sm:text-4xl font-semibold mb-8 flex items-center gap-3">
+                            <i class="fa-solid fa-palette text-emerald-500"></i> Ресурс-паки
+                        </h1>
                         <div class="space-y-8">
                             <div class="border-l-4 border-emerald-500 pl-6">
                                 <h3 class="text-2xl font-medium">Vanilla Tweaks</h3>
@@ -148,43 +164,34 @@
                 `;
             } else if (page === 'mods') {
                 html = `
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-10">
-                        <h1 class="text-4xl font-semibold mb-8 flex items-center gap-3"><i class="fa-solid fa-puzzle-piece text-emerald-500"></i> Рекомендуемые моды</h1>
-                        <div class="space-y-5">
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 sm:p-10">
+                        <h1 class="text-3xl sm:text-4xl font-semibold mb-8 flex items-center gap-3">
+                            <i class="fa-solid fa-puzzle-piece text-emerald-500"></i> Рекомендуемые моды
+                        </h1>
+                        <div class="space-y-4 text-base">
                             <div class="bg-neutral-950 p-5 rounded-2xl">Sodium + Iris — FPS + шейдеры</div>
                             <div class="bg-neutral-950 p-5 rounded-2xl">Xaero's Minimap</div>
-                            <div class="bg-neutral-950 p-5 rounded-2xl">Punchy</div>
-                            <div class="bg-neutral-950 p-5 rounded-2xl">Flashback</div>
+                            <div class="bg-neutral-950 p-5 rounded-2xl">AppleSkin</div>
+                            <div class="bg-neutral-950 p-5 rounded-2xl">ReplayMod</div>
                         </div>
-                    </div>
-                `;
-            } else if (page === 'rules') {
-                html = `
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-10">
-                        <h1 class="text-4xl font-semibold mb-6">Правила сервера</h1>
-                        <p class="text-neutral-400">Полные и актуальные правила можно посмотреть на отдельной странице <a href="rules.html" class="text-emerald-400 hover:underline">«Правила»</a>.</p>
                     </div>
                 `;
             } else if (page === 'claims') {
                 html = `
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-10">
-                        <h1 class="text-4xl font-semibold mb-6">Метки на онлайн карте</h1>
-                        <p class="text-neutral-400">Для того что бы поставить метки на онлайн карте, достаточно просто поставить где-нибудь баннер. Можно его переименовать.</p>
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 sm:p-10">
+                        <h1 class="text-3xl sm:text-4xl font-semibold mb-6">Метки на онлайн карте</h1>
+                        <p class="text-neutral-400 leading-relaxed">Для того чтобы поставить метки на онлайн-карте, достаточно поставить где-нибудь баннер. Можно его переименовать.</p>
                     </div>
                 `;
             } else if (page === 'commands') {
                 html = `
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-10">
-                        <h1 class="text-4xl font-semibold mb-8">Полезные команды</h1>
-                        <div class="space-y-3">
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 sm:p-10">
+                        <h1 class="text-3xl sm:text-4xl font-semibold mb-8">Полезные команды</h1>
+                        <div class="space-y-3 text-sm sm:text-base">
                             <div><code class="bg-neutral-800 px-3 py-1 rounded">/skin ник</code> — поставить скин</div>
                             <div><code class="bg-neutral-800 px-3 py-1 rounded">/cd create remote "ссылка" "имя"</code> — сделать кастомную платинку</div>
-                            <div><code class="bg-neutral-800 px-3 py-1 rounded">/ttt ник</code> — сыграть в крестики нолики</div>
                             <div><code class="bg-neutral-800 px-3 py-1 rounded">/co i</code> — режим Шерлока Холмса</div>
-                            <div><code class="bg-neutral-800 px-3 py-1 rounded">/ping </code> — узнать пинг</div>
-                            <div><code class="bg-neutral-800 px-3 py-1 rounded">/clearchat</code> — очистить чат (для себя)</div>
-                            <div><code class="bg-neutral-800 px-3 py-1 rounded">/ball вопрос</code> — спросить что то у магического шара</div>
-                            <div><code class="bg-neutral-800 px-3 py-1 rounded">/try вопрос</code> — узнать процент своего вопроса</div>
+                            <div><code class="bg-neutral-800 px-3 py-1 rounded">/ping</code> — узнать пинг</div>
                         </div>
                     </div>
                 `;
@@ -201,6 +208,22 @@
                 setTimeout(() => el.textContent = old, 2000);
             });
         }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.querySelector('#mobile-menu-button i');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
         window.onload = () => {
             loadPage('home');
         };
