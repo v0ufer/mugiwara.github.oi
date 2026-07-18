@@ -1344,7 +1344,13 @@
 
         function setData(key, data) {
             localStorage.setItem(key, JSON.stringify(data));
-            autoSaveToCloud();
+            // При сохранении заявок также обновляем mugivara_applications
+            if (key === 'mugivara_main_data' || key === 'mugivara_applications') {
+                localStorage.setItem('mugivara_applications', JSON.stringify(data.applications || data));
+                autoSaveToCloud();
+            } else {
+                autoSaveToCloud();
+            }
         }
 
         // ============================================================
@@ -1418,7 +1424,14 @@
                 const cloudData = data.record;
 
                 if (cloudData) {
-                    if (cloudData.applications) localStorage.setItem('mugivara_applications', JSON.stringify(cloudData.applications));
+                    if (cloudData.applications) {
+                        localStorage.setItem('mugivara_applications', JSON.stringify(cloudData.applications));
+                        // Также обновляем main_data
+                        const mainData = localStorage.getItem('mugivara_main_data');
+                        let main = mainData ? JSON.parse(mainData) : {};
+                        main.applications = cloudData.applications;
+                        localStorage.setItem('mugivara_main_data', JSON.stringify(main));
+                    }
                     if (cloudData.screenshots) localStorage.setItem('admin_screenshots', JSON.stringify(cloudData.screenshots));
                     if (cloudData.wikiCategories) localStorage.setItem('wiki_categories', JSON.stringify(cloudData.wikiCategories));
                     if (cloudData.rulesCategories) localStorage.setItem('rules_categories', JSON.stringify(cloudData.rulesCategories));
@@ -1443,6 +1456,7 @@
             try {
                 await loadFromCloud();
                 await saveToCloud();
+                loadApplications();
                 showToast('✅ Синхронизация завершена', 'success');
             } catch (e) {
                 showToast('⚠️ Ошибка синхронизации', 'error');
@@ -1562,7 +1576,7 @@
         }
 
         // ============================================================
-        // ====== APPLICATIONS — С АВТО-ОБНОВЛЕНИЕМ ======
+        // ====== APPLICATIONS — С ПРАВИЛЬНОЙ СИНХРОНИЗАЦИЕЙ ======
         // ============================================================
         let applications = [];
         let currentFilter = 'all';
@@ -1573,7 +1587,36 @@
         }
 
         function loadApplications() {
+            // Загружаем из mugivara_applications (куда сохраняются заявки из apply.html)
             applications = getData('mugivara_applications', []);
+            
+            // Если заявок нет, пробуем загрузить из mugivara_main_data
+            if (applications.length === 0) {
+                try {
+                    const mainData = localStorage.getItem('mugivara_main_data');
+                    if (mainData) {
+                        const data = JSON.parse(mainData);
+                        if (data.applications && data.applications.length > 0) {
+                            applications = data.applications;
+                            localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+                        }
+                    }
+                } catch (e) {}
+            }
+            
+            // Если всё ещё нет заявок, пробуем старый формат
+            if (applications.length === 0) {
+                try {
+                    const oldData = localStorage.getItem('admin_applications');
+                    if (oldData) {
+                        applications = JSON.parse(oldData);
+                        localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+                        localStorage.removeItem('admin_applications');
+                    }
+                } catch (e) {}
+            }
+            
+            lastApplicationsHash = getApplicationsHash(applications);
             updateStats();
             renderApplications(currentFilter);
         }
@@ -1590,26 +1633,33 @@
             try {
                 // Загружаем свежие данные из облака
                 const success = await loadFromCloud();
+                
+                // Также проверяем локальное хранилище на новые заявки
+                const localApps = getData('mugivara_applications', []);
+                
+                // Объединяем облачные и локальные заявки (облачные приоритетнее)
+                let mergedApps = [];
+                
                 if (success) {
-                    const newApps = getData('mugivara_applications', []);
-                    const newHash = getApplicationsHash(newApps);
-                    
-                    if (newHash !== lastApplicationsHash) {
-                        applications = newApps;
-                        lastApplicationsHash = newHash;
-                        updateStats();
-                        renderApplications(currentFilter);
-                        showToast('🔄 Заявки обновлены', 'success');
-                    } else {
-                        showToast('✅ Заявки актуальны', 'success');
-                    }
+                    // Если облако загружено, используем его данные
+                    mergedApps = getData('mugivara_applications', []);
                 } else {
-                    // Если облако недоступно, просто перезагружаем из localStorage
-                    applications = getData('mugivara_applications', []);
-                    lastApplicationsHash = getApplicationsHash(applications);
+                    // Если облако недоступно, используем локальные
+                    mergedApps = localApps;
+                }
+                
+                const newHash = getApplicationsHash(mergedApps);
+                
+                if (newHash !== lastApplicationsHash) {
+                    applications = mergedApps;
+                    lastApplicationsHash = newHash;
+                    // Сохраняем в localStorage для синхронизации
+                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
                     updateStats();
                     renderApplications(currentFilter);
-                    showToast('📦 Заявки загружены из локального хранилища', 'info');
+                    showToast('🔄 Заявки обновлены', 'success');
+                } else {
+                    showToast('✅ Заявки актуальны', 'success');
                 }
             } catch (error) {
                 console.error('Ошибка обновления:', error);
@@ -1622,10 +1672,22 @@
         }
 
         function saveApplications() {
-            setData('mugivara_applications', applications);
+            // Сохраняем в оба места для синхронизации
+            localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+            
+            try {
+                const mainData = localStorage.getItem('mugivara_main_data');
+                let main = mainData ? JSON.parse(mainData) : {};
+                main.applications = applications;
+                localStorage.setItem('mugivara_main_data', JSON.stringify(main));
+            } catch (e) {}
+            
             lastApplicationsHash = getApplicationsHash(applications);
             updateStats();
             renderApplications(currentFilter);
+            
+            // Отправляем в облако
+            autoSaveToCloud();
         }
 
         function updateStats() {
