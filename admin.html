@@ -257,6 +257,7 @@
             padding: 2px 4px;
             width: 100%;
             outline: none;
+            min-width: 100px;
         }
         .cat-title-edit:focus {
             border-bottom-color: #4ecdc4;
@@ -440,7 +441,7 @@
 
         /* Режим редактирования названия категории для правил */
         .rules-cat-item.editing .cat-title-text { display: none; }
-        .rules-cat-item.editing .cat-title-edit { display: block; }
+        .rules-cat-item.editing .rules-cat-title-edit { display: block; }
         .rules-cat-title-edit {
             display: none;
             background: transparent;
@@ -452,6 +453,7 @@
             padding: 2px 4px;
             width: 100%;
             outline: none;
+            min-width: 100px;
         }
         .rules-cat-title-edit:focus {
             border-bottom-color: #4ecdc4;
@@ -1716,10 +1718,10 @@
                 html += `<div class="wiki-cat-item ${isActive ? 'active' : ''}" onclick="selectWikiCategory('${cat.id}')">`;
                 html += `<span>📁</span>`;
                 html += `<span class="cat-title-text">${cat.title}</span>`;
-                html += `<input class="cat-title-edit" type="text" value="${cat.title}" onchange="updateWikiCategoryTitle('${cat.id}', this.value)" onkeydown="if(event.key==='Enter'){this.blur();}" onblur="this.parentElement.classList.remove('editing')">`;
+                html += `<input class="cat-title-edit" type="text" value="${cat.title}" data-cat-id="${cat.id}" onchange="updateWikiCategoryTitle(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="finishWikiCategoryEdit(this)">`;
                 html += `<span class="cat-actions">
-                    <button onclick="event.stopPropagation(); startEditCategory('${cat.id}')" class="edit-cat" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                    <button onclick="event.stopPropagation(); deleteWikiCategory('${cat.id}')" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                    <button onclick="event.stopPropagation(); startWikiEditCategory('${cat.id}')" class="edit-cat" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
+                    <button onclick="event.stopPropagation(); if(confirm('Удалить категорию и все её разделы?')) { deleteWikiCategory('${cat.id}') }" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
                 </span>`;
                 html += `</div>`;
                 
@@ -1730,7 +1732,7 @@
                             <span>•</span> ${sec.title}
                             <span class="sec-actions">
                                 <button onclick="event.stopPropagation(); editWikiSectionTitle('${sec.id}')" class="edit-sec" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                                <button onclick="event.stopPropagation(); deleteWikiSection('${sec.id}')" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                                <button onclick="event.stopPropagation(); if(confirm('Удалить раздел?')) { deleteWikiSection('${sec.id}') }" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
                             </span>
                         </div>`;
                     });
@@ -1749,8 +1751,8 @@
             renderWikiMain();
         }
 
-        // Функция для начала редактирования названия категории
-        function startEditCategory(catId) {
+        // Функция для начала редактирования названия категории (вики)
+        function startWikiEditCategory(catId) {
             const item = document.querySelector(`.wiki-cat-item[onclick*="${catId}"]`);
             if (item) {
                 item.classList.add('editing');
@@ -1762,11 +1764,13 @@
             }
         }
 
-        // Функция для обновления названия категории
-        function updateWikiCategoryTitle(catId, newTitle) {
+        // Функция для обновления названия категории (вики)
+        function updateWikiCategoryTitle(input) {
+            const catId = input.dataset.catId;
+            const newTitle = input.value.trim() || 'Без названия';
             const cat = wikiCategories.find(c => c.id === catId);
             if (cat) {
-                cat.title = newTitle || 'Без названия';
+                cat.title = newTitle;
                 setData('wiki_categories', wikiCategories);
                 unsavedWiki = true;
                 renderWikiSidebar();
@@ -1774,7 +1778,16 @@
             }
         }
 
-        // Функция для редактирования названия раздела (через prompt)
+        // Завершение редактирования категории (вики)
+        function finishWikiCategoryEdit(input) {
+            const item = input.closest('.wiki-cat-item');
+            if (item) {
+                item.classList.remove('editing');
+                updateWikiCategoryTitle(input);
+            }
+        }
+
+        // Функция для редактирования названия раздела (вики)
         function editWikiSectionTitle(secId) {
             for (let cat of wikiCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
@@ -1859,10 +1872,11 @@
             renderWikiSidebar();
             unsavedWiki = true;
             showToast('✅ Добавлена категория', 'success');
+            // Автоматически открываем редактирование новой категории
+            setTimeout(() => startWikiEditCategory(newId), 200);
         }
 
         function deleteWikiCategory(catId) {
-            if (!confirm('Удалить категорию и все её разделы?')) return;
             if (wikiCategories.length <= 1) {
                 showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
                 return;
@@ -1892,7 +1906,6 @@
         }
 
         function deleteWikiSection(secId) {
-            if (!confirm('Удалить раздел?')) return;
             for (let cat of wikiCategories) {
                 const idx = cat.sections ? cat.sections.findIndex(s => s.id === secId) : -1;
                 if (idx !== -1) {
@@ -2061,10 +2074,10 @@
                 html += `<div class="rules-cat-item ${isActive ? 'active' : ''}" onclick="selectRulesCategory('${cat.id}')">`;
                 html += `<span>📁</span>`;
                 html += `<span class="cat-title-text">${cat.title}</span>`;
-                html += `<input class="rules-cat-title-edit" type="text" value="${cat.title}" onchange="updateRulesCategoryTitle('${cat.id}', this.value)" onkeydown="if(event.key==='Enter'){this.blur();}" onblur="this.parentElement.classList.remove('editing')">`;
+                html += `<input class="rules-cat-title-edit" type="text" value="${cat.title}" data-rules-cat-id="${cat.id}" onchange="updateRulesCategoryTitle(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="finishRulesCategoryEdit(this)">`;
                 html += `<span class="cat-actions">
-                    <button onclick="event.stopPropagation(); startEditRulesCategory('${cat.id}')" class="edit-cat" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                    <button onclick="event.stopPropagation(); deleteRulesCategory('${cat.id}')" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                    <button onclick="event.stopPropagation(); startRulesEditCategory('${cat.id}')" class="edit-cat" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
+                    <button onclick="event.stopPropagation(); if(confirm('Удалить категорию и все её разделы?')) { deleteRulesCategory('${cat.id}') }" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
                 </span>`;
                 html += `</div>`;
                 
@@ -2075,7 +2088,7 @@
                             <span>•</span> ${sec.title}
                             <span class="sec-actions">
                                 <button onclick="event.stopPropagation(); editRulesSectionTitle('${sec.id}')" class="edit-sec" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                                <button onclick="event.stopPropagation(); deleteRulesSection('${sec.id}')" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                                <button onclick="event.stopPropagation(); if(confirm('Удалить раздел?')) { deleteRulesSection('${sec.id}') }" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
                             </span>
                         </div>`;
                     });
@@ -2095,7 +2108,7 @@
         }
 
         // Функция для начала редактирования названия категории (правила)
-        function startEditRulesCategory(catId) {
+        function startRulesEditCategory(catId) {
             const item = document.querySelector(`.rules-cat-item[onclick*="${catId}"]`);
             if (item) {
                 item.classList.add('editing');
@@ -2108,14 +2121,25 @@
         }
 
         // Функция для обновления названия категории (правила)
-        function updateRulesCategoryTitle(catId, newTitle) {
+        function updateRulesCategoryTitle(input) {
+            const catId = input.dataset.rulesCatId;
+            const newTitle = input.value.trim() || 'Без названия';
             const cat = rulesCategories.find(c => c.id === catId);
             if (cat) {
-                cat.title = newTitle || 'Без названия';
+                cat.title = newTitle;
                 setData('rules_categories', rulesCategories);
                 unsavedRules = true;
                 renderRulesSidebar();
                 showToast('✅ Название категории обновлено', 'success');
+            }
+        }
+
+        // Завершение редактирования категории (правила)
+        function finishRulesCategoryEdit(input) {
+            const item = input.closest('.rules-cat-item');
+            if (item) {
+                item.classList.remove('editing');
+                updateRulesCategoryTitle(input);
             }
         }
 
@@ -2204,10 +2228,11 @@
             renderRulesSidebar();
             unsavedRules = true;
             showToast('✅ Добавлена категория', 'success');
+            // Автоматически открываем редактирование новой категории
+            setTimeout(() => startRulesEditCategory(newId), 200);
         }
 
         function deleteRulesCategory(catId) {
-            if (!confirm('Удалить категорию и все её разделы?')) return;
             if (rulesCategories.length <= 1) {
                 showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
                 return;
@@ -2237,7 +2262,6 @@
         }
 
         function deleteRulesSection(secId) {
-            if (!confirm('Удалить раздел?')) return;
             for (let cat of rulesCategories) {
                 const idx = cat.sections ? cat.sections.findIndex(s => s.id === secId) : -1;
                 if (idx !== -1) {
