@@ -313,6 +313,33 @@
         .wiki-section-item .sec-actions .delete-sec:hover { color: #ff6b6b; }
         .wiki-section-item .sec-actions .edit-sec:hover { color: #4ecdc4; }
 
+        /* Режим редактирования названия раздела (inline) */
+        .wiki-section-item.editing .sec-title-text { display: none; }
+        .wiki-section-item.editing .sec-title-edit { display: block; }
+        .sec-title-edit {
+            display: none;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Montserrat Alternates', sans-serif;
+            padding: 2px 4px;
+            width: 100%;
+            outline: none;
+            min-width: 80px;
+        }
+        .sec-title-edit:focus {
+            border-bottom-color: #4ecdc4;
+        }
+        body.light .sec-title-edit {
+            color: #1a1a1a;
+            border-bottom-color: rgba(0,0,0,0.2);
+        }
+        body.light .sec-title-edit:focus {
+            border-bottom-color: #4ecdc4;
+        }
+
         .wiki-add-btn {
             padding: 6px 12px;
             border-radius: 6px;
@@ -368,8 +395,10 @@
         body.light .wiki-item-row input:focus { border-color: rgba(0,0,0,0.12); }
         body.light .wiki-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
         body.light .wiki-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
+        body.light .sec-title-edit { color: #1a1a1a; border-bottom-color: rgba(0,0,0,0.2); }
+        body.light .sec-title-edit:focus { border-bottom-color: #4ecdc4; }
 
-        /* ===== ПРАВИЛА — ИСПРАВЛЕННАЯ ВЕРСИЯ ===== */
+        /* ===== ПРАВИЛА ===== */
         .rules-layout {
             display: flex;
             gap: 24px;
@@ -506,6 +535,33 @@
         .rules-section-item .sec-actions .delete-sec:hover { color: #ff6b6b; }
         .rules-section-item .sec-actions .edit-sec:hover { color: #4ecdc4; }
 
+        /* Режим редактирования названия раздела (inline) для правил */
+        .rules-section-item.editing .sec-title-text { display: none; }
+        .rules-section-item.editing .rules-sec-title-edit { display: block; }
+        .rules-sec-title-edit {
+            display: none;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Montserrat Alternates', sans-serif;
+            padding: 2px 4px;
+            width: 100%;
+            outline: none;
+            min-width: 80px;
+        }
+        .rules-sec-title-edit:focus {
+            border-bottom-color: #4ecdc4;
+        }
+        body.light .rules-sec-title-edit {
+            color: #1a1a1a;
+            border-bottom-color: rgba(0,0,0,0.2);
+        }
+        body.light .rules-sec-title-edit:focus {
+            border-bottom-color: #4ecdc4;
+        }
+
         .rules-add-btn {
             padding: 6px 12px;
             border-radius: 6px;
@@ -561,6 +617,8 @@
         body.light .rules-item-row input:focus { border-color: rgba(0,0,0,0.12); }
         body.light .rules-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
         body.light .rules-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
+        body.light .rules-sec-title-edit { color: #1a1a1a; border-bottom-color: rgba(0,0,0,0.2); }
+        body.light .rules-sec-title-edit:focus { border-bottom-color: #4ecdc4; }
 
         .section-controls {
             display: flex;
@@ -1129,12 +1187,10 @@
         });
 
         function logout() {
-            if (confirm('Выйти из админ-панели?')) {
-                document.getElementById('adminPage').classList.remove('active');
-                document.getElementById('loginPage').style.display = 'flex';
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
+            document.getElementById('adminPage').classList.remove('active');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
         }
 
         function showToast(message, type = 'info') {
@@ -1718,20 +1774,22 @@
                 html += `<input class="cat-title-edit" type="text" value="${cat.title}" data-cat-id="${cat.id}" onchange="updateWikiCategoryTitle(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="finishWikiCategoryEdit(this)">`;
                 html += `<span class="cat-actions">
                     <button onclick="event.stopPropagation(); startWikiEditCategory('${cat.id}')" class="edit-cat" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                    <button onclick="event.stopPropagation(); if(confirm('Удалить категорию и все её разделы?')) { deleteWikiCategory('${cat.id}') }" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                    <button onclick="event.stopPropagation(); deleteWikiCategory('${cat.id}')" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
                 </span>`;
                 html += `</div>`;
                 
                 if (isActive && cat.sections) {
                     cat.sections.forEach(sec => {
                         const isSecActive = wikiSelectedSec === sec.id;
-                        html += `<div class="wiki-section-item ${isSecActive ? 'active' : ''}" onclick="selectWikiSection('${sec.id}')">
-                            <span>•</span> ${sec.title}
-                            <span class="sec-actions">
-                                <button onclick="event.stopPropagation(); editWikiSectionTitle('${sec.id}')" class="edit-sec" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                                <button onclick="event.stopPropagation(); if(confirm('Удалить раздел?')) { deleteWikiSection('${sec.id}') }" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
-                            </span>
-                        </div>`;
+                        html += `<div class="wiki-section-item ${isSecActive ? 'active' : ''}" onclick="selectWikiSection('${sec.id}')">`;
+                        html += `<span>•</span>`;
+                        html += `<span class="sec-title-text">${sec.title}</span>`;
+                        html += `<input class="sec-title-edit" type="text" value="${sec.title}" data-sec-id="${sec.id}" data-cat-id="${cat.id}" onchange="updateWikiSectionTitleInline(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="finishWikiSectionEdit(this)">`;
+                        html += `<span class="sec-actions">
+                            <button onclick="event.stopPropagation(); startWikiEditSection('${sec.id}')" class="edit-sec" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
+                            <button onclick="event.stopPropagation(); deleteWikiSection('${sec.id}')" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                        </span>`;
+                        html += `</div>`;
                     });
                     html += `<button class="wiki-add-btn" onclick="addWikiSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
                 }
@@ -1748,6 +1806,7 @@
             renderWikiMain();
         }
 
+        // === Редактирование категории (вики) ===
         function startWikiEditCategory(catId) {
             const item = document.querySelector(`.wiki-cat-item[onclick*="${catId}"]`);
             if (item) {
@@ -1762,7 +1821,7 @@
 
         function updateWikiCategoryTitle(input) {
             const catId = input.dataset.catId;
-            const newTitle = input.value.trim() || 'Без названия';
+            const newTitle = input.value; // сохраняем как есть, включая пробелы
             const cat = wikiCategories.find(c => c.id === catId);
             if (cat) {
                 cat.title = newTitle;
@@ -1781,20 +1840,40 @@
             }
         }
 
-        function editWikiSectionTitle(secId) {
+        // === Редактирование раздела (вики) inline ===
+        function startWikiEditSection(secId) {
+            const item = document.querySelector(`.wiki-section-item[onclick*="${secId}"]`);
+            if (item) {
+                item.classList.add('editing');
+                const input = item.querySelector('.sec-title-edit');
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }
+        }
+
+        function updateWikiSectionTitleInline(input) {
+            const secId = input.dataset.secId;
+            const newTitle = input.value; // сохраняем как есть, включая пробелы
             for (let cat of wikiCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
-                    const newTitle = prompt('Введите новое название раздела:', sec.title);
-                    if (newTitle !== null && newTitle.trim() !== '') {
-                        sec.title = newTitle.trim();
-                        setData('wiki_categories', wikiCategories);
-                        unsavedWiki = true;
-                        renderWikiSidebar();
-                        showToast('✅ Название раздела обновлено', 'success');
-                    }
+                    sec.title = newTitle;
+                    setData('wiki_categories', wikiCategories);
+                    unsavedWiki = true;
+                    renderWikiSidebar();
+                    showToast('✅ Название раздела обновлено', 'success');
                     break;
                 }
+            }
+        }
+
+        function finishWikiSectionEdit(input) {
+            const item = input.closest('.wiki-section-item');
+            if (item) {
+                item.classList.remove('editing');
+                updateWikiSectionTitleInline(input);
             }
         }
 
@@ -1881,7 +1960,7 @@
             }
             renderWikiSidebar();
             unsavedWiki = true;
-            showToast('✅ Категория удалена', 'success');
+            showToast('🗑️ Категория удалена', 'info');
         }
 
         function addWikiSection(catId) {
@@ -1895,6 +1974,7 @@
             renderWikiSidebar();
             unsavedWiki = true;
             showToast('✅ Добавлен раздел', 'success');
+            setTimeout(() => startWikiEditSection(newId), 200);
         }
 
         function deleteWikiSection(secId) {
@@ -1912,14 +1992,14 @@
             }
             renderWikiSidebar();
             unsavedWiki = true;
-            showToast('✅ Раздел удален', 'success');
+            showToast('🗑️ Раздел удален', 'info');
         }
 
         function updateWikiSectionTitle(secId, value) {
             for (let cat of wikiCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
-                    sec.title = value || 'Без названия';
+                    sec.title = value; // сохраняем как есть, включая пробелы
                     setData('wiki_categories', wikiCategories);
                     unsavedWiki = true;
                     break;
@@ -2011,7 +2091,7 @@
         }
 
         // ============================================================
-        // ====== RULES — ИСПРАВЛЕННАЯ ВЕРСИЯ ======
+        // ====== RULES ======
         // ============================================================
         let rulesCategories = [];
         let rulesSelectedCat = null;
@@ -2069,25 +2149,23 @@
                 html += `<input class="rules-cat-title-edit" type="text" value="${cat.title}" data-rules-cat-id="${cat.id}" onchange="updateRulesCategoryTitle(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="finishRulesCategoryEdit(this)">`;
                 html += `<span class="cat-actions">
                     <button onclick="event.stopPropagation(); startRulesEditCategory('${cat.id}')" class="edit-cat" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                    <button onclick="event.stopPropagation(); if(confirm('Удалить категорию и все её разделы?')) { deleteRulesCategory('${cat.id}') }" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                    <button onclick="event.stopPropagation(); deleteRulesCategory('${cat.id}')" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
                 </span>`;
                 html += `</div>`;
                 
-                // Показываем разделы ТОЛЬКО для активной категории
-                if (isActive && cat.sections && cat.sections.length > 0) {
+                if (isActive && cat.sections) {
                     cat.sections.forEach(sec => {
                         const isSecActive = rulesSelectedSec === sec.id;
-                        html += `<div class="rules-section-item ${isSecActive ? 'active' : ''}" onclick="selectRulesSection('${sec.id}')">
-                            <span>•</span> ${sec.title}
-                            <span class="sec-actions">
-                                <button onclick="event.stopPropagation(); editRulesSectionTitle('${sec.id}')" class="edit-sec" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
-                                <button onclick="event.stopPropagation(); if(confirm('Удалить раздел?')) { deleteRulesSection('${sec.id}') }" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
-                            </span>
-                        </div>`;
+                        html += `<div class="rules-section-item ${isSecActive ? 'active' : ''}" onclick="selectRulesSection('${sec.id}')">`;
+                        html += `<span>•</span>`;
+                        html += `<span class="sec-title-text">${sec.title}</span>`;
+                        html += `<input class="rules-sec-title-edit" type="text" value="${sec.title}" data-rules-sec-id="${sec.id}" data-rules-cat-id="${cat.id}" onchange="updateRulesSectionTitleInline(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="finishRulesSectionEdit(this)">`;
+                        html += `<span class="sec-actions">
+                            <button onclick="event.stopPropagation(); startRulesEditSection('${sec.id}')" class="edit-sec" title="Редактировать название"><i class="fa-regular fa-pen"></i></button>
+                            <button onclick="event.stopPropagation(); deleteRulesSection('${sec.id}')" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                        </span>`;
+                        html += `</div>`;
                     });
-                    html += `<button class="rules-add-btn" onclick="addRulesSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
-                } else if (isActive) {
-                    // Если у категории нет разделов, показываем кнопку добавления
                     html += `<button class="rules-add-btn" onclick="addRulesSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
                 }
             });
@@ -2103,6 +2181,7 @@
             renderRulesMain();
         }
 
+        // === Редактирование категории (правила) ===
         function startRulesEditCategory(catId) {
             const item = document.querySelector(`.rules-cat-item[onclick*="${catId}"]`);
             if (item) {
@@ -2117,7 +2196,7 @@
 
         function updateRulesCategoryTitle(input) {
             const catId = input.dataset.rulesCatId;
-            const newTitle = input.value.trim() || 'Без названия';
+            const newTitle = input.value; // сохраняем как есть, включая пробелы
             const cat = rulesCategories.find(c => c.id === catId);
             if (cat) {
                 cat.title = newTitle;
@@ -2136,20 +2215,40 @@
             }
         }
 
-        function editRulesSectionTitle(secId) {
+        // === Редактирование раздела (правила) inline ===
+        function startRulesEditSection(secId) {
+            const item = document.querySelector(`.rules-section-item[onclick*="${secId}"]`);
+            if (item) {
+                item.classList.add('editing');
+                const input = item.querySelector('.rules-sec-title-edit');
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }
+        }
+
+        function updateRulesSectionTitleInline(input) {
+            const secId = input.dataset.rulesSecId;
+            const newTitle = input.value; // сохраняем как есть, включая пробелы
             for (let cat of rulesCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
-                    const newTitle = prompt('Введите новое название раздела:', sec.title);
-                    if (newTitle !== null && newTitle.trim() !== '') {
-                        sec.title = newTitle.trim();
-                        setData('rules_categories', rulesCategories);
-                        unsavedRules = true;
-                        renderRulesSidebar();
-                        showToast('✅ Название раздела обновлено', 'success');
-                    }
+                    sec.title = newTitle;
+                    setData('rules_categories', rulesCategories);
+                    unsavedRules = true;
+                    renderRulesSidebar();
+                    showToast('✅ Название раздела обновлено', 'success');
                     break;
                 }
+            }
+        }
+
+        function finishRulesSectionEdit(input) {
+            const item = input.closest('.rules-section-item');
+            if (item) {
+                item.classList.remove('editing');
+                updateRulesSectionTitleInline(input);
             }
         }
 
@@ -2197,7 +2296,6 @@
 
         function selectRulesCategory(catId) {
             rulesSelectedCat = catId;
-            // Ищем первый раздел в выбранной категории
             const cat = rulesCategories.find(c => c.id === catId);
             if (cat && cat.sections && cat.sections.length > 0) {
                 rulesSelectedSec = cat.sections[0].id;
@@ -2237,7 +2335,7 @@
             }
             renderRulesSidebar();
             unsavedRules = true;
-            showToast('✅ Категория удалена', 'success');
+            showToast('🗑️ Категория удалена', 'info');
         }
 
         function addRulesSection(catId) {
@@ -2251,6 +2349,7 @@
             renderRulesSidebar();
             unsavedRules = true;
             showToast('✅ Добавлен раздел', 'success');
+            setTimeout(() => startRulesEditSection(newId), 200);
         }
 
         function deleteRulesSection(secId) {
@@ -2262,7 +2361,6 @@
                 }
             }
             setData('rules_categories', rulesCategories);
-            // Проверяем, был ли удалён выбранный раздел
             const stillExists = rulesCategories.some(cat => 
                 cat.sections && cat.sections.some(s => s.id === rulesSelectedSec)
             );
@@ -2272,14 +2370,14 @@
             }
             renderRulesSidebar();
             unsavedRules = true;
-            showToast('✅ Раздел удален', 'success');
+            showToast('🗑️ Раздел удален', 'info');
         }
 
         function updateRulesSectionTitle(secId, value) {
             for (let cat of rulesCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
-                    sec.title = value || 'Без названия';
+                    sec.title = value; // сохраняем как есть, включая пробелы
                     setData('rules_categories', rulesCategories);
                     unsavedRules = true;
                     break;
