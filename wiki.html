@@ -629,37 +629,120 @@
         // ============================================================
         // ====== ВИКИ ======
         // ============================================================
-        let wikiSections = [];
+        let wikiCategories = [];
         let currentPage = 'home';
         let sectionsMap = {};
 
         function loadWikiFromStorage() {
             try {
-                const data = localStorage.getItem('admin_wiki_sections');
+                // Пытаемся загрузить из основного хранилища
+                const mainData = localStorage.getItem('mugivara_main_data');
+                if (mainData) {
+                    const data = JSON.parse(mainData);
+                    if (data.wikiCategories && data.wikiCategories.length > 0) {
+                        wikiCategories = data.wikiCategories;
+                        buildSectionsMap();
+                        return true;
+                    }
+                }
+            } catch (e) {}
+            
+            // Пробуем из отдельного хранилища
+            try {
+                const data = localStorage.getItem('wiki_categories');
                 if (data) {
-                    wikiSections = JSON.parse(data);
-                    sectionsMap = {};
-                    wikiSections.forEach(s => { sectionsMap[s.id] = s; });
+                    wikiCategories = JSON.parse(data);
+                    buildSectionsMap();
                     return true;
                 }
             } catch (e) {}
+            
             return false;
         }
 
-        function getDefaultWikiSections() {
+        function buildSectionsMap() {
+            sectionsMap = {};
+            wikiCategories.forEach(cat => {
+                (cat.sections || []).forEach(sec => {
+                    sectionsMap[sec.id] = sec;
+                    sec.categoryTitle = cat.title;
+                });
+            });
+        }
+
+        function getDefaultWikiCategories() {
             return [
-                { id: 'home', title: 'Главная', items: ['Добро пожаловать в вику Mugivara!', 'Здесь собрана вся полезная информация для комфортной игры.'] },
-                { id: 'resourcepacks', title: 'Ресурс-паки', items: ['Vanilla Tweaks — лучший выбор для ванильного сервера', 'Faithful 32x — классические текстуры в высоком разрешении'] },
-                { id: 'mods', title: 'Моды для клиента', items: ['Sodium + Iris — FPS и шейдеры', "Xaero's Minimap — мини-карта", 'AppleSkin — информация о еде'] },
-                { id: 'claims', title: 'Метки на карте', items: ['Поставьте баннер в нужном месте', 'Переименуйте его в анвиле', 'Метка автоматически появится на Dynmap'] },
-                { id: 'commands', title: 'Полезные команды', items: ['/skin ник — поставить скин', '/co i — режим Шерлока', '/ping — узнать пинг'] },
-                { id: 'tips', title: 'Советы новичкам', items: ['Начните с базы рядом со спавном', 'Общайтесь с соседями — помогайте друг другу!', 'Используйте Dynmap для навигации'] }
+                { 
+                    id: 'cat1', 
+                    title: 'Основное', 
+                    sections: [
+                        { id: 'home', title: 'Главная', items: [
+                            'Добро пожаловать в вику Mugivara!',
+                            'Здесь собрана вся полезная информация для комфортной игры.',
+                            'Сервер создан для тех, кто ценит настоящее ванильное выживание.'
+                        ] }
+                    ] 
+                },
+                { 
+                    id: 'cat2', 
+                    title: '🎨 Рекомендации по визуалу', 
+                    sections: [
+                        { id: 'resourcepacks', title: 'Ресурс-паки', items: [
+                            'Vanilla Tweaks — лучший выбор для ванильного сервера. Улучшает текстуры, звуки и добавляет удобства.',
+                            'Faithful 32x — классические текстуры в высоком разрешении. Сохраняет оригинальный стиль игры.',
+                            'Bare Bones — минималистичный пак для максимальной производительности и чистого вида.'
+                        ] }
+                    ] 
+                },
+                { 
+                    id: 'cat3', 
+                    title: '🧩 Рекомендации по клиенту', 
+                    sections: [
+                        { id: 'mods', title: 'Рекомендуемые моды (Fabric 1.21.11)', items: [
+                            'Sodium — невероятный прирост FPS без потери качества.',
+                            'Iris Shaders — позволяет использовать шейдеры вместе с Sodium.',
+                            'Xaero\'s Minimap — удобная мини-карта с возможностью ставить метки.',
+                            'AppleSkin — показывает информацию о насыщении и голоде от еды.',
+                            'ReplayMod — запись игровых повторов для создания красивых видео.',
+                            'Entity Culling — оптимизация FPS за счет скрытия невидимых сущностей.'
+                        ] }
+                    ] 
+                },
+                { 
+                    id: 'cat4', 
+                    title: '🎮 Геймплей и механики', 
+                    sections: [
+                        { id: 'claims', title: 'Метки на онлайн карте', items: [
+                            'Поставьте баннер в нужном месте на карте мира.',
+                            'Переименуйте его в анвиле — это название будет отображаться на карте.',
+                            'Метка автоматически появится на Dynmap через несколько секунд.'
+                        ] },
+                        { id: 'commands', title: 'Полезные команды', items: [
+                            '/skin ник — поставить скин (даже без лицензии!)',
+                            '/cd create remote "ссылка" "имя" — создать кастомную пластинку',
+                            '/co i — режим Шерлока Холмса',
+                            '/ping — узнать пинг до сервера',
+                            '/msg ник текст — личное сообщение'
+                        ] },
+                        { id: 'tips', title: 'Советы новичкам', items: [
+                            'Начните с базы рядом со спавном — так будет проще ориентироваться.',
+                            'Постройте автоматические фермы для еды, дерева и железа.',
+                            'Общайтесь с соседями! На сервере дружелюбное комьюнити.',
+                            'Используйте Dynmap для навигации — это онлайн-карта мира.'
+                        ] }
+                    ] 
+                }
             ];
         }
 
         function saveWikiToStorage() {
             try {
-                localStorage.setItem('admin_wiki_sections', JSON.stringify(wikiSections));
+                localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
+                // Обновляем основное хранилище
+                const mainData = localStorage.getItem('mugivara_main_data');
+                let data = mainData ? JSON.parse(mainData) : {};
+                data.wikiCategories = wikiCategories;
+                localStorage.setItem('mugivara_main_data', JSON.stringify(data));
             } catch (e) {}
         }
 
@@ -682,9 +765,15 @@
                 const data = await response.json();
                 const cloudData = data.record;
 
-                if (cloudData && cloudData.wikiSections) {
-                    localStorage.setItem('admin_wiki_sections', JSON.stringify(cloudData.wikiSections));
+                if (cloudData && cloudData.wikiCategories) {
+                    localStorage.setItem('wiki_categories', JSON.stringify(cloudData.wikiCategories));
+                    // Обновляем основное хранилище
+                    const mainData = localStorage.getItem('mugivara_main_data');
+                    let main = mainData ? JSON.parse(mainData) : {};
+                    main.wikiCategories = cloudData.wikiCategories;
+                    localStorage.setItem('mugivara_main_data', JSON.stringify(main));
                     localStorage.setItem('mugivara_last_update', Date.now().toString());
+                    
                     const loaded = loadWikiFromStorage();
                     if (loaded) {
                         renderSidebar();
@@ -722,10 +811,16 @@
                     const cloudTime = new Date(cloudData.updated).getTime();
                     const localTime = parseInt(localStorage.getItem('mugivara_last_update') || '0');
 
-                    if (cloudTime > localTime && cloudData.wikiSections) {
+                    if (cloudTime > localTime && cloudData.wikiCategories) {
                         console.log('🔄 Найдены обновления вики в облаке');
-                        localStorage.setItem('admin_wiki_sections', JSON.stringify(cloudData.wikiSections));
+                        localStorage.setItem('wiki_categories', JSON.stringify(cloudData.wikiCategories));
+                        // Обновляем основное хранилище
+                        const mainData = localStorage.getItem('mugivara_main_data');
+                        let main = mainData ? JSON.parse(mainData) : {};
+                        main.wikiCategories = cloudData.wikiCategories;
+                        localStorage.setItem('mugivara_main_data', JSON.stringify(main));
                         localStorage.setItem('mugivara_last_update', Date.now().toString());
+                        
                         const loaded = loadWikiFromStorage();
                         if (loaded) {
                             renderSidebar();
@@ -743,9 +838,8 @@
         function initWiki() {
             const loaded = loadWikiFromStorage();
             if (!loaded) {
-                wikiSections = getDefaultWikiSections();
-                sectionsMap = {};
-                wikiSections.forEach(s => { sectionsMap[s.id] = s; });
+                wikiCategories = getDefaultWikiCategories();
+                buildSectionsMap();
                 saveWikiToStorage();
             }
             renderSidebar();
@@ -777,36 +871,39 @@
 
         function renderSidebar() {
             const nav = document.getElementById('sidebarNav');
-            const groups = {
-                'Основное': ['home'],
-                'Рекомендации': ['resourcepacks', 'mods'],
-                'Геймплей': ['claims', 'commands', 'tips']
-            };
             
+            let html = '';
+            wikiCategories.forEach(cat => {
+                html += `<div class="sidebar-group">`;
+                html += `<div class="sidebar-group-title">${cat.title}</div>`;
+                html += `<ul>`;
+                (cat.sections || []).forEach(sec => {
+                    const icon = getSectionIcon(sec.id);
+                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="nav-item" data-page="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
+                });
+                html += `</ul></div>`;
+            });
+            nav.innerHTML = html;
+        }
+
+        function getSectionIcon(id) {
             const icons = {
                 'home': 'fa-solid fa-house',
                 'resourcepacks': 'fa-solid fa-palette',
                 'mods': 'fa-solid fa-puzzle-piece',
                 'claims': 'fa-solid fa-map-pin',
                 'commands': 'fa-solid fa-terminal',
-                'tips': 'fa-solid fa-lightbulb'
+                'tips': 'fa-solid fa-lightbulb',
+                'shaders': 'fa-solid fa-sun',
+                'rules1': 'fa-solid fa-gavel',
+                'rules2': 'fa-solid fa-comment',
+                'rules3': 'fa-solid fa-shield-halved',
+                'rules4': 'fa-solid fa-scale-balanced',
+                'rules5': 'fa-solid fa-triangle-exclamation',
+                'rules6': 'fa-solid fa-handshake',
+                'rules7': 'fa-solid fa-bell'
             };
-
-            let html = '';
-            for (const [groupName, ids] of Object.entries(groups)) {
-                html += `<div class="sidebar-group">`;
-                html += `<div class="sidebar-group-title">${groupName}</div>`;
-                html += `<ul>`;
-                for (const id of ids) {
-                    const section = sectionsMap[id];
-                    if (section) {
-                        const icon = icons[id] || 'fa-solid fa-circle';
-                        html += `<li><a href="#" onclick="loadWikiPage('${id}', this); return false;" class="nav-item" data-page="${id}"><i class="${icon}"></i> ${section.title}</a></li>`;
-                    }
-                }
-                html += `</ul></div>`;
-            }
-            nav.innerHTML = html;
+            return icons[id] || 'fa-solid fa-circle';
         }
 
         function loadWikiPage(page, element = null) {
@@ -881,7 +978,7 @@
                             <i class="fa-regular fa-circle-check text-green-400"></i>
                             <span>Синхронизировано с облаком</span>
                             <span class="text-neutral-600 ml-2">•</span>
-                            <span>ID: ${section.id}</span>
+                            <span>Категория: ${section.categoryTitle || 'Без категории'}</span>
                         </div>
                     </div>
                 </div>
@@ -907,6 +1004,28 @@
                 el.className = "font-semibold text-neutral-500 game-font";
             }
         }
+
+        // ============================================================
+        // ====== СЛУШАЕМ ОБНОВЛЕНИЯ ИЗ АДМИНКИ ======
+        // ============================================================
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'wiki_categories' || e.key === 'mugivara_main_data') {
+                const loaded = loadWikiFromStorage();
+                if (loaded) {
+                    renderSidebar();
+                    const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
+                    loadWikiPage(currentPage, navItem);
+                    
+                    const dateEl = document.getElementById('update-date');
+                    if (dateEl) {
+                        const now = new Date();
+                        dateEl.textContent = now.toLocaleDateString('ru-RU', { 
+                            day: 'numeric', month: 'long', year: 'numeric' 
+                        });
+                    }
+                }
+            }
+        });
 
         // ============================================================
         // ====== ИНИЦИАЛИЗАЦИЯ ======
