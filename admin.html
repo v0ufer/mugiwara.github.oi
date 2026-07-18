@@ -1390,12 +1390,22 @@ api:
         });
 
         // ============================================================
-        // ====== SCREENSHOTS ======
+        // ====== SCREENSHOTS (ИСПРАВЛЕНО) ======
         // ============================================================
         let screenshots = [];
 
         function loadScreenshots() {
-            screenshots = getData('admin_screenshots', Array.from({ length: 12 }, (_, i) => ({ id: i + 1, name: `screenshot${i+1}.jpg`, data: null, placeholder: true })));
+            screenshots = getData('admin_screenshots', null);
+            // Если данных нет или они не 12, создаем 12 слотов
+            if (!screenshots || screenshots.length !== 12) {
+                screenshots = Array.from({ length: 12 }, (_, i) => ({ 
+                    id: i + 1, 
+                    name: `screenshot${i+1}.jpg`, 
+                    data: null, 
+                    placeholder: true 
+                }));
+                setData('admin_screenshots', screenshots);
+            }
             renderScreenshots();
         }
 
@@ -1420,24 +1430,46 @@ api:
                     </div>
                 </div>
             `).join('');
+            updateUploadStatus();
         }
 
         function uploadToSlot(index, event) {
             const file = event.target.files[0];
             if (!file) return;
+            
+            // Проверяем размер файла (макс 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('⚠️ Файл слишком большой (макс 5MB)', 'error');
+                event.target.value = '';
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = (e) => {
-                screenshots[index] = { ...screenshots[index], data: e.target.result, placeholder: false, name: file.name };
+                screenshots[index] = { 
+                    ...screenshots[index], 
+                    data: e.target.result, 
+                    placeholder: false, 
+                    name: file.name 
+                };
                 setData('admin_screenshots', screenshots);
                 renderScreenshots();
                 showToast('✅ Скриншот загружен', 'success');
+            };
+            reader.onerror = () => {
+                showToast('❌ Ошибка чтения файла', 'error');
             };
             reader.readAsDataURL(file);
             event.target.value = '';
         }
 
         function removeScreenshot(index) {
-            screenshots[index] = { ...screenshots[index], data: null, placeholder: true, name: `screenshot${index+1}.jpg` };
+            screenshots[index] = { 
+                ...screenshots[index], 
+                data: null, 
+                placeholder: true, 
+                name: `screenshot${index+1}.jpg` 
+            };
             setData('admin_screenshots', screenshots);
             renderScreenshots();
             showToast('🗑️ Скриншот удален', 'info');
@@ -1446,21 +1478,40 @@ api:
         function handleFileUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
+            
             let loaded = 0;
+            const totalFiles = files.length;
+            
             for (let file of files) {
+                // Ищем пустой слот
                 const emptyIndex = screenshots.findIndex(s => s.placeholder || !s.data);
                 if (emptyIndex === -1) {
-                    showToast('⚠️ Все слоты заполнены', 'error');
+                    showToast('⚠️ Все 12 слотов заполнены! Удалите лишние скриншоты.', 'error');
                     break;
                 }
+                
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    screenshots[emptyIndex] = { ...screenshots[emptyIndex], data: e.target.result, placeholder: false, name: file.name };
+                    screenshots[emptyIndex] = { 
+                        ...screenshots[emptyIndex], 
+                        data: e.target.result, 
+                        placeholder: false, 
+                        name: file.name 
+                    };
                     loaded++;
-                    if (loaded === files.length || loaded === screenshots.filter(s => s.placeholder || !s.data).length === 0) {
+                    
+                    if (loaded === totalFiles || loaded === screenshots.filter(s => s.placeholder || !s.data).length === 0) {
                         setData('admin_screenshots', screenshots);
                         renderScreenshots();
                         showToast(`✅ Загружено ${loaded} файлов`, 'success');
+                    }
+                };
+                reader.onerror = () => {
+                    loaded++;
+                    if (loaded === totalFiles) {
+                        setData('admin_screenshots', screenshots);
+                        renderScreenshots();
+                        showToast(`⚠️ Загружено ${loaded - 1} из ${totalFiles} файлов`, 'info');
                     }
                 };
                 reader.readAsDataURL(file);
@@ -1468,8 +1519,15 @@ api:
             event.target.value = '';
         }
 
+        function updateUploadStatus() {
+            const used = screenshots.filter(s => s.data).length;
+            const status = document.getElementById('uploadStatus');
+            status.textContent = `📊 Использовано ${used}/12 слотов`;
+            status.className = 'save-status';
+        }
+
         // ============================================================
-        // ====== WIKI ======
+        // ====== WIKI (ИСПРАВЛЕНО) ======
         // ============================================================
         let wikiSections = [];
         let unsavedWikiIndices = new Set();
@@ -1478,7 +1536,10 @@ api:
             wikiSections = getData('admin_wiki_sections', [
                 { id: 'home', title: 'Главная', items: ['Добро пожаловать в вику Mugivara!', 'Здесь собрана вся полезная информация.'] },
                 { id: 'resourcepacks', title: 'Ресурс-паки', items: ['Vanilla Tweaks — лучший выбор', 'Faithful 32x — классические текстуры'] },
-                { id: 'mods', title: 'Моды', items: ['Sodium + Iris — FPS и шейдеры', "Xaero's Minimap — мини-карта"] }
+                { id: 'mods', title: 'Моды', items: ['Sodium + Iris — FPS и шейдеры', "Xaero's Minimap — мини-карта", 'AppleSkin — информация о еде'] },
+                { id: 'claims', title: 'Метки на карте', items: ['Поставьте баннер в нужном месте', 'Переименуйте его в анвиле', 'Метка автоматически появится на Dynmap'] },
+                { id: 'commands', title: 'Полезные команды', items: ['/skin ник — поставить скин', '/co i — режим Шерлока', '/ping — узнать пинг', '/msg ник текст — личное сообщение'] },
+                { id: 'tips', title: 'Советы новичкам', items: ['Начните с базы рядом со спавном', 'Общайтесь с соседями — помогайте друг другу!', 'Используйте Dynmap для навигации'] }
             ]);
             renderWikiSections();
         }
@@ -1518,18 +1579,24 @@ api:
         }
 
         function markWikiUnsaved(index) { unsavedWikiIndices.add(index); updateWikiStatus(); }
+        
         function updateWikiStatus() {
             const status = document.getElementById('wikiStatus');
             if (unsavedWikiIndices.size > 0) {
                 status.textContent = `⚠️ ${unsavedWikiIndices.size} раздел(ов) изменены`;
+                status.className = 'section-status';
             } else {
                 status.textContent = '✅ Все сохранено';
+                status.className = 'section-status';
             }
         }
 
         function addWikiItem(index) {
             const input = document.getElementById('newWikiItem_' + index);
-            if (!input.value.trim()) return;
+            if (!input.value.trim()) {
+                showToast('⚠️ Введите текст пункта', 'error');
+                return;
+            }
             if (!wikiSections[index].items) wikiSections[index].items = [];
             wikiSections[index].items.push(input.value.trim());
             input.value = '';
@@ -1539,6 +1606,7 @@ api:
         }
 
         function deleteWikiItem(index, itemIndex) {
+            if (!confirm('Удалить пункт?')) return;
             wikiSections[index].items.splice(itemIndex, 1);
             markWikiUnsaved(index);
             renderWikiSections();
@@ -1548,13 +1616,34 @@ api:
             const newIndex = index + direction;
             if (newIndex < 0 || newIndex >= wikiSections.length) return;
             [wikiSections[index], wikiSections[newIndex]] = [wikiSections[newIndex], wikiSections[index]];
+            // Обновляем unsaved индексы
+            const oldUnsaved = new Set(unsavedWikiIndices);
+            unsavedWikiIndices.clear();
+            oldUnsaved.forEach(i => {
+                if (i === index) unsavedWikiIndices.add(newIndex);
+                else if (i === newIndex) unsavedWikiIndices.add(index);
+                else unsavedWikiIndices.add(i);
+            });
             renderWikiSections();
         }
 
         function deleteWikiSection(index) {
-            if (wikiSections.length <= 1) return;
+            if (!confirm('Удалить раздел?')) return;
+            if (wikiSections.length <= 1) {
+                showToast('⚠️ Нельзя удалить последний раздел', 'error');
+                return;
+            }
             wikiSections.splice(index, 1);
+            unsavedWikiIndices.delete(index);
+            // Сдвигаем индексы
+            const newUnsaved = new Set();
+            unsavedWikiIndices.forEach(i => {
+                if (i > index) newUnsaved.add(i - 1);
+                else newUnsaved.add(i);
+            });
+            unsavedWikiIndices = newUnsaved;
             renderWikiSections();
+            showToast('✅ Раздел удален', 'success');
         }
 
         function previewWikiSection(index) {
@@ -1598,16 +1687,16 @@ api:
         }
 
         // ============================================================
-        // ====== RULES ======
+        // ====== RULES (ИСПРАВЛЕНО — ДОБАВЛЕНИЕ РАЗДЕЛОВ) ======
         // ============================================================
         let rulesSections = [];
         let unsavedRulesIndices = new Set();
 
         function loadRulesSections() {
             rulesSections = getData('admin_rules_sections', [
-                { id: 'rules1', title: 'Нарушения имущества', items: ['Использование чужих ферм', 'Гриферство'] },
-                { id: 'rules2', title: 'Общение', items: ['Оскорбления', 'Флуд'] },
-                { id: 'rules3', title: 'Наказания', items: ['Предупреждение', 'Мут', 'Бан'] }
+                { id: 'rules1', title: 'Нарушения имущества', items: ['Использование чужих ферм без разрешения', 'Гриферство в любом виде', 'Разрушение чужих построек'] },
+                { id: 'rules2', title: 'Общение', items: ['Оскорбления и переход на личности', 'Флуд и спам', 'Обсуждение политики и религии'] },
+                { id: 'rules3', title: 'Наказания', items: ['Предупреждение — за незначительные нарушения', 'Мут — от 10 минут до 7 дней', 'Бан — за гриферство и повторные нарушения'] }
             ]);
             renderRulesSections();
         }
@@ -1647,18 +1736,24 @@ api:
         }
 
         function markRulesUnsaved(index) { unsavedRulesIndices.add(index); updateRulesStatus(); }
+        
         function updateRulesStatus() {
             const status = document.getElementById('rulesStatus');
             if (unsavedRulesIndices.size > 0) {
                 status.textContent = `⚠️ ${unsavedRulesIndices.size} раздел(ов) изменены`;
+                status.className = 'section-status';
             } else {
                 status.textContent = '✅ Все сохранено';
+                status.className = 'section-status';
             }
         }
 
         function addRulesItem(index) {
             const input = document.getElementById('newRulesItem_' + index);
-            if (!input.value.trim()) return;
+            if (!input.value.trim()) {
+                showToast('⚠️ Введите текст пункта', 'error');
+                return;
+            }
             if (!rulesSections[index].items) rulesSections[index].items = [];
             rulesSections[index].items.push(input.value.trim());
             input.value = '';
@@ -1668,6 +1763,7 @@ api:
         }
 
         function deleteRulesItem(index, itemIndex) {
+            if (!confirm('Удалить пункт?')) return;
             rulesSections[index].items.splice(itemIndex, 1);
             markRulesUnsaved(index);
             renderRulesSections();
@@ -1677,13 +1773,34 @@ api:
             const newIndex = index + direction;
             if (newIndex < 0 || newIndex >= rulesSections.length) return;
             [rulesSections[index], rulesSections[newIndex]] = [rulesSections[newIndex], rulesSections[index]];
+            // Обновляем unsaved индексы
+            const oldUnsaved = new Set(unsavedRulesIndices);
+            unsavedRulesIndices.clear();
+            oldUnsaved.forEach(i => {
+                if (i === index) unsavedRulesIndices.add(newIndex);
+                else if (i === newIndex) unsavedRulesIndices.add(index);
+                else unsavedRulesIndices.add(i);
+            });
             renderRulesSections();
         }
 
         function deleteRulesSection(index) {
-            if (rulesSections.length <= 1) return;
+            if (!confirm('Удалить раздел?')) return;
+            if (rulesSections.length <= 1) {
+                showToast('⚠️ Нельзя удалить последний раздел', 'error');
+                return;
+            }
             rulesSections.splice(index, 1);
+            unsavedRulesIndices.delete(index);
+            // Сдвигаем индексы
+            const newUnsaved = new Set();
+            unsavedRulesIndices.forEach(i => {
+                if (i > index) newUnsaved.add(i - 1);
+                else newUnsaved.add(i);
+            });
+            unsavedRulesIndices = newUnsaved;
             renderRulesSections();
+            showToast('✅ Раздел удален', 'success');
         }
 
         function previewRulesSection(index) {
@@ -1724,6 +1841,49 @@ api:
             setData('admin_rules_sections', rulesSections);
             renderRulesSections();
             showToast('✅ Правила сохранены', 'success');
+        }
+
+        // ============================================================
+        // ====== ADD SECTION FUNCTIONS (ИСПРАВЛЕНО) ======
+        // ============================================================
+        function addWikiSection() {
+            wikiSections.push({ 
+                id: 'section_' + Date.now(), 
+                title: 'Новый раздел', 
+                items: ['Введите первый пункт...'] 
+            });
+            // Помечаем как измененное
+            unsavedWikiIndices.add(wikiSections.length - 1);
+            renderWikiSections();
+            // Прокрутка к новому разделу
+            const container = document.getElementById('wikiSectionsContainer');
+            const lastSection = container.lastElementChild;
+            if (lastSection) {
+                lastSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const titleInput = lastSection.querySelector('.section-card-title');
+                if (titleInput) { titleInput.focus(); titleInput.select(); }
+            }
+            showToast('✅ Добавлен новый раздел', 'success');
+        }
+
+        function addRulesSection() {
+            rulesSections.push({ 
+                id: 'rules_' + Date.now(), 
+                title: 'Новый раздел', 
+                items: ['Введите первый пункт...'] 
+            });
+            // Помечаем как измененное
+            unsavedRulesIndices.add(rulesSections.length - 1);
+            renderRulesSections();
+            // Прокрутка к новому разделу
+            const container = document.getElementById('rulesSectionsContainer');
+            const lastSection = container.lastElementChild;
+            if (lastSection) {
+                lastSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const titleInput = lastSection.querySelector('.section-card-title');
+                if (titleInput) { titleInput.focus(); titleInput.select(); }
+            }
+            showToast('✅ Добавлен новый раздел', 'success');
         }
 
         // ============================================================
