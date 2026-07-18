@@ -176,6 +176,452 @@
         body.light .toast.error { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.2); color: #cc3333; }
         body.light .toast.info { background: rgba(255,170,68,0.1); border-color: rgba(255,170,68,0.2); color: #995522; }
 
+        /* ===== ВИКИ — НОВАЯ СТРУКТУРА (как Discord) ===== */
+        .wiki-layout {
+            display: flex;
+            gap: 24px;
+            min-height: 500px;
+        }
+        .wiki-sidebar-editor {
+            width: 280px;
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .wiki-main-editor {
+            flex: 1;
+            background: rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 20px;
+            min-height: 400px;
+        }
+        .wiki-sidebar-editor::-webkit-scrollbar { width: 4px; }
+        .wiki-sidebar-editor::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .wiki-cat-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+        .wiki-cat-item:hover {
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+        }
+        .wiki-cat-item.active {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+        .wiki-cat-item .cat-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .wiki-cat-item:hover .cat-actions { opacity: 1; }
+        .wiki-cat-item .cat-actions button {
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .wiki-cat-item .cat-actions button:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .wiki-cat-item .cat-actions .delete-cat:hover { color: #ff6b6b; }
+
+        .wiki-section-item {
+            padding: 6px 12px 6px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #777;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1px;
+        }
+        .wiki-section-item:hover {
+            background: rgba(255,255,255,0.03);
+            color: #ccc;
+        }
+        .wiki-section-item.active {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+        .wiki-section-item .sec-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .wiki-section-item:hover .sec-actions { opacity: 1; }
+        .wiki-section-item .sec-actions button {
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        .wiki-section-item .sec-actions button:hover { color: #fff; }
+        .wiki-section-item .sec-actions .delete-sec:hover { color: #ff6b6b; }
+
+        .wiki-add-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px dashed rgba(255,255,255,0.1);
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 6px;
+        }
+        .wiki-add-btn:hover {
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .wiki-item-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .wiki-item-row input {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #ccc;
+            font-size: 13px;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .wiki-item-row input:focus { outline: none; border-color: rgba(255,255,255,0.12); }
+        .wiki-item-row .item-delete {
+            color: #666;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+        }
+        .wiki-item-row .item-delete:hover { color: #ff6b6b; }
+
+        body.light .wiki-sidebar-editor { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light .wiki-main-editor { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .wiki-cat-item { color: #666; }
+        body.light .wiki-cat-item:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .wiki-cat-item.active { background: rgba(0,0,0,0.06); color: #1a1a1a; }
+        body.light .wiki-section-item { color: #666; }
+        body.light .wiki-section-item:hover { background: rgba(0,0,0,0.03); color: #333; }
+        body.light .wiki-section-item.active { background: rgba(0,0,0,0.05); color: #1a1a1a; }
+        body.light .wiki-item-row input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #333; }
+        body.light .wiki-item-row input:focus { border-color: rgba(0,0,0,0.12); }
+        body.light .wiki-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
+        body.light .wiki-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
+
+        /* Правила — такая же структура */
+        .rules-layout {
+            display: flex;
+            gap: 24px;
+            min-height: 500px;
+        }
+        .rules-sidebar-editor {
+            width: 280px;
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .rules-main-editor {
+            flex: 1;
+            background: rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 20px;
+            min-height: 400px;
+        }
+        .rules-sidebar-editor::-webkit-scrollbar { width: 4px; }
+        .rules-sidebar-editor::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .rules-cat-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+        .rules-cat-item:hover {
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+        }
+        .rules-cat-item.active {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+        .rules-cat-item .cat-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .rules-cat-item:hover .cat-actions { opacity: 1; }
+        .rules-cat-item .cat-actions button {
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .rules-cat-item .cat-actions button:hover { color: #fff; }
+        .rules-cat-item .cat-actions .delete-cat:hover { color: #ff6b6b; }
+
+        .rules-section-item {
+            padding: 6px 12px 6px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #777;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1px;
+        }
+        .rules-section-item:hover {
+            background: rgba(255,255,255,0.03);
+            color: #ccc;
+        }
+        .rules-section-item.active {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+        .rules-section-item .sec-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .rules-section-item:hover .sec-actions { opacity: 1; }
+        .rules-section-item .sec-actions button {
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        .rules-section-item .sec-actions button:hover { color: #fff; }
+        .rules-section-item .sec-actions .delete-sec:hover { color: #ff6b6b; }
+
+        body.light .rules-sidebar-editor { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light .rules-main-editor { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .rules-cat-item { color: #666; }
+        body.light .rules-cat-item:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .rules-cat-item.active { background: rgba(0,0,0,0.06); color: #1a1a1a; }
+        body.light .rules-section-item { color: #666; }
+        body.light .rules-section-item:hover { background: rgba(0,0,0,0.03); color: #333; }
+        body.light .rules-section-item.active { background: rgba(0,0,0,0.05); color: #1a1a1a; }
+        body.light .rules-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
+        body.light .rules-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
+
+        .rules-add-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px dashed rgba(255,255,255,0.1);
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 6px;
+        }
+        .rules-add-btn:hover {
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .rules-item-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .rules-item-row input {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #ccc;
+            font-size: 13px;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .rules-item-row input:focus { outline: none; border-color: rgba(255,255,255,0.12); }
+        .rules-item-row .item-delete {
+            color: #666;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+        }
+        .rules-item-row .item-delete:hover { color: #ff6b6b; }
+
+        body.light .rules-item-row input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #333; }
+        body.light .rules-item-row input:focus { border-color: rgba(0,0,0,0.12); }
+
+        .section-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .section-controls button {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: #ccc;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .section-controls button:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .section-controls .save-btn { background: #fff; color: #0a0a0a; border-color: #fff; }
+        .section-controls .save-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
+        .section-controls .preview-btn { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+        .section-status { margin-top: 12px; font-size: 14px; color: #4ecdc4; }
+        .section-status.error { color: #ff6b6b; }
+
+        body.light .section-controls { border-color: rgba(0,0,0,0.06); }
+        body.light .section-controls button { border-color: rgba(0,0,0,0.08); color: #666; }
+        body.light .section-controls button:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
+        body.light .section-controls .save-btn:hover { background: #444; }
+
+        .settings-section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .settings-section h3 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-section .setting-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .settings-section .setting-row label {
+            color: #aaa;
+            font-size: 13px;
+            min-width: 120px;
+        }
+        .settings-section .setting-row input {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: #e5e5e5;
+            font-size: 13px;
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+        .settings-section .setting-row input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+        }
+        .settings-section .setting-row input::placeholder { color: #555; }
+        .settings-section .setting-row .save-setting-btn {
+            padding: 6px 18px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: #ccc;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .settings-section .setting-row .save-setting-btn:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+        .whitelist-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .whitelist-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .whitelist-status .dot.online { background: #4ecdc4; }
+        .whitelist-status .dot.offline { background: #ff6b6b; }
+        .whitelist-status .dot.unknown { background: #ffaa44; }
+
+        body.light .settings-section { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .settings-section h3 { color: #1a1a1a; }
+        body.light .settings-section .setting-row label { color: #666; }
+        body.light .settings-section .setting-row input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); color: #1a1a1a; }
+        body.light .settings-section .setting-row input:focus { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.06); }
+        body.light .settings-section .setting-row .save-setting-btn { border-color: rgba(0,0,0,0.08); color: #666; }
+        body.light .settings-section .setting-row .save-setting-btn:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+
         .application-card {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.06);
@@ -244,6 +690,7 @@
         }
         .application-card .app-actions .reject-btn:hover { background: rgba(255,107,107,0.25); transform: scale(1.02); }
         .application-card .app-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
+        .application-card .app-actions .view-details-btn { background: rgba(255,255,255,0.03); }
 
         .app-filters {
             display: flex;
@@ -291,20 +738,6 @@
         body.light .app-filters button { border-color: rgba(0,0,0,0.06); color: #666; }
         body.light .app-filters button.active { background: rgba(0,0,0,0.08); color: #1a1a1a; border-color: rgba(0,0,0,0.15); }
 
-        body.light {
-            background-color: #f0f0f0;
-            color: #1a1a1a;
-        }
-        body.light .login-box { background: rgba(240,240,245,0.95); border-color: rgba(0,0,0,0.06); }
-        body.light .login-box input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); color: #1a1a1a; }
-        body.light .login-btn { background: #222; color: #f5f5f5; }
-        body.light .admin-nav { background: rgba(240,240,245,0.9); border-color: rgba(0,0,0,0.06); }
-        body.light .admin-nav .brand { color: #1a1a1a; }
-        body.light .admin-nav .brand i { color: #1a1a1a; }
-        body.light .admin-tab { color: #666; }
-        body.light .admin-tab.active { background: #222; color: #f5f5f5; border-color: #222; }
-        body.light .admin-logout { color: #666; border-color: rgba(0,0,0,0.08); }
-
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -350,320 +783,6 @@
         body.light .modal-content { background: rgba(240,240,245,0.95); border-color: rgba(0,0,0,0.06); }
         body.light .modal-content h3 { color: #1a1a1a; }
         body.light .modal-content .close-modal { color: #666; }
-
-        /* ===== ВИКИ — КАТЕГОРИИ И РАЗДЕЛЫ ===== */
-        .wiki-category {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-        .wiki-category:hover { border-color: rgba(255,255,255,0.12); }
-        .wiki-category-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .wiki-category-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
-            padding: 4px 0;
-            flex: 1;
-            min-width: 120px;
-        }
-        .wiki-category-title:focus { outline: none; border-bottom-color: rgba(255,255,255,0.2); }
-        .wiki-category-title::placeholder { color: #555; }
-        .wiki-category-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .wiki-category-actions button {
-            padding: 4px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        .wiki-category-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .wiki-category-actions .delete-category:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-
-        .wiki-section-inline {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .wiki-section-inline:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
-        .wiki-section-inline .section-name {
-            flex: 1;
-            min-width: 100px;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid transparent;
-            color: #ccc;
-            font-size: 14px;
-            padding: 4px 0;
-        }
-        .wiki-section-inline .section-name:focus { outline: none; border-bottom-color: rgba(255,255,255,0.15); }
-        .wiki-section-inline .section-name::placeholder { color: #555; }
-        .wiki-section-inline .section-items-preview {
-            font-size: 12px;
-            color: #666;
-            flex: 1;
-            min-width: 80px;
-        }
-        .wiki-section-inline .section-actions { display: flex; gap: 6px; }
-        .wiki-section-inline .section-actions button {
-            padding: 3px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.3s ease;
-        }
-        .wiki-section-inline .section-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .wiki-section-inline .section-actions .delete-section:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-        .wiki-section-inline .section-actions .edit-section:hover { border-color: rgba(255,255,255,0.15); color: #fff; }
-
-        .wiki-items-popup {
-            display: none;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-top: 10px;
-            border: 1px solid rgba(255,255,255,0.04);
-            width: 100%;
-        }
-        .wiki-items-popup.active { display: block; }
-        .wiki-items-popup .item-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .wiki-items-popup .item-row input {
-            flex: 1;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 6px;
-            padding: 6px 10px;
-            color: #ccc;
-            font-size: 13px;
-            font-family: 'Montserrat Alternates', sans-serif;
-        }
-        .wiki-items-popup .item-row input:focus { outline: none; border-color: rgba(255,255,255,0.12); }
-        .wiki-items-popup .item-row .item-delete {
-            color: #666;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            font-size: 14px;
-        }
-        .wiki-items-popup .item-row .item-delete:hover { color: #ff6b6b; }
-        .wiki-items-popup .add-item-btn {
-            padding: 4px 14px;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.03);
-            color: #888;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            margin-top: 6px;
-        }
-        .wiki-items-popup .add-item-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
-
-        body.light .wiki-category { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .wiki-category-title { color: #1a1a1a; }
-        body.light .wiki-category-title:focus { border-bottom-color: rgba(0,0,0,0.2); }
-        body.light .wiki-section-inline { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); }
-        body.light .wiki-section-inline:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); }
-        body.light .wiki-section-inline .section-name { color: #333; }
-        body.light .wiki-section-inline .section-name::placeholder { color: #999; }
-        body.light .wiki-section-inline .section-items-preview { color: #888; }
-        body.light .wiki-items-popup { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.04); }
-        body.light .wiki-items-popup .item-row input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #333; }
-        body.light .wiki-items-popup .item-row input:focus { border-color: rgba(0,0,0,0.12); }
-
-        .wiki-section-inline .unsaved-badge-small {
-            display: none;
-            font-size: 9px;
-            color: #ffaa44;
-            background: rgba(255,170,68,0.1);
-            padding: 1px 8px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,170,68,0.2);
-        }
-        .wiki-section-inline.unsaved .unsaved-badge-small { display: inline-block; }
-        .wiki-category.unsaved { border-color: rgba(255,170,68,0.2); }
-
-        /* ===== ПРАВИЛА — ТАКАЯ ЖЕ СТРУКТУРА КАК В ВИКИ ===== */
-        .rules-category {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-        .rules-category:hover { border-color: rgba(255,255,255,0.12); }
-        .rules-category-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .rules-category-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
-            padding: 4px 0;
-            flex: 1;
-            min-width: 120px;
-        }
-        .rules-category-title:focus { outline: none; border-bottom-color: rgba(255,255,255,0.2); }
-        .rules-category-title::placeholder { color: #555; }
-        .rules-category-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .rules-category-actions button {
-            padding: 4px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        .rules-category-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .rules-category-actions .delete-category:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-
-        .rules-section-inline {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .rules-section-inline:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
-        .rules-section-inline .section-name {
-            flex: 1;
-            min-width: 100px;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid transparent;
-            color: #ccc;
-            font-size: 14px;
-            padding: 4px 0;
-        }
-        .rules-section-inline .section-name:focus { outline: none; border-bottom-color: rgba(255,255,255,0.15); }
-        .rules-section-inline .section-name::placeholder { color: #555; }
-        .rules-section-inline .section-items-preview {
-            font-size: 12px;
-            color: #666;
-            flex: 1;
-            min-width: 80px;
-        }
-        .rules-section-inline .section-actions { display: flex; gap: 6px; }
-        .rules-section-inline .section-actions button {
-            padding: 3px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.3s ease;
-        }
-        .rules-section-inline .section-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .rules-section-inline .section-actions .delete-section:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-        .rules-section-inline .section-actions .edit-section:hover { border-color: rgba(255,255,255,0.15); color: #fff; }
-        .rules-section-inline.unsaved .unsaved-badge-small { display: inline-block; }
-        .rules-category.unsaved { border-color: rgba(255,170,68,0.2); }
-
-        .rules-items-popup {
-            display: none;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-top: 10px;
-            border: 1px solid rgba(255,255,255,0.04);
-            width: 100%;
-        }
-        .rules-items-popup.active { display: block; }
-        .rules-items-popup .item-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .rules-items-popup .item-row input {
-            flex: 1;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 6px;
-            padding: 6px 10px;
-            color: #ccc;
-            font-size: 13px;
-            font-family: 'Montserrat Alternates', sans-serif;
-        }
-        .rules-items-popup .item-row input:focus { outline: none; border-color: rgba(255,255,255,0.12); }
-        .rules-items-popup .item-row .item-delete {
-            color: #666;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            font-size: 14px;
-        }
-        .rules-items-popup .item-row .item-delete:hover { color: #ff6b6b; }
-        .rules-items-popup .add-item-btn {
-            padding: 4px 14px;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.03);
-            color: #888;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            margin-top: 6px;
-        }
-        .rules-items-popup .add-item-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
-
-        body.light .rules-category { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .rules-category-title { color: #1a1a1a; }
-        body.light .rules-category-title:focus { border-bottom-color: rgba(0,0,0,0.2); }
-        body.light .rules-section-inline { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); }
-        body.light .rules-section-inline:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); }
-        body.light .rules-section-inline .section-name { color: #333; }
-        body.light .rules-section-inline .section-name::placeholder { color: #999; }
-        body.light .rules-section-inline .section-items-preview { color: #888; }
-        body.light .rules-items-popup { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.04); }
-        body.light .rules-items-popup .item-row input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #333; }
-        body.light .rules-items-popup .item-row input:focus { border-color: rgba(0,0,0,0.12); }
 
         .screenshot-grid {
             display: grid;
@@ -726,158 +845,12 @@
         body.light .upload-area i { color: #888; }
         body.light .upload-area p { color: #666; }
 
-        .settings-section {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 16px;
+        @media (max-width: 768px) {
+            .wiki-layout { flex-direction: column; }
+            .wiki-sidebar-editor { width: 100%; max-height: 300px; }
+            .rules-layout { flex-direction: column; }
+            .rules-sidebar-editor { width: 100%; max-height: 300px; }
         }
-        .settings-section h3 {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .settings-section .setting-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        .settings-section .setting-row label {
-            color: #aaa;
-            font-size: 13px;
-            min-width: 120px;
-        }
-        .settings-section .setting-row input {
-            flex: 1;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 8px 14px;
-            color: #e5e5e5;
-            font-size: 13px;
-            min-width: 200px;
-            transition: all 0.3s ease;
-        }
-        .settings-section .setting-row input:focus {
-            outline: none;
-            border-color: rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.06);
-        }
-        .settings-section .setting-row input::placeholder { color: #555; }
-        .settings-section .setting-row .save-setting-btn {
-            padding: 6px 18px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
-            color: #ccc;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        .settings-section .setting-row .save-setting-btn:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        .settings-section .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-        .settings-section .status-dot.online { background: #4ecdc4; }
-        .settings-section .status-dot.offline { background: #ff6b6b; }
-        .settings-section .status-dot.unknown { background: #ffaa44; }
-
-        body.light .settings-section {
-            background: rgba(0,0,0,0.02);
-            border-color: rgba(0,0,0,0.06);
-        }
-        body.light .settings-section h3 { color: #1a1a1a; }
-        body.light .settings-section .setting-row label { color: #666; }
-        body.light .settings-section .setting-row input {
-            background: rgba(0,0,0,0.04);
-            border-color: rgba(0,0,0,0.08);
-            color: #1a1a1a;
-        }
-        body.light .settings-section .setting-row input:focus {
-            border-color: rgba(0,0,0,0.2);
-            background: rgba(0,0,0,0.06);
-        }
-        body.light .settings-section .setting-row input::placeholder { color: #999; }
-        body.light .settings-section .setting-row .save-setting-btn {
-            border-color: rgba(0,0,0,0.08);
-            color: #666;
-        }
-        body.light .settings-section .setting-row .save-setting-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: #1a1a1a;
-        }
-
-        .whitelist-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
-        .whitelist-status .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: pulse-dot 2s infinite;
-        }
-        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
-        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
-        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .whitelist-status .dot.online { background: #4ecdc4; }
-        .whitelist-status .dot.offline { background: #ff6b6b; }
-        .whitelist-status .dot.unknown { background: #ffaa44; }
-
-        .section-controls {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .section-controls button {
-            padding: 10px 24px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: transparent;
-            color: #ccc;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        .section-controls button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .section-controls .add-section-btn { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
-        .section-controls .add-section-btn:hover { background: rgba(255,255,255,0.08); }
-        .section-controls .save-btn { background: #fff; color: #0a0a0a; border-color: #fff; }
-        .section-controls .save-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
-        .section-controls .preview-all-btn { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
-        .section-controls .preview-all-btn:hover { background: rgba(255,255,255,0.08); }
-        .section-status { margin-top: 12px; font-size: 14px; color: #4ecdc4; }
-        .section-status.error { color: #ff6b6b; }
-
-        body.light .section-controls { border-color: rgba(0,0,0,0.06); }
-        body.light .section-controls button { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .section-controls button:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-        body.light .section-controls .add-section-btn { background: rgba(0,0,0,0.03); }
-        body.light .section-controls .add-section-btn:hover { background: rgba(0,0,0,0.06); }
-        body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
-        body.light .section-controls .save-btn:hover { background: #444; }
-
         @media (max-width: 640px) {
             .login-box { padding: 32px 24px; }
             .admin-nav { flex-direction: column; align-items: stretch; }
@@ -889,10 +862,6 @@
             .settings-section .setting-row { flex-direction: column; align-items: stretch; }
             .settings-section .setting-row label { min-width: auto; }
             .settings-section .setting-row input { min-width: auto; }
-            .wiki-section-inline { flex-direction: column; align-items: stretch; }
-            .wiki-section-inline .section-items-preview { min-width: auto; }
-            .rules-section-inline { flex-direction: column; align-items: stretch; }
-            .rules-section-inline .section-items-preview { min-width: auto; }
         }
     </style>
 </head>
@@ -995,31 +964,29 @@
             <div id="uploadStatus" style="margin-top:12px;font-size:14px;color:#4ecdc4;"></div>
         </div>
 
-        <!-- WIKI - ПОЛНАЯ ВЕРСИЯ -->
+        <!-- WIKI — НОВАЯ СТРУКТУРА -->
         <div id="tab-wiki" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-book"></i> Редактор вики</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;">
-                Управляйте категориями и разделами вики.
+            <p style="color:#666;margin-bottom:16px;font-size:14px;">
+                Управляйте категориями и разделами вики. Нажмите на категорию или раздел, чтобы редактировать.
             </p>
-            <div id="wikiCategoriesContainer"></div>
+            <div id="wikiEditor"></div>
             <div class="section-controls">
-                <button class="add-section-btn" onclick="addWikiCategory()"><i class="fa-regular fa-plus"></i> Добавить категорию</button>
-                <button class="preview-all-btn" onclick="previewWikiFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
+                <button class="preview-btn" onclick="previewWikiFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
                 <button class="save-btn" onclick="saveAllWikiSections()"><i class="fa-regular fa-floppy-disk"></i> Сохранить все</button>
             </div>
             <div id="wikiStatus" class="section-status"></div>
         </div>
 
-        <!-- RULES -->
+        <!-- RULES — НОВАЯ СТРУКТУРА -->
         <div id="tab-rules" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-scroll"></i> Редактор правил</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;">
-                Управляйте категориями и разделами правил.
+            <p style="color:#666;margin-bottom:16px;font-size:14px;">
+                Управляйте категориями и разделами правил. Нажмите на категорию или раздел, чтобы редактировать.
             </p>
-            <div id="rulesCategoriesContainer"></div>
+            <div id="rulesEditor"></div>
             <div class="section-controls">
-                <button class="add-section-btn" onclick="addRulesCategory()"><i class="fa-regular fa-plus"></i> Добавить категорию</button>
-                <button class="preview-all-btn" onclick="previewRulesFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
+                <button class="preview-btn" onclick="previewRulesFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
                 <button class="save-btn" onclick="saveAllRulesSections()"><i class="fa-regular fa-floppy-disk"></i> Сохранить все</button>
             </div>
             <div id="rulesStatus" class="section-status"></div>
@@ -1052,16 +1019,9 @@
                 <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке Whitelister</h3>
                 <div style="font-size:13px;color:#aaa;line-height:1.7;">
                     <p>1. Установите плагин <strong>Whitelister</strong> на сервер Minecraft.</p>
-                    <p>2. В файле <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/Whitelister/config.yml</code> включите API:</p>
-                    <pre style="background:rgba(0,0,0,0.3);padding:10px;border-radius:8px;font-size:12px;color:#888;margin:8px 0;">
-api:
-  enabled: true
-  port: 8080
-  secret-key: "ваш-секретный-ключ"
-                    </pre>
-                    <p>3. В консоли сервера выполните: <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">/whitelister api add-key ваш-секретный-ключ</code></p>
-                    <p>4. Введите URL и ключ в поля выше.</p>
-                    <p>5. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
+                    <p>2. В файле <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/Whitelister/config.yml</code> включите API.</p>
+                    <p>3. Введите URL и ключ в поля выше.</p>
+                    <p>4. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
                     <p style="margin-top:8px;color:#4ecdc4;">✅ После настройки при принятии заявки игрок будет автоматически добавлен в вайтлист!</p>
                 </div>
             </div>
@@ -1088,8 +1048,8 @@ api:
         // ====== ОСНОВНАЯ ЛОГИКА ======
         // ============================================================
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
-        let unsavedWikiCategories = new Set();
-        let unsavedRulesCategories = new Set();
+        let unsavedWiki = false;
+        let unsavedRules = false;
 
         // ====== LOGIN ======
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -1155,8 +1115,8 @@ api:
             document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none';
             if (tab === 'applications') loadApplications();
             if (tab === 'screenshots') loadScreenshots();
-            if (tab === 'wiki') renderWikiCategories();
-            if (tab === 'rules') renderRulesCategories();
+            if (tab === 'wiki') renderWikiEditor();
+            if (tab === 'rules') renderRulesEditor();
             if (tab === 'settings') loadSettings();
         }
 
@@ -1169,7 +1129,8 @@ api:
 
         function setData(key, data) {
             localStorage.setItem(key, JSON.stringify(data));
-            saveToCloud();
+            // Автоматически синхронизируем с облаком
+            autoSaveToCloud();
         }
 
         // ============================================================
@@ -1190,6 +1151,16 @@ api:
                     textEl.textContent = '📦 ' + (message || 'Локальный режим');
                 }
             }
+        }
+
+        let cloudSaveTimeout = null;
+
+        async function autoSaveToCloud() {
+            // Откладываем сохранение на 1 секунду (для избежания частых запросов)
+            if (cloudSaveTimeout) clearTimeout(cloudSaveTimeout);
+            cloudSaveTimeout = setTimeout(async () => {
+                await saveToCloud();
+            }, 1000);
         }
 
         async function saveToCloud() {
@@ -1235,10 +1206,10 @@ api:
                 const cloudData = data.record;
 
                 if (cloudData) {
-                    if (cloudData.applications) setData('mugivara_applications', cloudData.applications);
-                    if (cloudData.screenshots) setData('admin_screenshots', cloudData.screenshots);
-                    if (cloudData.wikiCategories) setData('wiki_categories', cloudData.wikiCategories);
-                    if (cloudData.rulesCategories) setData('rules_categories', cloudData.rulesCategories);
+                    if (cloudData.applications) localStorage.setItem('mugivara_applications', JSON.stringify(cloudData.applications));
+                    if (cloudData.screenshots) localStorage.setItem('admin_screenshots', JSON.stringify(cloudData.screenshots));
+                    if (cloudData.wikiCategories) localStorage.setItem('wiki_categories', JSON.stringify(cloudData.wikiCategories));
+                    if (cloudData.rulesCategories) localStorage.setItem('rules_categories', JSON.stringify(cloudData.rulesCategories));
                     
                     console.log('✅ Данные загружены из облака');
                     updateSyncStatus(true, 'Облако Онлайн');
@@ -1246,8 +1217,8 @@ api:
                     
                     loadApplications();
                     loadScreenshots();
-                    renderWikiCategories();
-                    renderRulesCategories();
+                    renderWikiEditor();
+                    renderRulesEditor();
                     return true;
                 }
                 return false;
@@ -1624,276 +1595,285 @@ api:
         }
 
         // ============================================================
-        // ====== WIKI — ПОЛНАЯ ВЕРСИЯ ======
+        // ====== WIKI — НОВАЯ СТРУКТУРА (как Discord) ======
         // ============================================================
         let wikiCategories = [];
+        let wikiSelectedCat = null;
+        let wikiSelectedSec = null;
 
-        function renderWikiCategories() {
-            wikiCategories = getData('wiki_categories', [
+        function getDefaultWiki() {
+            return [
                 { 
                     id: 'cat1', 
                     title: 'Основное', 
                     sections: [
-                        { id: 'home', title: 'Главная', items: [
-                            'Добро пожаловать в вику Mugivara!',
-                            'Здесь собрана вся полезная информация для комфортной игры.',
-                            'Сервер создан для тех, кто ценит настоящее ванильное выживание.'
-                        ] }
+                        { id: 'home', title: 'Главная', items: ['Добро пожаловать в вику Mugivara!', 'Здесь собрана вся полезная информация.'] }
                     ] 
                 },
                 { 
                     id: 'cat2', 
-                    title: '🎨 Рекомендации по визуалу', 
+                    title: 'Рекомендации по визуалу', 
                     sections: [
-                        { id: 'resourcepacks', title: 'Ресурс-паки', items: [
-                            'Vanilla Tweaks — лучший выбор для ванильного сервера. Улучшает текстуры, звуки и добавляет удобства.',
-                            'Faithful 32x — классические текстуры в высоком разрешении. Сохраняет оригинальный стиль игры.',
-                            'Bare Bones — минималистичный пак для максимальной производительности и чистого вида.',
-                            'XeKr 3D — добавляет объемные текстуры для блоков и предметов.'
-                        ] },
-                        { id: 'shaders', title: 'Шейдеры (опционально)', items: [
-                            'Complementary Shaders — одни из лучших шейдеров для ванильного Minecraft.',
-                            'BSL Shaders — реалистичное освещение и тени.',
-                            'Sildur\'s Shaders — отличный баланс производительности и красоты.'
-                        ] }
+                        { id: 'resourcepacks', title: 'Ресурс-паки', items: ['Vanilla Tweaks — лучший выбор', 'Faithful 32x — классические текстуры'] },
+                        { id: 'mods', title: 'Рекомендуемые моды', items: ['Sodium — прирост FPS', 'Xaero\'s Minimap — мини-карта', 'AppleSkin — информация о еде'] }
                     ] 
                 },
                 { 
                     id: 'cat3', 
-                    title: '🧩 Рекомендации по клиенту', 
+                    title: 'Геймплей', 
                     sections: [
-                        { id: 'mods', title: 'Рекомендуемые моды (Fabric 1.21.11)', items: [
-                            'Sodium — невероятный прирост FPS без потери качества.',
-                            'Iris Shaders — позволяет использовать шейдеры вместе с Sodium.',
-                            'Xaero\'s Minimap — удобная мини-карта с возможностью ставить метки.',
-                            'Xaero\'s World Map — карта мира, которая сохраняет исследованные территории.',
-                            'AppleSkin — показывает информацию о насыщении и голоде от еды.',
-                            'ReplayMod — запись игровых повторов для создания красивых видео.',
-                            'Entity Culling — оптимизация FPS за счет скрытия невидимых сущностей.',
-                            'FerriteCore — оптимизация использования памяти.',
-                            'Falling Leaves — красивое опадание листьев с деревьев (атмосферно!).'
-                        ] }
-                    ] 
-                },
-                { 
-                    id: 'cat4', 
-                    title: '🎮 Геймплей и механики', 
-                    sections: [
-                        { id: 'claims', title: 'Метки на онлайн карте', items: [
-                            'Поставьте баннер в нужном месте на карте мира.',
-                            'Переименуйте его в анвиле — это название будет отображаться на карте.',
-                            'Метка автоматически появится на Dynmap через несколько секунд.',
-                            'Используйте яркие и понятные названия для удобства навигации.'
-                        ] },
-                        { id: 'commands', title: 'Полезные команды', items: [
-                            '/skin ник — поставить скин (даже без лицензии!)',
-                            '/cd create remote "ссылка" "имя" — создать кастомную пластинку с музыкой из интернета.',
-                            '/co i — режим Шерлока Холмса. Позволяет узнать, кто что делал на сервере.',
-                            '/ping — узнать пинг до сервера в миллисекундах.',
-                            '/msg ник текст — отправить личное сообщение другому игроку.',
-                            '/spawn — телепортироваться на точку спавна (если потерялись).',
-                            '/tpa ник — отправить запрос на телепортацию к игроку.'
-                        ] },
-                        { id: 'tips', title: 'Советы новичкам', items: [
-                            'Начните с базы рядом со спавном — так будет проще ориентироваться.',
-                            'Постройте автоматические фермы для еды, дерева и железа — это сэкономит кучу времени.',
-                            'Общайтесь с соседями! На сервере дружелюбное комьюнити, помогайте друг другу и стройте вместе.',
-                            'Используйте Dynmap для навигации — это онлайн-карта мира в реальном времени.',
-                            'Не забывайте делать резервные копии своих важных построек.',
-                            'Исследуйте мир! Вокруг спавна много интересных мест для приключений.'
-                        ] }
+                        { id: 'commands', title: 'Полезные команды', items: ['/skin ник — поставить скин', '/ping — узнать пинг'] },
+                        { id: 'tips', title: 'Советы новичкам', items: ['Начните с базы рядом со спавном', 'Общайтесь с соседями!'] }
                     ] 
                 }
-            ]);
-            renderWikiCategoriesUI();
+            ];
         }
 
-        function renderWikiCategoriesUI() {
-            const container = document.getElementById('wikiCategoriesContainer');
-            container.innerHTML = wikiCategories.map((cat, catIndex) => `
-                <div class="wiki-category ${unsavedWikiCategories.has(catIndex) ? 'unsaved' : ''}">
-                    <div class="wiki-category-header">
-                        <input class="wiki-category-title" value="${cat.title}" placeholder="Название категории" 
-                               onchange="markWikiCategoryUnsaved(${catIndex}); wikiCategories[${catIndex}].title=this.value">
-                        <div class="wiki-category-actions">
-                            <button onclick="addWikiSection(${catIndex})" style="border-color:rgba(78,205,196,0.2);color:#4ecdc4;">
-                                <i class="fa-regular fa-plus"></i> Добавить раздел
-                            </button>
-                            <button onclick="moveWikiCategory(${catIndex}, -1)" ${catIndex === 0 ? 'disabled style="opacity:0.3;"' : ''}>
-                                <i class="fa-regular fa-arrow-up"></i>
-                            </button>
-                            <button onclick="moveWikiCategory(${catIndex}, 1)" ${catIndex === wikiCategories.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
-                                <i class="fa-regular fa-arrow-down"></i>
-                            </button>
-                            <button class="delete-category" onclick="deleteWikiCategory(${catIndex})">
-                                <i class="fa-regular fa-trash-can"></i> Удалить
-                            </button>
-                        </div>
-                    </div>
-                    <div style="margin-top:10px;">
-                        ${(cat.sections || []).map((section, secIndex) => `
-                            <div class="wiki-section-inline ${unsavedWikiCategories.has(catIndex + '_' + secIndex) ? 'unsaved' : ''}">
-                                <span class="unsaved-badge-small"><i class="fa-regular fa-pen-to-square"></i> Изменено</span>
-                                <input class="section-name" value="${section.title}" placeholder="Название раздела"
-                                       onchange="markWikiSectionUnsaved(${catIndex}, ${secIndex}); wikiCategories[${catIndex}].sections[${secIndex}].title=this.value">
-                                <span class="section-items-preview">${(section.items || []).length} пунктов</span>
-                                <div class="section-actions">
-                                    <button class="edit-section" onclick="toggleWikiItemsPopup(${catIndex}, ${secIndex})">
-                                        <i class="fa-regular fa-pen"></i>
-                                    </button>
-                                    <button onclick="moveWikiSection(${catIndex}, ${secIndex}, -1)" ${secIndex === 0 ? 'disabled style="opacity:0.3;"' : ''}>
-                                        <i class="fa-regular fa-arrow-up"></i>
-                                    </button>
-                                    <button onclick="moveWikiSection(${catIndex}, ${secIndex}, 1)" ${secIndex === cat.sections.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
-                                        <i class="fa-regular fa-arrow-down"></i>
-                                    </button>
-                                    <button class="delete-section" onclick="deleteWikiSection(${catIndex}, ${secIndex})">
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </button>
-                                </div>
-                                <div class="wiki-items-popup" id="wikiItems_${catIndex}_${secIndex}">
-                                    <div class="items-list">
-                                        ${(section.items || []).map((item, itemIndex) => `
-                                            <div class="item-row">
-                                                <input value="${item}" placeholder="Пункт..." 
-                                                       onchange="markWikiSectionUnsaved(${catIndex}, ${secIndex}); wikiCategories[${catIndex}].sections[${secIndex}].items[${itemIndex}]=this.value">
-                                                <button class="item-delete" onclick="deleteWikiItem(${catIndex}, ${secIndex}, ${itemIndex})"><i class="fa-regular fa-xmark"></i></button>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                    <button class="add-item-btn" onclick="addWikiItem(${catIndex}, ${secIndex})">
-                                        <i class="fa-regular fa-plus"></i> Добавить пункт
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                        ${(!cat.sections || cat.sections.length === 0) ? '<div style="color:#555;font-size:13px;padding:8px 0;">Нет разделов в этой категории</div>' : ''}
-                    </div>
-                </div>
-            `).join('');
+        function renderWikiEditor() {
+            wikiCategories = getData('wiki_categories', null);
+            if (!wikiCategories || wikiCategories.length === 0) {
+                wikiCategories = getDefaultWiki();
+                setData('wiki_categories', wikiCategories);
+            }
             
-            const status = document.getElementById('wikiStatus');
-            if (unsavedWikiCategories.size > 0) {
-                status.textContent = `⚠️ ${unsavedWikiCategories.size} элемент(ов) изменены`;
-                status.className = 'section-status';
-            } else {
-                status.textContent = '✅ Все сохранено';
-                status.className = 'section-status';
-            }
-        }
-
-        function markWikiCategoryUnsaved(index) {
-            unsavedWikiCategories.add(index);
-            renderWikiCategoriesUI();
-        }
-
-        function markWikiSectionUnsaved(catIndex, secIndex) {
-            unsavedWikiCategories.add(catIndex + '_' + secIndex);
-            renderWikiCategoriesUI();
-        }
-
-        function toggleWikiItemsPopup(catIndex, secIndex) {
-            const popup = document.getElementById(`wikiItems_${catIndex}_${secIndex}`);
-            if (popup) {
-                popup.classList.toggle('active');
-                if (popup.classList.contains('active')) {
-                    const firstInput = popup.querySelector('.item-row input');
-                    if (firstInput) setTimeout(() => firstInput.focus(), 100);
+            if (!wikiSelectedCat && wikiCategories.length > 0) {
+                wikiSelectedCat = wikiCategories[0].id;
+                if (wikiCategories[0].sections && wikiCategories[0].sections.length > 0) {
+                    wikiSelectedSec = wikiCategories[0].sections[0].id;
                 }
             }
+
+            renderWikiSidebar();
+            renderWikiMain();
+        }
+
+        function renderWikiSidebar() {
+            const container = document.getElementById('wikiEditor');
+            let html = `<div class="wiki-layout">`;
+            html += `<div class="wiki-sidebar-editor">`;
+            
+            // Категории
+            html += `<div style="margin-bottom:12px;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.05em;">Категории</div>`;
+            wikiCategories.forEach((cat, idx) => {
+                const isActive = wikiSelectedCat === cat.id;
+                html += `<div class="wiki-cat-item ${isActive ? 'active' : ''}" onclick="selectWikiCategory('${cat.id}')">
+                    <span>📁</span> ${cat.title}
+                    <span class="cat-actions">
+                        <button onclick="event.stopPropagation(); deleteWikiCategory('${cat.id}')" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                    </span>
+                </div>`;
+                // Разделы внутри категории
+                if (isActive && cat.sections) {
+                    cat.sections.forEach(sec => {
+                        const isSecActive = wikiSelectedSec === sec.id;
+                        html += `<div class="wiki-section-item ${isSecActive ? 'active' : ''}" onclick="selectWikiSection('${sec.id}')">
+                            <span>•</span> ${sec.title}
+                            <span class="sec-actions">
+                                <button onclick="event.stopPropagation(); deleteWikiSection('${sec.id}')" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                            </span>
+                        </div>`;
+                    });
+                    html += `<button class="wiki-add-btn" onclick="addWikiSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
+                }
+            });
+            
+            html += `<button class="wiki-add-btn" style="margin-top:12px;border-style:solid;" onclick="addWikiCategory()"><i class="fa-regular fa-plus"></i> Добавить категорию</button>`;
+            html += `</div>`;
+            
+            html += `<div class="wiki-main-editor" id="wikiMainEditor">`;
+            html += `</div>`;
+            html += `</div>`;
+            
+            container.innerHTML = html;
+            renderWikiMain();
+        }
+
+        function renderWikiMain() {
+            const container = document.getElementById('wikiMainEditor');
+            if (!container) return;
+            
+            const cat = wikiCategories.find(c => c.id === wikiSelectedCat);
+            const section = cat ? cat.sections.find(s => s.id === wikiSelectedSec) : null;
+            
+            if (!cat) {
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите категорию</div>`;
+                return;
+            }
+            
+            if (!section) {
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите раздел или создайте новый</div>`;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:12px;color:#666;">${cat.title} / ${section.title}</div>
+                    <input type="text" value="${section.title}" placeholder="Название раздела" 
+                           style="width:100%;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,0.06);padding:8px 0;font-size:20px;font-weight:600;color:#fff;font-family:'Montserrat Alternates',sans-serif;"
+                           onchange="updateWikiSectionTitle('${section.id}', this.value)">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <div style="font-size:13px;color:#888;margin-bottom:8px;">Пункты (${section.items ? section.items.length : 0})</div>
+                    ${(section.items || []).map((item, idx) => `
+                        <div class="wiki-item-row">
+                            <input value="${item}" placeholder="Введите пункт..." 
+                                   onchange="updateWikiItem('${section.id}', ${idx}, this.value)">
+                            <button class="item-delete" onclick="deleteWikiItem('${section.id}', ${idx})"><i class="fa-regular fa-xmark"></i></button>
+                        </div>
+                    `).join('')}
+                    <button class="wiki-add-btn" style="border-style:solid;margin-top:4px;" onclick="addWikiItem('${section.id}')">
+                        <i class="fa-regular fa-plus"></i> Добавить пункт
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function selectWikiCategory(catId) {
+            wikiSelectedCat = catId;
+            const cat = wikiCategories.find(c => c.id === catId);
+            if (cat && cat.sections && cat.sections.length > 0) {
+                wikiSelectedSec = cat.sections[0].id;
+            } else {
+                wikiSelectedSec = null;
+            }
+            renderWikiSidebar();
+        }
+
+        function selectWikiSection(secId) {
+            wikiSelectedSec = secId;
+            renderWikiSidebar();
         }
 
         function addWikiCategory() {
-            wikiCategories.push({ id: 'cat_' + Date.now(), title: 'Новая категория', sections: [] });
-            unsavedWikiCategories.add(wikiCategories.length - 1);
-            renderWikiCategoriesUI();
-            showToast('✅ Добавлена новая категория', 'success');
-            const container = document.getElementById('wikiCategoriesContainer');
-            const lastCat = container.lastElementChild;
-            if (lastCat) {
-                lastCat.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const titleInput = lastCat.querySelector('.wiki-category-title');
-                if (titleInput) { titleInput.focus(); titleInput.select(); }
-            }
+            const newId = 'cat_' + Date.now();
+            wikiCategories.push({ id: newId, title: 'Новая категория', sections: [] });
+            setData('wiki_categories', wikiCategories);
+            wikiSelectedCat = newId;
+            wikiSelectedSec = null;
+            renderWikiSidebar();
+            unsavedWiki = true;
+            showToast('✅ Добавлена категория', 'success');
         }
 
-        function deleteWikiCategory(index) {
+        function deleteWikiCategory(catId) {
             if (!confirm('Удалить категорию и все её разделы?')) return;
             if (wikiCategories.length <= 1) {
                 showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
                 return;
             }
-            wikiCategories.splice(index, 1);
-            unsavedWikiCategories.clear();
-            renderWikiCategoriesUI();
+            wikiCategories = wikiCategories.filter(c => c.id !== catId);
+            setData('wiki_categories', wikiCategories);
+            if (wikiSelectedCat === catId) {
+                wikiSelectedCat = wikiCategories[0]?.id || null;
+                wikiSelectedSec = wikiCategories[0]?.sections?.[0]?.id || null;
+            }
+            renderWikiSidebar();
+            unsavedWiki = true;
             showToast('✅ Категория удалена', 'success');
         }
 
-        function moveWikiCategory(index, direction) {
-            const newIndex = index + direction;
-            if (newIndex < 0 || newIndex >= wikiCategories.length) return;
-            [wikiCategories[index], wikiCategories[newIndex]] = [wikiCategories[newIndex], wikiCategories[index]];
-            renderWikiCategoriesUI();
+        function addWikiSection(catId) {
+            const cat = wikiCategories.find(c => c.id === catId);
+            if (!cat) return;
+            const newId = 'sec_' + Date.now();
+            if (!cat.sections) cat.sections = [];
+            cat.sections.push({ id: newId, title: 'Новый раздел', items: [] });
+            setData('wiki_categories', wikiCategories);
+            wikiSelectedSec = newId;
+            renderWikiSidebar();
+            unsavedWiki = true;
+            showToast('✅ Добавлен раздел', 'success');
         }
 
-        function addWikiSection(catIndex) {
-            if (!wikiCategories[catIndex].sections) wikiCategories[catIndex].sections = [];
-            wikiCategories[catIndex].sections.push({ id: 'sec_' + Date.now(), title: 'Новый раздел', items: [] });
-            unsavedWikiCategories.add(catIndex + '_' + (wikiCategories[catIndex].sections.length - 1));
-            renderWikiCategoriesUI();
-            showToast('✅ Добавлен новый раздел', 'success');
-            const secIndex = wikiCategories[catIndex].sections.length - 1;
-            setTimeout(() => {
-                toggleWikiItemsPopup(catIndex, secIndex);
-            }, 200);
-        }
-
-        function deleteWikiSection(catIndex, secIndex) {
+        function deleteWikiSection(secId) {
             if (!confirm('Удалить раздел?')) return;
-            wikiCategories[catIndex].sections.splice(secIndex, 1);
-            renderWikiCategoriesUI();
+            for (let cat of wikiCategories) {
+                const idx = cat.sections ? cat.sections.findIndex(s => s.id === secId) : -1;
+                if (idx !== -1) {
+                    cat.sections.splice(idx, 1);
+                    break;
+                }
+            }
+            setData('wiki_categories', wikiCategories);
+            if (wikiSelectedSec === secId) {
+                const cat = wikiCategories.find(c => c.id === wikiSelectedCat);
+                wikiSelectedSec = cat?.sections?.[0]?.id || null;
+            }
+            renderWikiSidebar();
+            unsavedWiki = true;
             showToast('✅ Раздел удален', 'success');
         }
 
-        function moveWikiSection(catIndex, secIndex, direction) {
-            const newIndex = secIndex + direction;
-            const sections = wikiCategories[catIndex].sections;
-            if (newIndex < 0 || newIndex >= sections.length) return;
-            [sections[secIndex], sections[newIndex]] = [sections[newIndex], sections[secIndex]];
-            renderWikiCategoriesUI();
-        }
-
-        function addWikiItem(catIndex, secIndex) {
-            const section = wikiCategories[catIndex].sections[secIndex];
-            if (!section.items) section.items = [];
-            section.items.push('Новый пункт');
-            markWikiSectionUnsaved(catIndex, secIndex);
-            renderWikiCategoriesUI();
-            setTimeout(() => {
-                toggleWikiItemsPopup(catIndex, secIndex);
-                const popup = document.getElementById(`wikiItems_${catIndex}_${secIndex}`);
-                if (popup) {
-                    const inputs = popup.querySelectorAll('.item-row input');
-                    if (inputs.length > 0) {
-                        const lastInput = inputs[inputs.length - 1];
-                        lastInput.focus();
-                        lastInput.select();
-                    }
+        function updateWikiSectionTitle(secId, value) {
+            for (let cat of wikiCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec) {
+                    sec.title = value || 'Без названия';
+                    setData('wiki_categories', wikiCategories);
+                    unsavedWiki = true;
+                    break;
                 }
-            }, 100);
+            }
         }
 
-        function deleteWikiItem(catIndex, secIndex, itemIndex) {
-            wikiCategories[catIndex].sections[secIndex].items.splice(itemIndex, 1);
-            markWikiSectionUnsaved(catIndex, secIndex);
-            renderWikiCategoriesUI();
+        function addWikiItem(secId) {
+            for (let cat of wikiCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec) {
+                    if (!sec.items) sec.items = [];
+                    sec.items.push('Новый пункт');
+                    setData('wiki_categories', wikiCategories);
+                    unsavedWiki = true;
+                    renderWikiSidebar();
+                    // Фокусируемся на новом пункте
+                    setTimeout(() => {
+                        const inputs = document.querySelectorAll('#wikiMainEditor .wiki-item-row input');
+                        if (inputs.length > 0) {
+                            const lastInput = inputs[inputs.length - 1];
+                            lastInput.focus();
+                            lastInput.select();
+                        }
+                    }, 50);
+                    break;
+                }
+            }
+        }
+
+        function deleteWikiItem(secId, idx) {
+            for (let cat of wikiCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec && sec.items) {
+                    sec.items.splice(idx, 1);
+                    setData('wiki_categories', wikiCategories);
+                    unsavedWiki = true;
+                    renderWikiSidebar();
+                    break;
+                }
+            }
+        }
+
+        function updateWikiItem(secId, idx, value) {
+            for (let cat of wikiCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec && sec.items && sec.items[idx] !== undefined) {
+                    sec.items[idx] = value;
+                    setData('wiki_categories', wikiCategories);
+                    unsavedWiki = true;
+                    break;
+                }
+            }
         }
 
         function saveAllWikiSections() {
             setData('wiki_categories', wikiCategories);
-            unsavedWikiCategories.clear();
-            renderWikiCategoriesUI();
+            unsavedWiki = false;
+            const status = document.getElementById('wikiStatus');
+            status.textContent = '✅ Вики сохранена!';
+            status.className = 'section-status';
             showToast('✅ Вики сохранена', 'success');
+            setTimeout(() => { if (!unsavedWiki) status.textContent = ''; }, 3000);
         }
 
         function previewWikiFull() {
@@ -1909,8 +1889,9 @@ api:
                 h1{font-size:32px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:16px;margin-bottom:30px;}
             </style></head><body><h1>📖 Вики Mugivara</h1>`;
             wikiCategories.forEach(cat => {
+                if (!cat.sections || cat.sections.length === 0) return;
                 html += `<div class="category"><h2>${cat.title}</h2>`;
-                (cat.sections || []).forEach(sec => {
+                cat.sections.forEach(sec => {
                     const items = (sec.items || []).map(i => `<li>${i}</li>`).join('');
                     html += `<div class="section"><h3>${sec.title}</h3><ul>${items || '<li style="color:#666;">Пункты отсутствуют</li>'}</ul></div>`;
                 });
@@ -1922,266 +1903,274 @@ api:
         }
 
         // ============================================================
-        // ====== RULES ======
+        // ====== RULES — НОВАЯ СТРУКТУРА ======
         // ============================================================
         let rulesCategories = [];
+        let rulesSelectedCat = null;
+        let rulesSelectedSec = null;
 
-        function renderRulesCategories() {
-            rulesCategories = getData('rules_categories', [
+        function getDefaultRules() {
+            return [
                 { 
                     id: 'rules_cat1', 
-                    title: '📜 Общие правила сервера', 
+                    title: 'Общие правила', 
                     sections: [
-                        { id: 'rules1', title: 'Нарушения, связанные с чужим имуществом', items: [
-                            'Использование чужих ферм без разрешения владельца.',
-                            'Использование чужих трейдхоллов без разрешения.',
-                            'Действия с чужой территорией без согласия (радиус 50 блоков от построек).',
-                            'Действия с чужими хранилищами без согласия.',
-                            'Принудительный обмен ресурсами.',
-                            'Разрушение чужих хранилищ с целью навредить.',
-                            'Гриферство в любом виде без соглашения.'
-                        ] },
-                        { id: 'rules2', title: 'Общение в игре и Discord', items: [
-                            'Личные оскорбления и переход на личности.',
-                            'Флуд, спам, крик (капс) без причины.',
-                            'Обсуждение политики, религии и провокационных тем.',
-                            'Доксинг (распространение личных данных).',
-                            'Ложные доносы и обман администрации.',
-                            'Токсичное поведение и провокации конфликтов.'
-                        ] },
-                        { id: 'rules3', title: 'Административные нарушения', items: [
-                            'Обход бана / мута.',
-                            'Отказ предоставить скриншоты по запросу администрации.',
-                            'Систематическое токсичное поведение.',
-                            'Использование багов и ошибок сервера в свою пользу.'
-                        ] }
+                        { id: 'rules1', title: 'Нарушения имущества', items: ['Использование чужих ферм без разрешения', 'Гриферство в любом виде'] },
+                        { id: 'rules2', title: 'Общение', items: ['Оскорбления и переход на личности', 'Флуд и спам'] }
                     ] 
                 },
                 { 
                     id: 'rules_cat2', 
-                    title: '⚖️ Система наказаний', 
+                    title: 'Наказания', 
                     sections: [
-                        { id: 'rules4', title: 'Виды наказаний', items: [
-                            'Предупреждение — за незначительные нарушения (устное или письменное).',
-                            'Мут — за нарушения в чате (от 10 минут до 7 дней).',
-                            'Бан — за гриферство, повторные нарушения, обход блокировок.',
-                            'Бан по IP — за особо тяжкие нарушения или обход блокировок.'
-                        ] },
-                        { id: 'rules5', title: 'Дополнительные санкции', items: [
-                            'Конфискация имущества — за гриферство с использованием ресурсов других игроков.',
-                            'Роллбэк построек — восстановление территории до состояния до нарушения.',
-                            'Бессрочный бан — за систематические нарушения без исправления.'
-                        ] }
-                    ] 
-                },
-                { 
-                    id: 'rules_cat3', 
-                    title: '💡 Рекомендации и дополнения', 
-                    sections: [
-                        { id: 'rules6', title: 'Что поощряется на сервере', items: [
-                            'Помощь новым игрокам в освоении.',
-                            'Совместные проекты и стройки.',
-                            'Создание красивых построек и ландшафтов.',
-                            'Участие в жизни сервера и общение в Discord.'
-                        ] },
-                        { id: 'rules7', title: 'Важные напоминания', items: [
-                            'Администрация всегда на связи в Discord.',
-                            'Если заметили нарушение — сразу сообщите админу.',
-                            'Правила могут изменяться, следите за новостями.',
-                            'Береги свой аккаунт и не передавай его другим игрокам.'
-                        ] }
+                        { id: 'rules3', title: 'Виды наказаний', items: ['Предупреждение', 'Мут от 10 минут до 7 дней', 'Бан за гриферство'] }
                     ] 
                 }
-            ]);
-            renderRulesCategoriesUI();
+            ];
         }
 
-        function renderRulesCategoriesUI() {
-            const container = document.getElementById('rulesCategoriesContainer');
-            container.innerHTML = rulesCategories.map((cat, catIndex) => `
-                <div class="rules-category ${unsavedRulesCategories.has(catIndex) ? 'unsaved' : ''}">
-                    <div class="rules-category-header">
-                        <input class="rules-category-title" value="${cat.title}" placeholder="Название категории" 
-                               onchange="markRulesCategoryUnsaved(${catIndex}); rulesCategories[${catIndex}].title=this.value">
-                        <div class="rules-category-actions">
-                            <button onclick="addRulesSection(${catIndex})" style="border-color:rgba(78,205,196,0.2);color:#4ecdc4;">
-                                <i class="fa-regular fa-plus"></i> Добавить раздел
-                            </button>
-                            <button onclick="moveRulesCategory(${catIndex}, -1)" ${catIndex === 0 ? 'disabled style="opacity:0.3;"' : ''}>
-                                <i class="fa-regular fa-arrow-up"></i>
-                            </button>
-                            <button onclick="moveRulesCategory(${catIndex}, 1)" ${catIndex === rulesCategories.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
-                                <i class="fa-regular fa-arrow-down"></i>
-                            </button>
-                            <button class="delete-category" onclick="deleteRulesCategory(${catIndex})">
-                                <i class="fa-regular fa-trash-can"></i> Удалить
-                            </button>
-                        </div>
-                    </div>
-                    <div style="margin-top:10px;">
-                        ${(cat.sections || []).map((section, secIndex) => `
-                            <div class="rules-section-inline ${unsavedRulesCategories.has(catIndex + '_' + secIndex) ? 'unsaved' : ''}">
-                                <span class="unsaved-badge-small"><i class="fa-regular fa-pen-to-square"></i> Изменено</span>
-                                <input class="section-name" value="${section.title}" placeholder="Название раздела"
-                                       onchange="markRulesSectionUnsaved(${catIndex}, ${secIndex}); rulesCategories[${catIndex}].sections[${secIndex}].title=this.value">
-                                <span class="section-items-preview">${(section.items || []).length} пунктов</span>
-                                <div class="section-actions">
-                                    <button class="edit-section" onclick="toggleRulesItemsPopup(${catIndex}, ${secIndex})">
-                                        <i class="fa-regular fa-pen"></i>
-                                    </button>
-                                    <button onclick="moveRulesSection(${catIndex}, ${secIndex}, -1)" ${secIndex === 0 ? 'disabled style="opacity:0.3;"' : ''}>
-                                        <i class="fa-regular fa-arrow-up"></i>
-                                    </button>
-                                    <button onclick="moveRulesSection(${catIndex}, ${secIndex}, 1)" ${secIndex === cat.sections.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
-                                        <i class="fa-regular fa-arrow-down"></i>
-                                    </button>
-                                    <button class="delete-section" onclick="deleteRulesSection(${catIndex}, ${secIndex})">
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </button>
-                                </div>
-                                <div class="rules-items-popup" id="rulesItems_${catIndex}_${secIndex}">
-                                    <div class="items-list">
-                                        ${(section.items || []).map((item, itemIndex) => `
-                                            <div class="item-row">
-                                                <input value="${item}" placeholder="Пункт..." 
-                                                       onchange="markRulesSectionUnsaved(${catIndex}, ${secIndex}); rulesCategories[${catIndex}].sections[${secIndex}].items[${itemIndex}]=this.value">
-                                                <button class="item-delete" onclick="deleteRulesItem(${catIndex}, ${secIndex}, ${itemIndex})"><i class="fa-regular fa-xmark"></i></button>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                    <button class="add-item-btn" onclick="addRulesItem(${catIndex}, ${secIndex})">
-                                        <i class="fa-regular fa-plus"></i> Добавить пункт
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                        ${(!cat.sections || cat.sections.length === 0) ? '<div style="color:#555;font-size:13px;padding:8px 0;">Нет разделов в этой категории</div>' : ''}
-                    </div>
-                </div>
-            `).join('');
+        function renderRulesEditor() {
+            rulesCategories = getData('rules_categories', null);
+            if (!rulesCategories || rulesCategories.length === 0) {
+                rulesCategories = getDefaultRules();
+                setData('rules_categories', rulesCategories);
+            }
             
-            const status = document.getElementById('rulesStatus');
-            if (unsavedRulesCategories.size > 0) {
-                status.textContent = `⚠️ ${unsavedRulesCategories.size} элемент(ов) изменены`;
-                status.className = 'section-status';
-            } else {
-                status.textContent = '✅ Все сохранено';
-                status.className = 'section-status';
-            }
-        }
-
-        function markRulesCategoryUnsaved(index) {
-            unsavedRulesCategories.add(index);
-            renderRulesCategoriesUI();
-        }
-
-        function markRulesSectionUnsaved(catIndex, secIndex) {
-            unsavedRulesCategories.add(catIndex + '_' + secIndex);
-            renderRulesCategoriesUI();
-        }
-
-        function toggleRulesItemsPopup(catIndex, secIndex) {
-            const popup = document.getElementById(`rulesItems_${catIndex}_${secIndex}`);
-            if (popup) {
-                popup.classList.toggle('active');
-                if (popup.classList.contains('active')) {
-                    const firstInput = popup.querySelector('.item-row input');
-                    if (firstInput) setTimeout(() => firstInput.focus(), 100);
+            if (!rulesSelectedCat && rulesCategories.length > 0) {
+                rulesSelectedCat = rulesCategories[0].id;
+                if (rulesCategories[0].sections && rulesCategories[0].sections.length > 0) {
+                    rulesSelectedSec = rulesCategories[0].sections[0].id;
                 }
             }
+
+            renderRulesSidebar();
+            renderRulesMain();
+        }
+
+        function renderRulesSidebar() {
+            const container = document.getElementById('rulesEditor');
+            let html = `<div class="rules-layout">`;
+            html += `<div class="rules-sidebar-editor">`;
+            
+            html += `<div style="margin-bottom:12px;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.05em;">Категории</div>`;
+            rulesCategories.forEach((cat, idx) => {
+                const isActive = rulesSelectedCat === cat.id;
+                html += `<div class="rules-cat-item ${isActive ? 'active' : ''}" onclick="selectRulesCategory('${cat.id}')">
+                    <span>📁</span> ${cat.title}
+                    <span class="cat-actions">
+                        <button onclick="event.stopPropagation(); deleteRulesCategory('${cat.id}')" class="delete-cat" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                    </span>
+                </div>`;
+                if (isActive && cat.sections) {
+                    cat.sections.forEach(sec => {
+                        const isSecActive = rulesSelectedSec === sec.id;
+                        html += `<div class="rules-section-item ${isSecActive ? 'active' : ''}" onclick="selectRulesSection('${sec.id}')">
+                            <span>•</span> ${sec.title}
+                            <span class="sec-actions">
+                                <button onclick="event.stopPropagation(); deleteRulesSection('${sec.id}')" class="delete-sec" title="Удалить"><i class="fa-regular fa-trash-can"></i></button>
+                            </span>
+                        </div>`;
+                    });
+                    html += `<button class="rules-add-btn" onclick="addRulesSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
+                }
+            });
+            
+            html += `<button class="rules-add-btn" style="margin-top:12px;border-style:solid;" onclick="addRulesCategory()"><i class="fa-regular fa-plus"></i> Добавить категорию</button>`;
+            html += `</div>`;
+            
+            html += `<div class="rules-main-editor" id="rulesMainEditor">`;
+            html += `</div>`;
+            html += `</div>`;
+            
+            container.innerHTML = html;
+            renderRulesMain();
+        }
+
+        function renderRulesMain() {
+            const container = document.getElementById('rulesMainEditor');
+            if (!container) return;
+            
+            const cat = rulesCategories.find(c => c.id === rulesSelectedCat);
+            const section = cat ? cat.sections.find(s => s.id === rulesSelectedSec) : null;
+            
+            if (!cat) {
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите категорию</div>`;
+                return;
+            }
+            
+            if (!section) {
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите раздел или создайте новый</div>`;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:12px;color:#666;">${cat.title} / ${section.title}</div>
+                    <input type="text" value="${section.title}" placeholder="Название раздела" 
+                           style="width:100%;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,0.06);padding:8px 0;font-size:20px;font-weight:600;color:#fff;font-family:'Montserrat Alternates',sans-serif;"
+                           onchange="updateRulesSectionTitle('${section.id}', this.value)">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <div style="font-size:13px;color:#888;margin-bottom:8px;">Пункты (${section.items ? section.items.length : 0})</div>
+                    ${(section.items || []).map((item, idx) => `
+                        <div class="rules-item-row">
+                            <input value="${item}" placeholder="Введите пункт..." 
+                                   onchange="updateRulesItem('${section.id}', ${idx}, this.value)">
+                            <button class="item-delete" onclick="deleteRulesItem('${section.id}', ${idx})"><i class="fa-regular fa-xmark"></i></button>
+                        </div>
+                    `).join('')}
+                    <button class="rules-add-btn" style="border-style:solid;margin-top:4px;" onclick="addRulesItem('${section.id}')">
+                        <i class="fa-regular fa-plus"></i> Добавить пункт
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function selectRulesCategory(catId) {
+            rulesSelectedCat = catId;
+            const cat = rulesCategories.find(c => c.id === catId);
+            if (cat && cat.sections && cat.sections.length > 0) {
+                rulesSelectedSec = cat.sections[0].id;
+            } else {
+                rulesSelectedSec = null;
+            }
+            renderRulesSidebar();
+        }
+
+        function selectRulesSection(secId) {
+            rulesSelectedSec = secId;
+            renderRulesSidebar();
         }
 
         function addRulesCategory() {
-            rulesCategories.push({ id: 'rules_cat_' + Date.now(), title: 'Новая категория', sections: [] });
-            unsavedRulesCategories.add(rulesCategories.length - 1);
-            renderRulesCategoriesUI();
-            showToast('✅ Добавлена новая категория', 'success');
-            const container = document.getElementById('rulesCategoriesContainer');
-            const lastCat = container.lastElementChild;
-            if (lastCat) {
-                lastCat.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const titleInput = lastCat.querySelector('.rules-category-title');
-                if (titleInput) { titleInput.focus(); titleInput.select(); }
-            }
+            const newId = 'rules_cat_' + Date.now();
+            rulesCategories.push({ id: newId, title: 'Новая категория', sections: [] });
+            setData('rules_categories', rulesCategories);
+            rulesSelectedCat = newId;
+            rulesSelectedSec = null;
+            renderRulesSidebar();
+            unsavedRules = true;
+            showToast('✅ Добавлена категория', 'success');
         }
 
-        function deleteRulesCategory(index) {
+        function deleteRulesCategory(catId) {
             if (!confirm('Удалить категорию и все её разделы?')) return;
             if (rulesCategories.length <= 1) {
                 showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
                 return;
             }
-            rulesCategories.splice(index, 1);
-            unsavedRulesCategories.clear();
-            renderRulesCategoriesUI();
+            rulesCategories = rulesCategories.filter(c => c.id !== catId);
+            setData('rules_categories', rulesCategories);
+            if (rulesSelectedCat === catId) {
+                rulesSelectedCat = rulesCategories[0]?.id || null;
+                rulesSelectedSec = rulesCategories[0]?.sections?.[0]?.id || null;
+            }
+            renderRulesSidebar();
+            unsavedRules = true;
             showToast('✅ Категория удалена', 'success');
         }
 
-        function moveRulesCategory(index, direction) {
-            const newIndex = index + direction;
-            if (newIndex < 0 || newIndex >= rulesCategories.length) return;
-            [rulesCategories[index], rulesCategories[newIndex]] = [rulesCategories[newIndex], rulesCategories[index]];
-            renderRulesCategoriesUI();
+        function addRulesSection(catId) {
+            const cat = rulesCategories.find(c => c.id === catId);
+            if (!cat) return;
+            const newId = 'rules_sec_' + Date.now();
+            if (!cat.sections) cat.sections = [];
+            cat.sections.push({ id: newId, title: 'Новый раздел', items: [] });
+            setData('rules_categories', rulesCategories);
+            rulesSelectedSec = newId;
+            renderRulesSidebar();
+            unsavedRules = true;
+            showToast('✅ Добавлен раздел', 'success');
         }
 
-        function addRulesSection(catIndex) {
-            if (!rulesCategories[catIndex].sections) rulesCategories[catIndex].sections = [];
-            rulesCategories[catIndex].sections.push({ id: 'rules_sec_' + Date.now(), title: 'Новый раздел', items: [] });
-            unsavedRulesCategories.add(catIndex + '_' + (rulesCategories[catIndex].sections.length - 1));
-            renderRulesCategoriesUI();
-            showToast('✅ Добавлен новый раздел', 'success');
-            const secIndex = rulesCategories[catIndex].sections.length - 1;
-            setTimeout(() => {
-                toggleRulesItemsPopup(catIndex, secIndex);
-            }, 200);
-        }
-
-        function deleteRulesSection(catIndex, secIndex) {
+        function deleteRulesSection(secId) {
             if (!confirm('Удалить раздел?')) return;
-            rulesCategories[catIndex].sections.splice(secIndex, 1);
-            renderRulesCategoriesUI();
+            for (let cat of rulesCategories) {
+                const idx = cat.sections ? cat.sections.findIndex(s => s.id === secId) : -1;
+                if (idx !== -1) {
+                    cat.sections.splice(idx, 1);
+                    break;
+                }
+            }
+            setData('rules_categories', rulesCategories);
+            if (rulesSelectedSec === secId) {
+                const cat = rulesCategories.find(c => c.id === rulesSelectedCat);
+                rulesSelectedSec = cat?.sections?.[0]?.id || null;
+            }
+            renderRulesSidebar();
+            unsavedRules = true;
             showToast('✅ Раздел удален', 'success');
         }
 
-        function moveRulesSection(catIndex, secIndex, direction) {
-            const newIndex = secIndex + direction;
-            const sections = rulesCategories[catIndex].sections;
-            if (newIndex < 0 || newIndex >= sections.length) return;
-            [sections[secIndex], sections[newIndex]] = [sections[newIndex], sections[secIndex]];
-            renderRulesCategoriesUI();
-        }
-
-        function addRulesItem(catIndex, secIndex) {
-            const section = rulesCategories[catIndex].sections[secIndex];
-            if (!section.items) section.items = [];
-            section.items.push('Новый пункт');
-            markRulesSectionUnsaved(catIndex, secIndex);
-            renderRulesCategoriesUI();
-            setTimeout(() => {
-                toggleRulesItemsPopup(catIndex, secIndex);
-                const popup = document.getElementById(`rulesItems_${catIndex}_${secIndex}`);
-                if (popup) {
-                    const inputs = popup.querySelectorAll('.item-row input');
-                    if (inputs.length > 0) {
-                        const lastInput = inputs[inputs.length - 1];
-                        lastInput.focus();
-                        lastInput.select();
-                    }
+        function updateRulesSectionTitle(secId, value) {
+            for (let cat of rulesCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec) {
+                    sec.title = value || 'Без названия';
+                    setData('rules_categories', rulesCategories);
+                    unsavedRules = true;
+                    break;
                 }
-            }, 100);
+            }
         }
 
-        function deleteRulesItem(catIndex, secIndex, itemIndex) {
-            rulesCategories[catIndex].sections[secIndex].items.splice(itemIndex, 1);
-            markRulesSectionUnsaved(catIndex, secIndex);
-            renderRulesCategoriesUI();
+        function addRulesItem(secId) {
+            for (let cat of rulesCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec) {
+                    if (!sec.items) sec.items = [];
+                    sec.items.push('Новый пункт');
+                    setData('rules_categories', rulesCategories);
+                    unsavedRules = true;
+                    renderRulesSidebar();
+                    setTimeout(() => {
+                        const inputs = document.querySelectorAll('#rulesMainEditor .rules-item-row input');
+                        if (inputs.length > 0) {
+                            const lastInput = inputs[inputs.length - 1];
+                            lastInput.focus();
+                            lastInput.select();
+                        }
+                    }, 50);
+                    break;
+                }
+            }
+        }
+
+        function deleteRulesItem(secId, idx) {
+            for (let cat of rulesCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec && sec.items) {
+                    sec.items.splice(idx, 1);
+                    setData('rules_categories', rulesCategories);
+                    unsavedRules = true;
+                    renderRulesSidebar();
+                    break;
+                }
+            }
+        }
+
+        function updateRulesItem(secId, idx, value) {
+            for (let cat of rulesCategories) {
+                const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
+                if (sec && sec.items && sec.items[idx] !== undefined) {
+                    sec.items[idx] = value;
+                    setData('rules_categories', rulesCategories);
+                    unsavedRules = true;
+                    break;
+                }
+            }
         }
 
         function saveAllRulesSections() {
             setData('rules_categories', rulesCategories);
-            unsavedRulesCategories.clear();
-            renderRulesCategoriesUI();
+            unsavedRules = false;
+            const status = document.getElementById('rulesStatus');
+            status.textContent = '✅ Правила сохранены!';
+            status.className = 'section-status';
             showToast('✅ Правила сохранены', 'success');
+            setTimeout(() => { if (!unsavedRules) status.textContent = ''; }, 3000);
         }
 
         function previewRulesFull() {
@@ -2197,8 +2186,9 @@ api:
                 h1{font-size:32px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:16px;margin-bottom:30px;}
             </style></head><body><h1>📜 Правила Mugivara</h1>`;
             rulesCategories.forEach(cat => {
+                if (!cat.sections || cat.sections.length === 0) return;
                 html += `<div class="category"><h2>${cat.title}</h2>`;
-                (cat.sections || []).forEach(sec => {
+                cat.sections.forEach(sec => {
                     const items = (sec.items || []).map(i => `<li>${i}</li>`).join('');
                     html += `<div class="section"><h3>${sec.title}</h3><ul>${items || '<li style="color:#666;">Пункты отсутствуют</li>'}</ul></div>`;
                 });
@@ -2221,8 +2211,8 @@ api:
             setTimeout(() => { loadFromCloud(); }, 500);
             loadApplications();
             loadScreenshots();
-            renderWikiCategories();
-            renderRulesCategories();
+            renderWikiEditor();
+            renderRulesEditor();
             loadSettings();
         }
 
