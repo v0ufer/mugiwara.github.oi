@@ -417,7 +417,7 @@
             <p class="text-white/60 text-lg stagger-child game-font">Правила сервера чистого выживания</p>
             <div class="mt-2 text-xs text-neutral-500 stagger-child game-font">
                 <i class="fa-regular fa-circle-check text-green-400"></i>
-                <span>Синхронизировано с облаком</span>
+                <span id="sync-status">Синхронизировано с облаком</span>
             </div>
             <button onclick="loadAllRulesFromCloud()" class="sync-btn stagger-child" style="margin-top:8px;">
                 <i class="fa-regular fa-cloud-arrow-down"></i> Обновить правила
@@ -519,9 +519,11 @@
                 const data = localStorage.getItem('admin_rules_sections');
                 if (data) {
                     rulesSections = JSON.parse(data);
-                    return true;
+                    return rulesSections && rulesSections.length > 0;
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn('Ошибка загрузки из localStorage:', e);
+            }
             return false;
         }
 
@@ -572,6 +574,34 @@
             ];
         }
 
+        // Сохранение правил в облако
+        async function saveRulesToCloud() {
+            try {
+                const data = {
+                    rulesSections: rulesSections,
+                    updated: new Date().toISOString()
+                };
+
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error('Ошибка сохранения');
+                
+                localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
+                localStorage.setItem('mugivara_last_update', Date.now().toString());
+                return true;
+            } catch (error) {
+                console.error('❌ Ошибка сохранения в облако:', error);
+                return false;
+            }
+        }
+
         // Загрузка правил из облака
         async function loadAllRulesFromCloud() {
             const btn = event?.target;
@@ -591,20 +621,19 @@
                 const data = await response.json();
                 const cloudData = data.record;
 
-                if (cloudData && cloudData.rulesSections) {
-                    localStorage.setItem('admin_rules_sections', JSON.stringify(cloudData.rulesSections));
+                if (cloudData && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
+                    rulesSections = cloudData.rulesSections;
+                    localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
                     localStorage.setItem('mugivara_last_update', Date.now().toString());
-                    const loaded = loadRulesFromStorage();
-                    if (loaded) {
-                        renderRules();
-                        showToast('✅ Правила обновлены из облака', 'success');
-                    }
+                    renderRules();
+                    updateSyncStatus(true);
+                    showToast('✅ Правила обновлены из облака', 'success');
                 } else {
                     showToast('ℹ️ В облаке нет данных правил', 'info');
                 }
             } catch (error) {
                 console.error('❌ Ошибка загрузки:', error);
-                showToast('⚠️ Ошибка загрузки правил', 'error');
+                showToast('⚠️ Ошибка загрузки правил из облака', 'error');
             }
 
             if (btn) {
@@ -629,19 +658,32 @@
                     const cloudTime = new Date(cloudData.updated).getTime();
                     const localTime = parseInt(localStorage.getItem('mugivara_last_update') || '0');
 
-                    if (cloudTime > localTime && cloudData.rulesSections) {
+                    if (cloudTime > localTime && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
                         console.log('🔄 Найдены обновления правил в облаке');
-                        localStorage.setItem('admin_rules_sections', JSON.stringify(cloudData.rulesSections));
+                        rulesSections = cloudData.rulesSections;
+                        localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
                         localStorage.setItem('mugivara_last_update', Date.now().toString());
-                        const loaded = loadRulesFromStorage();
-                        if (loaded) {
-                            renderRules();
-                            showToast('🔄 Правила обновлены из облака', 'info');
-                        }
+                        renderRules();
+                        updateSyncStatus(true);
+                        showToast('🔄 Правила обновлены из облака', 'info');
+                    } else {
+                        updateSyncStatus(true);
                     }
                 }
             } catch (error) {
                 console.warn('⚠️ Ошибка проверки обновлений:', error);
+                updateSyncStatus(false);
+            }
+        }
+
+        function updateSyncStatus(synced) {
+            const el = document.getElementById('sync-status');
+            if (synced) {
+                el.innerHTML = '✅ Синхронизировано с облаком';
+                el.className = 'text-green-400';
+            } else {
+                el.innerHTML = '⚠️ Нет связи с облаком';
+                el.className = 'text-yellow-400';
             }
         }
 
@@ -693,6 +735,13 @@
                 rulesSections = getDefaultRulesSections();
                 try {
                     localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
+                    // Сохраняем дефолтные правила в облако при первом запуске
+                    saveRulesToCloud().then(success => {
+                        if (success) {
+                            console.log('✅ Дефолтные правила сохранены в облако');
+                            updateSyncStatus(true);
+                        }
+                    });
                 } catch (e) {}
             }
             renderRules();
@@ -762,7 +811,7 @@
             }, 100);
 
             // Проверка обновлений из облака
-            setTimeout(checkRulesUpdates, 3000);
+            setTimeout(checkRulesUpdates, 2000);
             setInterval(checkRulesUpdates, 30000);
         });
     </script>
