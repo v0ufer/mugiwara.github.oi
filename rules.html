@@ -510,99 +510,145 @@
         }
 
         // ============================================================
-        // ====== ПРАВИЛА ======
+        // ====== ПРАВИЛА (синхронизация с админ-панелью) ======
         // ============================================================
-        let rulesSections = [];
+        let rulesCategories = [];
+        let flatRulesItems = [];
 
+        // ===== ЗАГРУЗКА ИЗ STORAGE =====
         function loadRulesFromStorage() {
+            try {
+                // Пытаемся загрузить из основного хранилища (как в админке)
+                const mainData = localStorage.getItem('mugivara_main_data');
+                if (mainData) {
+                    const data = JSON.parse(mainData);
+                    if (data.rulesCategories && data.rulesCategories.length > 0) {
+                        rulesCategories = data.rulesCategories;
+                        flattenRules();
+                        return true;
+                    }
+                }
+            } catch (e) {}
+            
+            // Пробуем из отдельного хранилища (то, что использует админка)
+            try {
+                const data = localStorage.getItem('rules_categories');
+                if (data) {
+                    rulesCategories = JSON.parse(data);
+                    if (rulesCategories && rulesCategories.length > 0) {
+                        flattenRules();
+                        return true;
+                    }
+                }
+            } catch (e) {}
+            
+            // Пробуем старый формат (admin_rules_sections) для обратной совместимости
             try {
                 const data = localStorage.getItem('admin_rules_sections');
                 if (data) {
-                    rulesSections = JSON.parse(data);
-                    return rulesSections && rulesSections.length > 0;
+                    const oldData = JSON.parse(data);
+                    if (oldData && oldData.length > 0) {
+                        // Конвертируем старый формат в новый
+                        rulesCategories = [{
+                            id: 'rules_cat_old',
+                            title: 'Правила сервера',
+                            sections: oldData.map((sec, idx) => ({
+                                id: sec.id || 'rule_' + idx,
+                                title: sec.title || 'Раздел ' + (idx + 1),
+                                items: sec.items || []
+                            }))
+                        }];
+                        flattenRules();
+                        saveRulesToStorage();
+                        return true;
+                    }
                 }
-            } catch (e) {
-                console.warn('Ошибка загрузки из localStorage:', e);
-            }
+            } catch (e) {}
+            
             return false;
         }
 
-        function getDefaultRulesSections() {
+        // ===== СОХРАНЕНИЕ В STORAGE =====
+        function saveRulesToStorage() {
+            try {
+                // Сохраняем в формате админки
+                localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
+                // Обновляем основное хранилище
+                const mainData = localStorage.getItem('mugivara_main_data');
+                let data = mainData ? JSON.parse(mainData) : {};
+                data.rulesCategories = rulesCategories;
+                localStorage.setItem('mugivara_main_data', JSON.stringify(data));
+                
+                // Для обратной совместимости сохраняем также старый формат
+                const flatSections = [];
+                rulesCategories.forEach(cat => {
+                    (cat.sections || []).forEach(sec => {
+                        flatSections.push({
+                            id: sec.id,
+                            title: sec.title,
+                            items: sec.items || []
+                        });
+                    });
+                });
+                localStorage.setItem('admin_rules_sections', JSON.stringify(flatSections));
+            } catch (e) {}
+        }
+
+        // ===== ПРЕОБРАЗОВАНИЕ В ПЛОСКИЙ СПИСОК ДЛЯ ОТОБРАЖЕНИЯ =====
+        function flattenRules() {
+            flatRulesItems = [];
+            rulesCategories.forEach(cat => {
+                (cat.sections || []).forEach(sec => {
+                    flatRulesItems.push({
+                        id: sec.id,
+                        title: sec.title,
+                        items: sec.items || [],
+                        category: cat.title
+                    });
+                });
+            });
+        }
+
+        // ===== ДЕФОЛТНЫЕ ПРАВИЛА =====
+        function getDefaultRulesCategories() {
             return [
                 { 
-                    id: 'rules1', 
-                    title: 'Нарушения, связанные с чужим имуществом', 
-                    items: [
-                        'Использование чужих ферм без разрешения владельца',
-                        'Использование чужих трейдхоллов без разрешения',
-                        'Действия с чужой территорией без согласия (радиус 50 блоков от построек)',
-                        'Действия с чужими хранилищами без согласия',
-                        'Принудительный обмен ресурсами',
-                        'Разрушение чужих хранилищ с целью навредить',
-                        'Гриферство в любом виде без соглашения'
-                    ]
+                    id: 'rules_cat1', 
+                    title: 'Общие правила', 
+                    sections: [
+                        { id: 'rules1', title: 'Нарушения имущества', items: [
+                            'Использование чужих ферм без разрешения владельца',
+                            'Использование чужих трейдхоллов без разрешения',
+                            'Действия с чужой территорией без согласия (радиус 50 блоков от построек)',
+                            'Действия с чужими хранилищами без согласия',
+                            'Принудительный обмен ресурсами',
+                            'Разрушение чужих хранилищ с целью навредить',
+                            'Гриферство в любом виде без соглашения'
+                        ] },
+                        { id: 'rules2', title: 'Общение в игре и Discord', items: [
+                            'Личные оскорбления и переход на личности',
+                            'Флуд, спам, крик (капс) без причины',
+                            'Обсуждение политики, религии и провокационных тем',
+                            'Доксинг (распространение личных данных)',
+                            'Ложные доносы и обман администрации'
+                        ] }
+                    ] 
                 },
                 { 
-                    id: 'rules2', 
-                    title: 'Общение в игре и Discord', 
-                    items: [
-                        'Личные оскорбления и переход на личности',
-                        'Флуд, спам, крик (капс) без причины',
-                        'Обсуждение политики, религии и провокационных тем',
-                        'Доксинг (распространение личных данных)',
-                        'Ложные доносы и обман администрации'
-                    ]
-                },
-                { 
-                    id: 'rules3', 
+                    id: 'rules_cat2', 
                     title: 'Административные нарушения', 
-                    items: [
-                        'Обход бана / мута',
-                        'Отказ предоставить скриншоты по запросу администрации',
-                        'Систематическое токсичное поведение'
-                    ]
-                },
-                { 
-                    id: 'rules4', 
-                    title: 'Наказания', 
-                    items: [
-                        'Предупреждение — за незначительные нарушения',
-                        'Мут — за нарушения в чате (от 10 минут до 7 дней)',
-                        'Бан — за гриферство, повторные нарушения, обход блокировок'
-                    ]
+                    sections: [
+                        { id: 'rules3', title: 'Наказания', items: [
+                            'Предупреждение — за незначительные нарушения',
+                            'Мут — за нарушения в чате (от 10 минут до 7 дней)',
+                            'Бан — за гриферство, повторные нарушения, обход блокировок'
+                        ] }
+                    ] 
                 }
             ];
         }
 
-        // Сохранение правил в облако
-        async function saveRulesToCloud() {
-            try {
-                const data = {
-                    rulesSections: rulesSections,
-                    updated: new Date().toISOString()
-                };
-
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) throw new Error('Ошибка сохранения');
-                
-                localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
-                localStorage.setItem('mugivara_last_update', Date.now().toString());
-                return true;
-            } catch (error) {
-                console.error('❌ Ошибка сохранения в облако:', error);
-                return false;
-            }
-        }
-
-        // Загрузка правил из облака
+        // ===== ЗАГРУЗКА ИЗ ОБЛАКА =====
         async function loadAllRulesFromCloud() {
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
@@ -621,19 +667,42 @@
                 const data = await response.json();
                 const cloudData = data.record;
 
-                if (cloudData && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
-                    rulesSections = cloudData.rulesSections;
-                    localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
+                // Проверяем наличие правил в облаке (в формате rulesCategories)
+                if (cloudData && cloudData.rulesCategories && cloudData.rulesCategories.length > 0) {
+                    rulesCategories = cloudData.rulesCategories;
+                    flattenRules();
+                    saveRulesToStorage();
                     localStorage.setItem('mugivara_last_update', Date.now().toString());
                     renderRules();
                     updateSyncStatus(true);
                     showToast('✅ Правила обновлены из облака', 'success');
                 } else {
-                    showToast('ℹ️ В облаке нет данных правил', 'info');
+                    // Пробуем старый формат rulesSections
+                    if (cloudData && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
+                        // Конвертируем старый формат в новый
+                        rulesCategories = [{
+                            id: 'rules_cat_cloud',
+                            title: 'Правила сервера',
+                            sections: cloudData.rulesSections.map((sec, idx) => ({
+                                id: sec.id || 'rule_' + idx,
+                                title: sec.title || 'Раздел ' + (idx + 1),
+                                items: sec.items || []
+                            }))
+                        }];
+                        flattenRules();
+                        saveRulesToStorage();
+                        localStorage.setItem('mugivara_last_update', Date.now().toString());
+                        renderRules();
+                        updateSyncStatus(true);
+                        showToast('✅ Правила обновлены из облака (конвертировано)', 'success');
+                    } else {
+                        showToast('ℹ️ В облаке нет данных правил', 'info');
+                    }
                 }
             } catch (error) {
                 console.error('❌ Ошибка загрузки:', error);
                 showToast('⚠️ Ошибка загрузки правил из облака', 'error');
+                updateSyncStatus(false);
             }
 
             if (btn) {
@@ -642,7 +711,7 @@
             }
         }
 
-        // Автоматическая проверка обновлений
+        // ===== ПРОВЕРКА ОБНОВЛЕНИЙ =====
         async function checkRulesUpdates() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
@@ -658,14 +727,36 @@
                     const cloudTime = new Date(cloudData.updated).getTime();
                     const localTime = parseInt(localStorage.getItem('mugivara_last_update') || '0');
 
-                    if (cloudTime > localTime && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
-                        console.log('🔄 Найдены обновления правил в облаке');
-                        rulesSections = cloudData.rulesSections;
-                        localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
-                        localStorage.setItem('mugivara_last_update', Date.now().toString());
-                        renderRules();
-                        updateSyncStatus(true);
-                        showToast('🔄 Правила обновлены из облака', 'info');
+                    if (cloudTime > localTime) {
+                        let hasNewRules = false;
+                        
+                        if (cloudData.rulesCategories && cloudData.rulesCategories.length > 0) {
+                            rulesCategories = cloudData.rulesCategories;
+                            hasNewRules = true;
+                        } else if (cloudData.rulesSections && cloudData.rulesSections.length > 0) {
+                            rulesCategories = [{
+                                id: 'rules_cat_cloud',
+                                title: 'Правила сервера',
+                                sections: cloudData.rulesSections.map((sec, idx) => ({
+                                    id: sec.id || 'rule_' + idx,
+                                    title: sec.title || 'Раздел ' + (idx + 1),
+                                    items: sec.items || []
+                                }))
+                            }];
+                            hasNewRules = true;
+                        }
+                        
+                        if (hasNewRules) {
+                            console.log('🔄 Найдены обновления правил в облаке');
+                            flattenRules();
+                            saveRulesToStorage();
+                            localStorage.setItem('mugivara_last_update', Date.now().toString());
+                            renderRules();
+                            updateSyncStatus(true);
+                            showToast('🔄 Правила обновлены из облака', 'info');
+                        } else {
+                            updateSyncStatus(true);
+                        }
                     } else {
                         updateSyncStatus(true);
                     }
@@ -687,10 +778,11 @@
             }
         }
 
+        // ===== ОТОБРАЖЕНИЕ ПРАВИЛ =====
         function renderRules() {
             const container = document.getElementById('rulesContainer');
             
-            if (!rulesSections || rulesSections.length === 0) {
+            if (!flatRulesItems || flatRulesItems.length === 0) {
                 container.innerHTML = `
                     <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 text-center">
                         <p class="text-neutral-400 game-font">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
@@ -702,11 +794,14 @@
                 return;
             }
 
-            container.innerHTML = rulesSections.map((section, index) => `
+            container.innerHTML = flatRulesItems.map((section, index) => `
                 <div class="rule-card bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10 mb-6 section">
                     <div class="flex items-start gap-4 mb-6 stagger-child">
                         <span class="rule-number">${index + 1}</span>
-                        <h2 class="text-2xl sm:text-3xl font-semibold text-white game-heading">${section.title}</h2>
+                        <div>
+                            <div class="text-xs text-neutral-500 game-font mb-1">${section.category || 'Правила'}</div>
+                            <h2 class="text-2xl sm:text-3xl font-semibold text-white game-heading">${section.title}</h2>
+                        </div>
                     </div>
                     <div class="space-y-3 text-neutral-300 text-[15px] sm:text-base pl-2 stagger-child game-font">
                         ${section.items && section.items.length > 0 
@@ -732,19 +827,12 @@
         function initRules() {
             const loaded = loadRulesFromStorage();
             if (!loaded) {
-                rulesSections = getDefaultRulesSections();
-                try {
-                    localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
-                    // Сохраняем дефолтные правила в облако при первом запуске
-                    saveRulesToCloud().then(success => {
-                        if (success) {
-                            console.log('✅ Дефолтные правила сохранены в облако');
-                            updateSyncStatus(true);
-                        }
-                    });
-                } catch (e) {}
+                rulesCategories = getDefaultRulesCategories();
+                flattenRules();
+                saveRulesToStorage();
             }
             renderRules();
+            updateSyncStatus(true);
         }
 
         async function updateOnline() {
@@ -766,6 +854,19 @@
                 el.className = "font-semibold text-neutral-500 game-font";
             }
         }
+
+        // ============================================================
+        // ====== СЛУШАЕМ ОБНОВЛЕНИЯ ИЗ АДМИНКИ ======
+        // ============================================================
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'rules_categories' || e.key === 'mugivara_main_data' || e.key === 'admin_rules_sections') {
+                const loaded = loadRulesFromStorage();
+                if (loaded) {
+                    renderRules();
+                    updateSyncStatus(true);
+                }
+            }
+        });
 
         // ============================================================
         // ====== ИНИЦИАЛИЗАЦИЯ ======
