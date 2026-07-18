@@ -518,7 +518,6 @@
         // ===== ЗАГРУЗКА ИЗ STORAGE =====
         function loadRulesFromStorage() {
             try {
-                // Пытаемся загрузить из основного хранилища (как в админке)
                 const mainData = localStorage.getItem('mugivara_main_data');
                 if (mainData) {
                     const data = JSON.parse(mainData);
@@ -530,7 +529,6 @@
                 }
             } catch (e) {}
             
-            // Пробуем из отдельного хранилища (то, что использует админка)
             try {
                 const data = localStorage.getItem('rules_categories');
                 if (data) {
@@ -542,13 +540,11 @@
                 }
             } catch (e) {}
             
-            // Пробуем старый формат (admin_rules_sections) для обратной совместимости
             try {
                 const data = localStorage.getItem('admin_rules_sections');
                 if (data) {
                     const oldData = JSON.parse(data);
                     if (oldData && oldData.length > 0) {
-                        // Конвертируем старый формат в новый
                         rulesCategories = [{
                             id: 'rules_cat_old',
                             title: 'Правила сервера',
@@ -571,15 +567,12 @@
         // ===== СОХРАНЕНИЕ В STORAGE =====
         function saveRulesToStorage() {
             try {
-                // Сохраняем в формате админки
                 localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
-                // Обновляем основное хранилище
                 const mainData = localStorage.getItem('mugivara_main_data');
                 let data = mainData ? JSON.parse(mainData) : {};
                 data.rulesCategories = rulesCategories;
                 localStorage.setItem('mugivara_main_data', JSON.stringify(data));
                 
-                // Для обратной совместимости сохраняем также старый формат
                 const flatSections = [];
                 rulesCategories.forEach(cat => {
                     (cat.sections || []).forEach(sec => {
@@ -594,16 +587,16 @@
             } catch (e) {}
         }
 
-        // ===== ПРЕОБРАЗОВАНИЕ В ПЛОСКИЙ СПИСОК ДЛЯ ОТОБРАЖЕНИЯ =====
+        // ===== ПРЕОБРАЗОВАНИЕ В ПЛОСКИЙ СПИСОК =====
         function flattenRules() {
             flatRulesItems = [];
             rulesCategories.forEach(cat => {
                 (cat.sections || []).forEach(sec => {
                     flatRulesItems.push({
                         id: sec.id,
-                        title: sec.title,
+                        title: sec.title || 'Без названия',
                         items: sec.items || [],
-                        category: cat.title
+                        category: cat.title || 'Без категории'
                     });
                 });
             });
@@ -667,7 +660,6 @@
                 const data = await response.json();
                 const cloudData = data.record;
 
-                // Проверяем наличие правил в облаке (в формате rulesCategories)
                 if (cloudData && cloudData.rulesCategories && cloudData.rulesCategories.length > 0) {
                     rulesCategories = cloudData.rulesCategories;
                     flattenRules();
@@ -676,28 +668,24 @@
                     renderRules();
                     updateSyncStatus(true);
                     showToast('✅ Правила обновлены из облака', 'success');
+                } else if (cloudData && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
+                    rulesCategories = [{
+                        id: 'rules_cat_cloud',
+                        title: 'Правила сервера',
+                        sections: cloudData.rulesSections.map((sec, idx) => ({
+                            id: sec.id || 'rule_' + idx,
+                            title: sec.title || 'Раздел ' + (idx + 1),
+                            items: sec.items || []
+                        }))
+                    }];
+                    flattenRules();
+                    saveRulesToStorage();
+                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                    renderRules();
+                    updateSyncStatus(true);
+                    showToast('✅ Правила обновлены из облака (конвертировано)', 'success');
                 } else {
-                    // Пробуем старый формат rulesSections
-                    if (cloudData && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
-                        // Конвертируем старый формат в новый
-                        rulesCategories = [{
-                            id: 'rules_cat_cloud',
-                            title: 'Правила сервера',
-                            sections: cloudData.rulesSections.map((sec, idx) => ({
-                                id: sec.id || 'rule_' + idx,
-                                title: sec.title || 'Раздел ' + (idx + 1),
-                                items: sec.items || []
-                            }))
-                        }];
-                        flattenRules();
-                        saveRulesToStorage();
-                        localStorage.setItem('mugivara_last_update', Date.now().toString());
-                        renderRules();
-                        updateSyncStatus(true);
-                        showToast('✅ Правила обновлены из облака (конвертировано)', 'success');
-                    } else {
-                        showToast('ℹ️ В облаке нет данных правил', 'info');
-                    }
+                    showToast('ℹ️ В облаке нет данных правил', 'info');
                 }
             } catch (error) {
                 console.error('❌ Ошибка загрузки:', error);
@@ -778,7 +766,7 @@
             }
         }
 
-        // ===== ОТОБРАЖЕНИЕ ПРАВИЛ =====
+        // ===== ОТОБРАЖЕНИЕ ПРАВИЛ (ИСПРАВЛЕННОЕ) =====
         function renderRules() {
             const container = document.getElementById('rulesContainer');
             
@@ -796,11 +784,13 @@
 
             container.innerHTML = flatRulesItems.map((section, index) => `
                 <div class="rule-card bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10 mb-6 section">
-                    <div class="flex items-start gap-4 mb-6 stagger-child">
-                        <span class="rule-number">${index + 1}</span>
-                        <div>
-                            <div class="text-xs text-neutral-500 game-font mb-1">${section.category || 'Правила'}</div>
-                            <h2 class="text-2xl sm:text-3xl font-semibold text-white game-heading">${section.title}</h2>
+                    <div class="flex items-center gap-4 mb-6 stagger-child">
+                        <span class="rule-number flex-shrink-0">${index + 1}</span>
+                        <div class="flex-1 min-w-0">
+                            ${section.category && section.category !== 'Без категории' ? `
+                                <div class="text-xs text-neutral-500 game-font mb-0.5">${section.category}</div>
+                            ` : ''}
+                            <h2 class="text-2xl sm:text-3xl font-semibold text-white game-heading leading-tight">${section.title || 'Без названия'}</h2>
                         </div>
                     </div>
                     <div class="space-y-3 text-neutral-300 text-[15px] sm:text-base pl-2 stagger-child game-font">
@@ -884,14 +874,11 @@
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
 
-            // Загрузка правил
             initRules();
             
-            // Онлайн
             setTimeout(updateOnline, 300);
             setInterval(updateOnline, 10000);
             
-            // Анимация
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -911,7 +898,6 @@
                 });
             }, 100);
 
-            // Проверка обновлений из облака
             setTimeout(checkRulesUpdates, 2000);
             setInterval(checkRulesUpdates, 30000);
         });
