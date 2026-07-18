@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mugivara — Подача заявки</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                        'game': ['Montserrat Alternates', 'sans-serif'],
+                        'game-bold': ['Exo 2', 'sans-serif'],
+                        'pixel': ['Pixelify Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Базовые стили */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Montserrat Alternates', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+        }
+        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
+        .game-font { font-family: 'Montserrat Alternates', sans-serif; }
+        .game-bold-font { font-family: 'Exo 2', sans-serif; }
+
+        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) rgba(255,255,255,0.02); }
+
+        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
+        body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
+
+        .nav-link { transition: all 0.2s ease; font-family: 'Montserrat Alternates', sans-serif; font-weight: 500; letter-spacing: 0.03em; }
+        .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
+
+        .nav-btn {
+            padding: 0.4rem 1.2rem;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .nav-btn-ip {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+        }
+        .nav-btn-ip:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.25);
+            color: #fff;
+        }
+        .nav-btn-discord {
+            background: #5865F2;
+            color: #fff;
+            border: none;
+        }
+        .nav-btn-discord:hover {
+            background: #4752C4;
+        }
+
+        .theme-toggle {
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #ccc;
+            cursor: pointer;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+
+        #mobile-menu {
+            animation: slideDown 0.25s ease forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 20px;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.15);
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .admin-link-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.35);
+            border-color: rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+        }
+        body.light .admin-link-btn {
+            background: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.04);
+            color: rgba(0,0,0,0.15);
+        }
+        body.light .admin-link-btn:hover {
+            background: rgba(0,0,0,0.04);
+            color: rgba(0,0,0,0.3);
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        .game-heading {
+            font-family: 'Montserrat Alternates', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        /* Форма заявки */
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #ccc;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #e5e5e5;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-group .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        .form-group .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #fff;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .form-group .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+        .form-group .checkbox-group label a {
+            color: #fff;
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+        .form-group .checkbox-group label a:hover {
+            opacity: 1;
+        }
+
+        .submit-btn {
+            background: #fff;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .submit-btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-status {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: none;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .form-status.success {
+            display: block;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: #4ecdc4;
+        }
+        .form-status.error {
+            display: block;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+
+        /* Кастомный селект */
+        .custom-select {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            user-select: none;
+        }
+        .custom-select .selected {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #e5e5e5;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .custom-select .selected:hover {
+            border-color: rgba(255,255,255,0.15);
+        }
+        .custom-select .selected .arrow {
+            transition: transform 0.3s ease;
+            color: #888;
+            font-size: 14px;
+        }
+        .custom-select.open .selected .arrow {
+            transform: rotate(180deg);
+        }
+        .custom-select .selected .placeholder {
+            color: #666;
+        }
+        .custom-select .selected .value-text {
+            color: #e5e5e5;
+        }
+
+        .custom-select .options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(20,20,30,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 100;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .custom-select.open .options {
+            max-height: 300px;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+            overflow-y: auto;
+        }
+        .custom-select .options .option {
+            padding: 12px 16px;
+            color: #aaa;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .custom-select .options .option:last-child {
+            border-bottom: none;
+        }
+        .custom-select .options .option:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+        .custom-select .options .option.selected-option {
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+        }
+        .custom-select .options .option .option-icon {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+            opacity: 0.6;
+        }
+        .custom-select .options .option:hover .option-icon {
+            opacity: 1;
+        }
+        .custom-select .options::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-select .options::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-select .options::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+        }
+
+        /* Светлая тема */
+        body.light {
+            background-color: #f0f0f0;
+            color: #1a1a1a;
+        }
+        body.light .bg-neutral-950 { background-color: #e8e8e8; }
+        body.light .bg-neutral-900 { background-color: #dddddd; }
+        body.light .bg-neutral-800 { background-color: #d0d0d0; }
+        body.light .bg-black { background-color: #d5d5d5; }
+        body.light .border-neutral-800 { border-color: #bbbbbb; }
+        body.light .border-neutral-700 { border-color: #aaaaaa; }
+        body.light .border-neutral-600 { border-color: #999999; }
+        body.light .border-white\/10 { border-color: rgba(0,0,0,0.08); }
+        body.light .border-white\/20 { border-color: rgba(0,0,0,0.15); }
+        body.light .text-white { color: #111111 !important; }
+        body.light .text-neutral-400 { color: #444444 !important; }
+        body.light .text-neutral-500 { color: #555555 !important; }
+        body.light .text-neutral-300 { color: #333333 !important; }
+        body.light .text-neutral-200 { color: #222222 !important; }
+        body.light .text-white\/80 { color: #333333 !important; }
+        body.light .text-white\/70 { color: #444444 !important; }
+        body.light .text-white\/90 { color: #222222 !important; }
+        body.light .text-white\/60 { color: #444444 !important; }
+        body.light .text-white\/40 { color: #666666 !important; }
+        body.light #navbar { 
+            background-color: rgba(235,235,235,0.95) !important; 
+            border-color: #bbbbbb !important; 
+        }
+        body.light #navbar .text-white { color: #111111 !important; }
+        body.light #navbar .text-neutral-300 { color: #333333 !important; }
+        body.light #navbar .text-white\/80 { color: #333333 !important; }
+        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+        body.light .theme-toggle { 
+            border-color: rgba(0,0,0,0.15) !important; 
+            color: #333 !important; 
+        }
+        body.light .theme-toggle:hover { 
+            background: rgba(0,0,0,0.06) !important; 
+            color: #000 !important; 
+        }
+        body.light .nav-btn-ip {
+            background: rgba(0,0,0,0.05) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+            color: #333 !important;
+        }
+        body.light .nav-btn-ip:hover {
+            background: rgba(0,0,0,0.1) !important;
+            border-color: rgba(0,0,0,0.2) !important;
+            color: #000 !important;
+        }
+        body.light .form-group label { color: #444; }
+        body.light .form-group input,
+        body.light .form-group textarea {
+            background: rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.08);
+            color: #1a1a1a;
+        }
+        body.light .form-group input:focus,
+        body.light .form-group textarea:focus {
+            border-color: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.06);
+        }
+        body.light .submit-btn { background: #222; color: #f5f5f5; }
+        body.light .submit-btn:hover { background: #444; }
+        body.light .form-status.success { background: rgba(74, 222, 128, 0.1); border-color: rgba(74, 222, 128, 0.3); color: #2a7a6a; }
+        body.light .form-status.error { background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3); color: #cc3333; }
+        body.light .bg-neutral-900\/60 { background-color: rgba(200,200,200,0.6); }
+        body.light #mobile-menu {
+            background-color: #e8e8e8 !important;
+            border-color: #bbbbbb !important;
+        }
+        body.light #mobile-menu .text-white { color: #111111 !important; }
+        body.light #mobile-menu .border-neutral-800 { border-color: #bbbbbb !important; }
+        body.light #mobile-menu .bg-neutral-800 { background-color: #ccc !important; }
+        body.light #mobile-menu .bg-neutral-800:hover { background-color: #bbb !important; }
+        body.light #mobile-menu .border-neutral-600 { border-color: #999 !important; }
+        body.light .custom-select .selected {
+            background: rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.08);
+            color: #1a1a1a;
+        }
+        body.light .custom-select .selected .value-text { color: #1a1a1a; }
+        body.light .custom-select .selected .placeholder { color: #999; }
+        body.light .custom-select .options {
+            background: rgba(240,240,245,0.95);
+            border-color: rgba(0,0,0,0.08);
+        }
+        body.light .custom-select .options .option { color: #666; border-bottom-color: rgba(0,0,0,0.03); }
+        body.light .custom-select .options .option:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .custom-select .options .option.selected-option { background: rgba(0,0,0,0.03); color: #1a1a1a; }
+        body.light .custom-select .options::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
+        body.light .form-group .checkbox-group label a { color: #1a1a1a; }
+
+        .glitch-text {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(255,255,255,0.05);
+            animation: glitchPulse 3s ease-in-out infinite;
+        }
+        @keyframes glitchPulse {
+            0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02); }
+            50% { text-shadow: 0 0 40px rgba(255,255,255,0.1), 0 0 80px rgba(255,255,255,0.04), 0 0 120px rgba(255,255,255,0.02); }
+        }
+        body.light .glitch-text {
+            text-shadow: 0 0 30px rgba(0,0,0,0.04);
+        }
+
+        .online-dot {
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: toastSlide 0.4s ease;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
+        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
+        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
+
+        @media (max-width: 640px) {
+            .form-container { padding: 0 10px; }
+            .form-group input,
+            .form-group textarea { font-size: 14px; padding: 10px 14px; }
+            .custom-select .selected { font-size: 14px; padding: 10px 14px; min-height: 46px; }
+            .custom-select .options .option { padding: 10px 14px; font-size: 14px; }
+            .admin-link-btn { padding: 4px 14px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body id="app-body">
+
+    <!-- NAVBAR -->
+    <nav id="navbar" class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg game-font">Z</div>
+                <span class="game-font text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="index.html" class="text-white font-semibold nav-link">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-book"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-map"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-scroll"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition nav-link text-white/80"><i class="fa-solid fa-pen-to-square"></i> Заявка</a>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="hidden sm:flex items-center gap-1.5 bg-neutral-900/60 px-3 py-1.5 rounded-full border border-white/10 text-xs">
+                    <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
+                    <span class="font-medium text-white/80 game-font">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-white game-font">Загрузка...</span>
+                </div>
+
+                <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+
+                <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
+                    <i class="fa-solid fa-copy text-xs"></i>
+                    <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
+                    <span class="sm:hidden">IP</span>
+                </button>
+                
+                <a href="https://discord.gg/W226UHyv6f" target="_blank" 
+                   class="nav-btn nav-btn-discord flex items-center gap-1.5">
+                    <i class="fa-brands fa-discord"></i> 
+                    <span class="hidden sm:inline">DISCORD</span>
+                </a>
+
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
+            <div class="flex flex-col gap-3 text-base font-medium">
+                <a href="index.html" class="text-white py-2 game-font">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
+                <div class="pt-3 border-t border-neutral-800">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white game-font">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Скопировать IP: play.mugivaracraft.ru</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====== ФОРМА ЗАЯВКИ ====== -->
+    <div class="pt-20 pb-12 px-4 sm:px-6">
+        <div class="form-container">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl sm:text-5xl font-semibold mb-3 glitch-text text-white">📝 Подача заявки</h1>
+                <p class="text-neutral-400 game-font">Заполните анкету для получения доступа на сервер</p>
+                <p class="text-xs text-neutral-500 mt-2 game-font">
+                    <i class="fa-regular fa-circle-check text-green-400"></i>
+                    <span>Заявки обрабатываются в течение 24 часов</span>
+                </p>
+            </div>
+
+            <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10">
+                <form id="applyForm" onsubmit="submitApplication(event)">
+                    <!-- 1. Ник -->
+                    <div class="form-group">
+                        <label for="minecraft_nick">1. Твой игровой ник (Minecraft) <span class="text-red-400">*</span></label>
+                        <input type="text" id="minecraft_nick" placeholder="Например: PlayerName" required>
+                    </div>
+
+                    <!-- 2. Возраст -->
+                    <div class="form-group">
+                        <label for="age">2. Твой возраст <span class="text-red-400">*</span></label>
+                        <input type="number" id="age" placeholder="Например: 16" min="8" max="99" required>
+                    </div>
+
+                    <!-- 3. Как узнал — КАСТОМНЫЙ СЕЛЕКТ -->
+                    <div class="form-group">
+                        <label for="how_found">3. Как ты узнал о нас? <span class="text-red-400">*</span></label>
+                        <div class="custom-select" id="howFoundSelect">
+                            <div class="selected" onclick="toggleSelect()">
+                                <span class="placeholder" id="selectedText">Выберите вариант...</span>
+                                <span class="arrow"><i class="fa-regular fa-chevron-down"></i></span>
+                            </div>
+                            <div class="options" id="optionsList">
+                                <div class="option" data-value="discord" onclick="selectOption('discord')">
+                                    <span class="option-icon"><i class="fa-brands fa-discord"></i></span>
+                                    Discord
+                                </div>
+                                <div class="option" data-value="tiktok" onclick="selectOption('tiktok')">
+                                    <span class="option-icon"><i class="fa-brands fa-tiktok"></i></span>
+                                    TikTok
+                                </div>
+                                <div class="option" data-value="youtube" onclick="selectOption('youtube')">
+                                    <span class="option-icon"><i class="fa-brands fa-youtube"></i></span>
+                                    YouTube
+                                </div>
+                                <div class="option" data-value="friend" onclick="selectOption('friend')">
+                                    <span class="option-icon"><i class="fa-regular fa-user-group"></i></span>
+                                    От друзей
+                                </div>
+                                <div class="option" data-value="other" onclick="selectOption('other')">
+                                    <span class="option-icon"><i class="fa-regular fa-ellipsis"></i></span>
+                                    Другое
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="how_found" value="">
+                    </div>
+
+                    <!-- 4. Опыт -->
+                    <div class="form-group">
+                        <label for="experience">4. Есть ли у тебя опыт игры на хардкорных/ванильных серверах? <span class="text-red-400">*</span></label>
+                        <textarea id="experience" placeholder="Расскажи о своем опыте..." required></textarea>
+                    </div>
+
+                    <!-- 5. Ожидания -->
+                    <div class="form-group">
+                        <label for="expectations">5. Чего ты ждёшь от MugiwaraCraft? <span class="text-red-400">*</span></label>
+                        <textarea id="expectations" placeholder="Что ты хочешь найти на нашем сервере?" required></textarea>
+                    </div>
+
+                    <!-- 6. Правила -->
+                    <div class="form-group">
+                        <label>6. Подтверждаешь ли ты ознакомление с Кодексом Мугивар? <span class="text-red-400">*</span></label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="rules_agree" required>
+                            <label for="rules_agree" class="game-font">Да, я ознакомился(ась) с <a href="rules.html" target="_blank">правилами сервера</a> и обязуюсь их соблюдать</label>
+                        </div>
+                    </div>
+
+                    <!-- 7. Discord -->
+                    <div class="form-group">
+                        <label for="discord_nick">7. Оставь дс/тг/вк для связи <span class="text-red-400">*</span></label>
+                        <input type="text" id="discord_nick" placeholder="@твойник" required>
+                        <div style="font-size:12px;color:#666;margin-top:4px;font-family:'Montserrat Alternates',sans-serif;">Например: @player123</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fa-regular fa-paper-plane"></i> Отправить заявку
+                    </button>
+
+                    <div id="formStatus" class="form-status"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER с кнопкой админки -->
+    <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+            <div class="flex justify-center">
+                <a href="admin.html" class="admin-link-btn">
+                    <i class="fa-regular fa-crown"></i>
+                    <span>Управление сайтом</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================================
+        // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
+        // ============================================================
+        
+        function copyIP() {
+            navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
+                const el = document.getElementById("ip-text");
+                const old = el.textContent;
+                el.textContent = "СКОПИРОВАНО ✓";
+                setTimeout(() => {
+                    if (el.classList.contains('hidden')) {
+                        document.getElementById("ip-text").textContent = "IP";
+                    } else {
+                        el.textContent = old;
+                    }
+                }, 2000);
+            });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-button');
+            const icon = btn.querySelector('i');
+            menu.classList.toggle('hidden');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.querySelector('#themeToggle i');
+            body.classList.toggle('light');
+            if (body.classList.contains('light')) {
+                icon.className = 'fa-regular fa-sun';
+                localStorage.setItem('theme', 'light');
+            } else {
+                icon.className = 'fa-regular fa-moon';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        async function updateOnline() {
+            const el = document.getElementById('online-count');
+            try {
+                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
+                    signal: AbortSignal.timeout(4000)
+                });
+                const data = await resp.json();
+                if (data.online) {
+                    el.textContent = `${data.players.online}/${data.players.max}`;
+                    el.className = "font-semibold text-white game-font";
+                } else {
+                    el.textContent = "0/100";
+                    el.className = "font-semibold text-neutral-500 game-font";
+                }
+            } catch {
+                el.textContent = "—";
+                el.className = "font-semibold text-neutral-500 game-font";
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        // ============================================================
+        // ====== КАСТОМНЫЙ СЕЛЕКТ ======
+        // ============================================================
+        let isSelectOpen = false;
+
+        function toggleSelect() {
+            const select = document.getElementById('howFoundSelect');
+            isSelectOpen = !isSelectOpen;
+            select.classList.toggle('open', isSelectOpen);
+        }
+
+        function selectOption(value) {
+            const options = document.querySelectorAll('.options .option');
+            const selectedText = document.getElementById('selectedText');
+            const hiddenInput = document.getElementById('how_found');
+            
+            options.forEach(opt => opt.classList.remove('selected-option'));
+            
+            const selected = document.querySelector(`.options .option[data-value="${value}"]`);
+            if (selected) {
+                selected.classList.add('selected-option');
+                selectedText.textContent = selected.textContent.trim();
+                selectedText.className = 'value-text';
+                hiddenInput.value = value;
+            }
+            
+            const select = document.getElementById('howFoundSelect');
+            select.classList.remove('open');
+            isSelectOpen = false;
+        }
+
+        document.addEventListener('click', (e) => {
+            const select = document.getElementById('howFoundSelect');
+            if (!select.contains(e.target)) {
+                select.classList.remove('open');
+                isSelectOpen = false;
+            }
+        });
+
+        // ============================================================
+        // ====== ОТПРАВКА ЗАЯВКИ ======
+        // ============================================================
+        function submitApplication(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('applyForm');
+            const status = document.getElementById('formStatus');
+            const btn = document.getElementById('submitBtn');
+            
+            const data = {
+                id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+                date: new Date().toISOString(),
+                status: 'pending',
+                minecraft_nick: document.getElementById('minecraft_nick').value.trim(),
+                age: document.getElementById('age').value.trim(),
+                how_found: document.getElementById('how_found').value,
+                experience: document.getElementById('experience').value.trim(),
+                expectations: document.getElementById('expectations').value.trim(),
+                rules_agree: document.getElementById('rules_agree').checked,
+                discord_nick: document.getElementById('discord_nick').value.trim()
+            };
+
+            if (!data.minecraft_nick || !data.age || !data.how_found || !data.experience || !data.expectations || !data.discord_nick) {
+                status.textContent = '❌ Пожалуйста, заполните все обязательные поля';
+                status.className = 'form-status error';
+                return;
+            }
+
+            if (!data.rules_agree) {
+                status.textContent = '❌ Вы должны подтвердить ознакомление с правилами';
+                status.className = 'form-status error';
+                return;
+            }
+
+            if (parseInt(data.age) < 8 || parseInt(data.age) > 99) {
+                status.textContent = '❌ Пожалуйста, укажите корректный возраст (от 8 до 99 лет)';
+                status.className = 'form-status error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Отправка...';
+
+            let applications = [];
+            try {
+                const saved = localStorage.getItem('mugivara_applications');
+                if (saved) {
+                    applications = JSON.parse(saved);
+                }
+            } catch (e) {}
+
+            applications.push(data);
+            
+            try {
+                localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+                
+                // Также сохраняем в общее хранилище для синхронизации
+                const mainData = localStorage.getItem('mugivara_main_data');
+                let main = mainData ? JSON.parse(mainData) : {};
+                main.applications = applications;
+                localStorage.setItem('mugivara_main_data', JSON.stringify(main));
+                
+                status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения в течение 24 часов.';
+                status.className = 'form-status success';
+                form.reset();
+                document.getElementById('selectedText').textContent = 'Выберите вариант...';
+                document.getElementById('selectedText').className = 'placeholder';
+                document.getElementById('how_found').value = '';
+                document.querySelectorAll('.options .option').forEach(opt => opt.classList.remove('selected-option'));
+                
+                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
+                btn.disabled = false;
+                
+                showToast('✅ Заявка отправлена!', 'success');
+            } catch (e) {
+                status.textContent = '❌ Ошибка при сохранении заявки. Попробуйте позже.';
+                status.className = 'form-status error';
+                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
+                btn.disabled = false;
+                showToast('⚠️ Ошибка отправки заявки', 'error');
+            }
+        }
+
+        // ============================================================
+        // ====== ИНИЦИАЛИЗАЦИЯ ======
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const icon = document.querySelector('#themeToggle i');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light');
+                icon.className = 'fa-regular fa-sun';
+            } else {
+                icon.className = 'fa-regular fa-moon';
+            }
+
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+
+            setTimeout(updateOnline, 300);
+            setInterval(updateOnline, 10000);
+        });
+    </script>
+</body>
+</html>

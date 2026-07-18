@@ -4,178 +4,766 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Правила Сервера</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                        'game': ['Montserrat Alternates', 'sans-serif'],
+                        'game-bold': ['Exo 2', 'sans-serif'],
+                        'pixel': ['Pixelify Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@400;700&display=swap');
-        
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
+        /* Базовые стили */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Montserrat Alternates', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #0a0a0a;
+            color: #e5e5e5;
         }
-        .pixel-font {
-            font-family: 'Pixelify Sans', sans-serif;
+        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
+        .game-font { font-family: 'Montserrat Alternates', sans-serif; }
+        .game-bold-font { font-family: 'Exo 2', sans-serif; }
+
+        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) rgba(255,255,255,0.02); }
+
+        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
+        body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
+
+        .nav-link { transition: all 0.2s ease; font-family: 'Montserrat Alternates', sans-serif; font-weight: 500; letter-spacing: 0.03em; }
+        .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
+
+        .nav-btn {
+            padding: 0.4rem 1.2rem;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            font-family: 'Montserrat Alternates', sans-serif;
         }
+        .nav-btn-ip {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+        }
+        .nav-btn-ip:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.25);
+            color: #fff;
+        }
+        .nav-btn-discord {
+            background: #5865F2;
+            color: #fff;
+            border: none;
+        }
+        .nav-btn-discord:hover {
+            background: #4752C4;
+        }
+
+        .theme-toggle {
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #ccc;
+            cursor: pointer;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+
+        #mobile-menu {
+            animation: slideDown 0.25s ease forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 20px;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.15);
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .admin-link-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.35);
+            border-color: rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+        }
+        body.light .admin-link-btn {
+            background: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.04);
+            color: rgba(0,0,0,0.15);
+        }
+        body.light .admin-link-btn:hover {
+            background: rgba(0,0,0,0.04);
+            color: rgba(0,0,0,0.3);
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        .game-heading {
+            font-family: 'Montserrat Alternates', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        /* Правила */
         .rule-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .rule-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
+        }
+        .rule-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+            font-family: 'Exo 2', sans-serif;
+        }
+        body.light .rule-number {
+            background: rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.08);
+            color: #111;
         }
 
-        /* Анимация мобильного меню */
-        #mobile-menu {
-            animation: slideDown 0.3s ease forwards;
+        /* Анимация появления */
+        .section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section .stagger-child {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
+        }
+        .section.visible .stagger-child {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Светлая тема */
+        body.light {
+            background-color: #f0f0f0;
+            color: #1a1a1a;
+        }
+        body.light .bg-neutral-950 { background-color: #e8e8e8; }
+        body.light .bg-neutral-900 { background-color: #dddddd; }
+        body.light .bg-neutral-800 { background-color: #d0d0d0; }
+        body.light .bg-black { background-color: #d5d5d5; }
+        body.light .border-neutral-800 { border-color: #bbbbbb; }
+        body.light .border-neutral-700 { border-color: #aaaaaa; }
+        body.light .border-neutral-600 { border-color: #999999; }
+        body.light .border-white\/10 { border-color: rgba(0,0,0,0.08); }
+        body.light .border-white\/20 { border-color: rgba(0,0,0,0.15); }
+        body.light .text-white { color: #111111 !important; }
+        body.light .text-neutral-400 { color: #444444 !important; }
+        body.light .text-neutral-500 { color: #555555 !important; }
+        body.light .text-neutral-300 { color: #333333 !important; }
+        body.light .text-neutral-200 { color: #222222 !important; }
+        body.light .text-white\/80 { color: #333333 !important; }
+        body.light .text-white\/70 { color: #444444 !important; }
+        body.light .text-white\/90 { color: #222222 !important; }
+        body.light .text-white\/60 { color: #444444 !important; }
+        body.light .text-white\/40 { color: #666666 !important; }
+        body.light #navbar { 
+            background-color: rgba(235,235,235,0.95) !important; 
+            border-color: #bbbbbb !important; 
+        }
+        body.light #navbar .text-white { color: #111111 !important; }
+        body.light #navbar .text-neutral-300 { color: #333333 !important; }
+        body.light #navbar .text-white\/80 { color: #333333 !important; }
+        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+        body.light .theme-toggle { 
+            border-color: rgba(0,0,0,0.15) !important; 
+            color: #333 !important; 
+        }
+        body.light .theme-toggle:hover { 
+            background: rgba(0,0,0,0.06) !important; 
+            color: #000 !important; 
+        }
+        body.light .nav-btn-ip {
+            background: rgba(0,0,0,0.05) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+            color: #333 !important;
+        }
+        body.light .nav-btn-ip:hover {
+            background: rgba(0,0,0,0.1) !important;
+            border-color: rgba(0,0,0,0.2) !important;
+            color: #000 !important;
+        }
+        body.light .rule-card { 
+            background-color: #e0e0e0 !important; 
+            border-color: #bbbbbb !important; 
+        }
+        body.light .rule-card .text-white { color: #111111 !important; }
+        body.light .rule-card .text-neutral-300 { color: #333333 !important; }
+        body.light .rule-card .text-neutral-400 { color: #444444 !important; }
+        body.light .rule-card .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+        body.light .rule-card .border-white\/20 { border-color: rgba(0,0,0,0.15) !important; }
+        body.light .text-red-400 { color: #aa3333 !important; }
+        body.light .text-yellow-400 { color: #886622 !important; }
+        body.light .text-orange-400 { color: #995522 !important; }
+        body.light .border-l-4 { border-color: #555 !important; }
+        body.light .bg-neutral-800 { background-color: #ccc !important; }
+        body.light .bg-neutral-800:hover { background-color: #bbb !important; }
+        body.light .bg-neutral-950\/95 { background-color: rgba(220,220,220,0.95) !important; }
+        body.light .bg-neutral-900\/60 { background-color: rgba(200,200,200,0.6) !important; }
+        body.light #mobile-menu {
+            background-color: #e8e8e8 !important;
+            border-color: #bbbbbb !important;
+        }
+        body.light #mobile-menu .text-white { color: #111111 !important; }
+        body.light #mobile-menu .border-neutral-800 { border-color: #bbbbbb !important; }
+        body.light #mobile-menu .bg-neutral-800 { background-color: #ccc !important; }
+        body.light #mobile-menu .bg-neutral-800:hover { background-color: #bbb !important; }
+        body.light #mobile-menu .border-neutral-600 { border-color: #999 !important; }
+
+        .glitch-text {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(255,255,255,0.05);
+            animation: glitchPulse 3s ease-in-out infinite;
+        }
+        @keyframes glitchPulse {
+            0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02); }
+            50% { text-shadow: 0 0 40px rgba(255,255,255,0.1), 0 0 80px rgba(255,255,255,0.04), 0 0 120px rgba(255,255,255,0.02); }
+        }
+        body.light .glitch-text {
+            text-shadow: 0 0 30px rgba(0,0,0,0.04);
+        }
+
+        .online-dot {
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .sync-btn {
+            padding: 4px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+            color: #888;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .sync-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            border-color: rgba(255,255,255,0.12);
+        }
+        body.light .sync-btn {
+            border-color: rgba(0,0,0,0.06);
+            color: #666;
+        }
+        body.light .sync-btn:hover {
+            background: rgba(0,0,0,0.04);
+            color: #000;
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: toastSlide 0.4s ease;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
+        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
+        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
+
+        @media (max-width: 640px) {
+            .login-box { padding: 32px 24px; }
+            .admin-nav { flex-direction: column; align-items: stretch; }
+            .admin-tabs { justify-content: center; }
+            .screenshot-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .admin-panel { padding: 16px; }
+            .application-card .app-details { grid-template-columns: 1fr; }
+            .modal-content { padding: 20px; margin: 10px; }
+            .settings-section .setting-row { flex-direction: column; align-items: stretch; }
+            .settings-section .setting-row label { min-width: auto; }
+            .settings-section .setting-row input { min-width: auto; }
+            .admin-link-btn { padding: 4px 14px; font-size: 10px; }
         }
     </style>
 </head>
-<body class="bg-neutral-950 text-neutral-200">
+<body id="app-body">
 
     <!-- NAVBAR -->
-    <nav class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <nav id="navbar" class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl">M</div>
-                <span class="pixel-font text-2xl sm:text-3xl tracking-wider">MUGIWARA</span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg game-font">Z</div>
+                <span class="game-font text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
             </div>
 
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="index.html" class="hover:text-emerald-400 transition">Главная</a>
-                <a href="wiki.html" class="hover:text-emerald-400 transition">📖 Вики</a>
-                <a href="mapa.html" class="hover:text-emerald-400 transition">🗺️ Карта</a>
-                <a href="rules.html" class="text-emerald-400 font-semibold">📜 Правила</a>
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="index.html" class="text-white font-semibold nav-link">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-book"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-map"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-scroll"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition nav-link text-white/80"><i class="fa-solid fa-pen-to-square"></i> Заявка</a>
             </div>
 
-            <div class="flex items-center gap-3">
-                <button onclick="copyIP()" 
-                        class="px-4 sm:px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 hover:border-emerald-500 rounded-2xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-copy"></i>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="hidden sm:flex items-center gap-1.5 bg-neutral-900/60 px-3 py-1.5 rounded-full border border-white/10 text-xs">
+                    <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
+                    <span class="font-medium text-white/80 game-font">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-white game-font">Загрузка...</span>
+                </div>
+
+                <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+
+                <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
+                    <i class="fa-solid fa-copy text-xs"></i>
                     <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
                     <span class="sm:hidden">IP</span>
                 </button>
+                
+                <a href="https://discord.gg/W226UHyv6f" target="_blank" 
+                   class="nav-btn nav-btn-discord flex items-center gap-1.5">
+                    <i class="fa-brands fa-discord"></i> 
+                    <span class="hidden sm:inline">DISCORD</span>
+                </a>
 
-                <!-- Hamburger -->
-                <button id="mobile-menu-button" class="md:hidden p-2 text-2xl text-neutral-300 hover:text-white">
-                    <i class="fa-solid fa-bars"></i>
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-5 px-6">
-            <div class="flex flex-col gap-4 text-base font-medium">
-                <a href="index.html" class="py-2 hover:text-emerald-400">Главная</a>
-                <a href="wiki.html" class="py-2 hover:text-emerald-400">📖 Вики</a>
-                <a href="mapa.html" class="py-2 hover:text-emerald-400">🗺️ Карта</a>
-                <a href="rules.html" class="py-2 text-emerald-400">📜 Правила</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
+            <div class="flex flex-col gap-3 text-base font-medium">
+                <a href="index.html" class="text-white py-2 game-font">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
+                <div class="pt-3 border-t border-neutral-800">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white game-font">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Скопировать IP: play.mugivaracraft.ru</span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
+    <!-- ====== ОСНОВНОЙ КОНТЕНТ ====== -->
     <div class="pt-20 pb-12 px-4 sm:px-6 max-w-4xl mx-auto">
-        <div class="text-center mb-12 sm:mb-16">
-            <h1 class="text-4xl sm:text-5xl font-semibold mb-4">📜 Кодекс Мугивар</h1>
-            <p class="text-emerald-400 text-lg">Правила сервера чистого выживания</p>
-        </div>
-
-        <!-- Раздел 1 -->
-        <div class="rule-card bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-10 mb-8">
-            <h2 class="text-2xl sm:text-3xl font-semibold mb-6 flex items-center gap-3">
-                <span class="text-emerald-500">1</span> Нарушения, связанные с чужим имуществом
-            </h2>
-            <div class="space-y-6 text-neutral-300 text-[15px] sm:text-base">
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>1.</strong> Использование чужих ферм без разрешения владельца.
-                </div>
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>2.</strong> Использование чужих трейдхоллов без разрешения.
-                </div>
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>3.</strong> Действия с чужой территорией без согласия (радиус 50 блоков от построек).<br>
-                    <span class="text-red-400 text-sm">Особенно запрещено строительство с целью оскорбления хозяина.</span>
-                </div>
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>4.</strong> Действия с чужими хранилищами без согласия.
-                </div>
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>4.1</strong> Принудительный обмен ресурсами.
-                </div>
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>4.2</strong> Разрушение чужих хранилищ с целью навредить.
-                </div>
-                <div class="pl-5 sm:pl-6 border-l-4 border-emerald-500">
-                    <strong>5.</strong> Гриферство в любом виде без соглашения.
-                </div>
+        <div class="text-center mb-12 sm:mb-16 section">
+            <h1 class="text-4xl sm:text-5xl font-semibold mb-4 glitch-text text-white stagger-child">📜 Кодекс Мугивар</h1>
+            <p class="text-white/60 text-lg stagger-child game-font">Правила сервера чистого выживания</p>
+            <div class="mt-2 text-xs text-neutral-500 stagger-child game-font">
+                <i class="fa-regular fa-circle-check text-green-400"></i>
+                <span>Синхронизировано с облаком</span>
             </div>
+            <button onclick="loadAllRulesFromCloud()" class="sync-btn stagger-child" style="margin-top:8px;">
+                <i class="fa-regular fa-cloud-arrow-down"></i> Обновить правила
+            </button>
         </div>
 
-        <!-- Раздел 2 -->
-        <div class="rule-card bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-10 mb-8">
-            <h2 class="text-2xl sm:text-3xl font-semibold mb-6 flex items-center gap-3">
-                <span class="text-emerald-500">2</span> Общение в игре и Discord
-            </h2>
-            <div class="space-y-5 text-neutral-300 text-[15px] sm:text-base">
-                <div><strong>2.1</strong> Личные оскорбления и переход на личности.</div>
-                <div><strong>2.2</strong> Флуд, спам, крик (капс) без причины.</div>
-                <div><strong>2.3</strong> Обсуждение политики, религии и провокационных тем.</div>
-                <div><strong>2.4</strong> Доксинг (распространение личных данных).</div>
-                <div><strong>2.5</strong> Ложные доносы и обман администрации.</div>
-            </div>
+        <div id="rulesContainer" class="rules-page-content">
+            <!-- Загружается через JS -->
         </div>
 
-        <!-- Раздел 3 -->
-        <div class="rule-card bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-10 mb-8">
-            <h2 class="text-2xl sm:text-3xl font-semibold mb-6 flex items-center gap-3">
-                <span class="text-emerald-500">3</span> Административные нарушения
-            </h2>
-            <div class="space-y-5 text-neutral-300 text-[15px] sm:text-base">
-                <div><strong>3.1</strong> Обход бана / мута.</div>
-                <div><strong>3.2</strong> Отказ предоставить скриншоты по запросу администрации.</div>
-                <div><strong>3.3</strong> Систематическое токсичное поведение.</div>
-            </div>
-        </div>
-
-        <div class="text-center mt-16 text-neutral-400 italic text-sm sm:text-base">
-            Нарушение правил может повлечь предупреждение, мут или бан.<br>
-            <span class="text-emerald-500">Береги себя и других. Играй честно 🙌</span>
+        <div class="text-center mt-12 text-neutral-400 italic text-sm sm:text-base section">
+            <p class="stagger-child game-font">Нарушение правил может повлечь предупреждение, мут или бан.</p>
+            <p class="text-white/80 mt-1 stagger-child game-font">Береги себя и других. Играй честно 🙌</p>
         </div>
     </div>
 
+    <!-- FOOTER с кнопкой админки -->
+    <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+            <div class="flex justify-center">
+                <a href="admin.html" class="admin-link-btn">
+                    <i class="fa-regular fa-crown"></i>
+                    <span>Управление сайтом</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
     <script>
+        // ============================================================
+        // ====== КОНФИГУРАЦИЯ JSONBin.io ======
+        // ============================================================
+        const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
+        const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
+
+        // ============================================================
+        // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
+        // ============================================================
+        
         function copyIP() {
             navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
                 const old = el.textContent;
                 el.textContent = "СКОПИРОВАНО ✓";
-                setTimeout(() => el.textContent = old, 2000);
+                setTimeout(() => {
+                    if (el.classList.contains('hidden')) {
+                        document.getElementById("ip-text").textContent = "IP";
+                    } else {
+                        el.textContent = old;
+                    }
+                }, 2000);
             });
         }
 
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            const icon = document.querySelector('#mobile-menu-button i');
-            
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
+            const btn = document.getElementById('mobile-menu-button');
+            const icon = btn.querySelector('i');
+            menu.classList.toggle('hidden');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.querySelector('#themeToggle i');
+            body.classList.toggle('light');
+            if (body.classList.contains('light')) {
+                icon.className = 'fa-regular fa-sun';
+                localStorage.setItem('theme', 'light');
             } else {
-                menu.classList.add('hidden');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                icon.className = 'fa-regular fa-moon';
+                localStorage.setItem('theme', 'dark');
             }
         }
 
-        // Инициализация мобильного меню
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburger = document.getElementById('mobile-menu-button');
-            if (hamburger) {
-                hamburger.addEventListener('click', toggleMobileMenu);
+        function showToast(message, type = 'info') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        // ============================================================
+        // ====== ПРАВИЛА ======
+        // ============================================================
+        let rulesSections = [];
+
+        function loadRulesFromStorage() {
+            try {
+                const data = localStorage.getItem('admin_rules_sections');
+                if (data) {
+                    rulesSections = JSON.parse(data);
+                    return true;
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function getDefaultRulesSections() {
+            return [
+                { 
+                    id: 'rules1', 
+                    title: 'Нарушения, связанные с чужим имуществом', 
+                    items: [
+                        'Использование чужих ферм без разрешения владельца',
+                        'Использование чужих трейдхоллов без разрешения',
+                        'Действия с чужой территорией без согласия (радиус 50 блоков от построек)',
+                        'Действия с чужими хранилищами без согласия',
+                        'Принудительный обмен ресурсами',
+                        'Разрушение чужих хранилищ с целью навредить',
+                        'Гриферство в любом виде без соглашения'
+                    ]
+                },
+                { 
+                    id: 'rules2', 
+                    title: 'Общение в игре и Discord', 
+                    items: [
+                        'Личные оскорбления и переход на личности',
+                        'Флуд, спам, крик (капс) без причины',
+                        'Обсуждение политики, религии и провокационных тем',
+                        'Доксинг (распространение личных данных)',
+                        'Ложные доносы и обман администрации'
+                    ]
+                },
+                { 
+                    id: 'rules3', 
+                    title: 'Административные нарушения', 
+                    items: [
+                        'Обход бана / мута',
+                        'Отказ предоставить скриншоты по запросу администрации',
+                        'Систематическое токсичное поведение'
+                    ]
+                },
+                { 
+                    id: 'rules4', 
+                    title: 'Наказания', 
+                    items: [
+                        'Предупреждение — за незначительные нарушения',
+                        'Мут — за нарушения в чате (от 10 минут до 7 дней)',
+                        'Бан — за гриферство, повторные нарушения, обход блокировок'
+                    ]
+                }
+            ];
+        }
+
+        // Загрузка правил из облака
+        async function loadAllRulesFromCloud() {
+            const btn = event?.target;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Загрузка...';
+                btn.disabled = true;
             }
+
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+
+                if (!response.ok) throw new Error('Ошибка загрузки');
+
+                const data = await response.json();
+                const cloudData = data.record;
+
+                if (cloudData && cloudData.rulesSections) {
+                    localStorage.setItem('admin_rules_sections', JSON.stringify(cloudData.rulesSections));
+                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                    const loaded = loadRulesFromStorage();
+                    if (loaded) {
+                        renderRules();
+                        showToast('✅ Правила обновлены из облака', 'success');
+                    }
+                } else {
+                    showToast('ℹ️ В облаке нет данных правил', 'info');
+                }
+            } catch (error) {
+                console.error('❌ Ошибка загрузки:', error);
+                showToast('⚠️ Ошибка загрузки правил', 'error');
+            }
+
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Автоматическая проверка обновлений
+        async function checkRulesUpdates() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const cloudData = data.record;
+
+                if (cloudData && cloudData.updated) {
+                    const cloudTime = new Date(cloudData.updated).getTime();
+                    const localTime = parseInt(localStorage.getItem('mugivara_last_update') || '0');
+
+                    if (cloudTime > localTime && cloudData.rulesSections) {
+                        console.log('🔄 Найдены обновления правил в облаке');
+                        localStorage.setItem('admin_rules_sections', JSON.stringify(cloudData.rulesSections));
+                        localStorage.setItem('mugivara_last_update', Date.now().toString());
+                        const loaded = loadRulesFromStorage();
+                        if (loaded) {
+                            renderRules();
+                            showToast('🔄 Правила обновлены из облака', 'info');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('⚠️ Ошибка проверки обновлений:', error);
+            }
+        }
+
+        function renderRules() {
+            const container = document.getElementById('rulesContainer');
+            
+            if (!rulesSections || rulesSections.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 text-center">
+                        <p class="text-neutral-400 game-font">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
+                        <a href="admin.html" class="inline-block mt-4 text-white/60 hover:text-white transition-all text-sm game-font">
+                            <i class="fa-regular fa-crown"></i> Открыть админ-панель
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = rulesSections.map((section, index) => `
+                <div class="rule-card bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10 mb-6 section">
+                    <div class="flex items-start gap-4 mb-6 stagger-child">
+                        <span class="rule-number">${index + 1}</span>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-white game-heading">${section.title}</h2>
+                    </div>
+                    <div class="space-y-3 text-neutral-300 text-[15px] sm:text-base pl-2 stagger-child game-font">
+                        ${section.items && section.items.length > 0 
+                            ? section.items.map(item => `
+                                <div class="flex gap-3 items-start">
+                                    <span class="text-white/40 font-mono text-sm">•</span>
+                                    <span>${item}</span>
+                                </div>
+                            `).join('')
+                            : '<div class="flex gap-3 items-start"><span class="text-white/40 font-mono text-sm">•</span><span class="text-neutral-500">Пункты отсутствуют</span></div>'
+                        }
+                    </div>
+                </div>
+            `).join('');
+            
+            setTimeout(() => {
+                document.querySelectorAll('.section').forEach(s => {
+                    s.classList.add('visible');
+                });
+            }, 100);
+        }
+
+        function initRules() {
+            const loaded = loadRulesFromStorage();
+            if (!loaded) {
+                rulesSections = getDefaultRulesSections();
+                try {
+                    localStorage.setItem('admin_rules_sections', JSON.stringify(rulesSections));
+                } catch (e) {}
+            }
+            renderRules();
+        }
+
+        async function updateOnline() {
+            const el = document.getElementById('online-count');
+            try {
+                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
+                    signal: AbortSignal.timeout(4000)
+                });
+                const data = await resp.json();
+                if (data.online) {
+                    el.textContent = `${data.players.online}/${data.players.max}`;
+                    el.className = "font-semibold text-white game-font";
+                } else {
+                    el.textContent = "0/100";
+                    el.className = "font-semibold text-neutral-500 game-font";
+                }
+            } catch {
+                el.textContent = "—";
+                el.className = "font-semibold text-neutral-500 game-font";
+            }
+        }
+
+        // ============================================================
+        // ====== ИНИЦИАЛИЗАЦИЯ ======
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const icon = document.querySelector('#themeToggle i');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light');
+                icon.className = 'fa-regular fa-sun';
+            } else {
+                icon.className = 'fa-regular fa-moon';
+            }
+
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+
+            // Загрузка правил
+            initRules();
+            
+            // Онлайн
+            setTimeout(updateOnline, 300);
+            setInterval(updateOnline, 10000);
+            
+            // Анимация
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            
+            document.querySelectorAll('.section').forEach(s => observer.observe(s));
+            
+            setTimeout(() => {
+                document.querySelectorAll('.section').forEach(s => {
+                    const rect = s.getBoundingClientRect();
+                    if (rect.top < window.innerHeight * 0.85) {
+                        s.classList.add('visible');
+                    }
+                });
+            }, 100);
+
+            // Проверка обновлений из облака
+            setTimeout(checkRulesUpdates, 3000);
+            setInterval(checkRulesUpdates, 30000);
         });
     </script>
 </body>
