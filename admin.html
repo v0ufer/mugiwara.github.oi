@@ -176,7 +176,7 @@
         body.light .toast.error { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.2); color: #cc3333; }
         body.light .toast.info { background: rgba(255,170,68,0.1); border-color: rgba(255,170,68,0.2); color: #995522; }
 
-        /* ===== ВИКИ — НОВАЯ СТРУКТУРА (как Discord) ===== */
+        /* ===== ВИКИ ===== */
         .wiki-layout {
             display: flex;
             gap: 24px;
@@ -245,7 +245,6 @@
         .wiki-cat-item .cat-actions .delete-cat:hover { color: #ff6b6b; }
         .wiki-cat-item .cat-actions .edit-cat:hover { color: #4ecdc4; }
 
-        /* Режим редактирования названия категории */
         .cat-title-edit {
             display: none;
             background: transparent;
@@ -370,7 +369,7 @@
         body.light .wiki-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
         body.light .wiki-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
 
-        /* Правила — такая же структура */
+        /* ===== ПРАВИЛА — ИСПРАВЛЕННАЯ ВЕРСИЯ ===== */
         .rules-layout {
             display: flex;
             gap: 24px;
@@ -439,9 +438,6 @@
         .rules-cat-item .cat-actions .delete-cat:hover { color: #ff6b6b; }
         .rules-cat-item .cat-actions .edit-cat:hover { color: #4ecdc4; }
 
-        /* Режим редактирования названия категории для правил */
-        .rules-cat-item.editing .cat-title-text { display: none; }
-        .rules-cat-item.editing .rules-cat-title-edit { display: block; }
         .rules-cat-title-edit {
             display: none;
             background: transparent;
@@ -458,6 +454,8 @@
         .rules-cat-title-edit:focus {
             border-bottom-color: #4ecdc4;
         }
+        .rules-cat-item.editing .cat-title-text { display: none; }
+        .rules-cat-item.editing .rules-cat-title-edit { display: block; }
         body.light .rules-cat-title-edit {
             color: #1a1a1a;
             border-bottom-color: rgba(0,0,0,0.2);
@@ -508,17 +506,6 @@
         .rules-section-item .sec-actions .delete-sec:hover { color: #ff6b6b; }
         .rules-section-item .sec-actions .edit-sec:hover { color: #4ecdc4; }
 
-        body.light .rules-sidebar-editor { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .rules-main-editor { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
-        body.light .rules-cat-item { color: #666; }
-        body.light .rules-cat-item:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-        body.light .rules-cat-item.active { background: rgba(0,0,0,0.06); color: #1a1a1a; }
-        body.light .rules-section-item { color: #666; }
-        body.light .rules-section-item:hover { background: rgba(0,0,0,0.03); color: #333; }
-        body.light .rules-section-item.active { background: rgba(0,0,0,0.05); color: #1a1a1a; }
-        body.light .rules-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
-        body.light .rules-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
-
         .rules-add-btn {
             padding: 6px 12px;
             border-radius: 6px;
@@ -562,8 +549,18 @@
         }
         .rules-item-row .item-delete:hover { color: #ff6b6b; }
 
+        body.light .rules-sidebar-editor { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light .rules-main-editor { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .rules-cat-item { color: #666; }
+        body.light .rules-cat-item:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .rules-cat-item.active { background: rgba(0,0,0,0.06); color: #1a1a1a; }
+        body.light .rules-section-item { color: #666; }
+        body.light .rules-section-item:hover { background: rgba(0,0,0,0.03); color: #333; }
+        body.light .rules-section-item.active { background: rgba(0,0,0,0.05); color: #1a1a1a; }
         body.light .rules-item-row input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #333; }
         body.light .rules-item-row input:focus { border-color: rgba(0,0,0,0.12); }
+        body.light .rules-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
+        body.light .rules-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
 
         .section-controls {
             display: flex;
@@ -1655,7 +1652,7 @@
         }
 
         // ============================================================
-        // ====== WIKI — с редактированием названий категорий ======
+        // ====== WIKI ======
         // ============================================================
         let wikiCategories = [];
         let wikiSelectedCat = null;
@@ -1751,7 +1748,6 @@
             renderWikiMain();
         }
 
-        // Функция для начала редактирования названия категории (вики)
         function startWikiEditCategory(catId) {
             const item = document.querySelector(`.wiki-cat-item[onclick*="${catId}"]`);
             if (item) {
@@ -1764,7 +1760,6 @@
             }
         }
 
-        // Функция для обновления названия категории (вики)
         function updateWikiCategoryTitle(input) {
             const catId = input.dataset.catId;
             const newTitle = input.value.trim() || 'Без названия';
@@ -1778,7 +1773,6 @@
             }
         }
 
-        // Завершение редактирования категории (вики)
         function finishWikiCategoryEdit(input) {
             const item = input.closest('.wiki-cat-item');
             if (item) {
@@ -1787,7 +1781,6 @@
             }
         }
 
-        // Функция для редактирования названия раздела (вики)
         function editWikiSectionTitle(secId) {
             for (let cat of wikiCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
@@ -1872,7 +1865,6 @@
             renderWikiSidebar();
             unsavedWiki = true;
             showToast('✅ Добавлена категория', 'success');
-            // Автоматически открываем редактирование новой категории
             setTimeout(() => startWikiEditCategory(newId), 200);
         }
 
@@ -2019,7 +2011,7 @@
         }
 
         // ============================================================
-        // ====== RULES — с редактированием названий категорий ======
+        // ====== RULES — ИСПРАВЛЕННАЯ ВЕРСИЯ ======
         // ============================================================
         let rulesCategories = [];
         let rulesSelectedCat = null;
@@ -2031,15 +2023,15 @@
                     id: 'rules_cat1', 
                     title: 'Общие правила', 
                     sections: [
-                        { id: 'rules1', title: 'Нарушения имущества', items: ['Использование чужих ферм без разрешения', 'Гриферство в любом виде'] },
-                        { id: 'rules2', title: 'Общение', items: ['Оскорбления и переход на личности', 'Флуд и спам'] }
+                        { id: 'rules_sec1_1', title: 'Нарушения имущества', items: ['Использование чужих ферм без разрешения', 'Гриферство в любом виде'] },
+                        { id: 'rules_sec1_2', title: 'Общение', items: ['Оскорбления и переход на личности', 'Флуд и спам'] }
                     ] 
                 },
                 { 
                     id: 'rules_cat2', 
                     title: 'Наказания', 
                     sections: [
-                        { id: 'rules3', title: 'Виды наказаний', items: ['Предупреждение', 'Мут от 10 минут до 7 дней', 'Бан за гриферство'] }
+                        { id: 'rules_sec2_1', title: 'Виды наказаний', items: ['Предупреждение', 'Мут от 10 минут до 7 дней', 'Бан за гриферство'] }
                     ] 
                 }
             ];
@@ -2081,7 +2073,8 @@
                 </span>`;
                 html += `</div>`;
                 
-                if (isActive && cat.sections) {
+                // Показываем разделы ТОЛЬКО для активной категории
+                if (isActive && cat.sections && cat.sections.length > 0) {
                     cat.sections.forEach(sec => {
                         const isSecActive = rulesSelectedSec === sec.id;
                         html += `<div class="rules-section-item ${isSecActive ? 'active' : ''}" onclick="selectRulesSection('${sec.id}')">
@@ -2092,6 +2085,9 @@
                             </span>
                         </div>`;
                     });
+                    html += `<button class="rules-add-btn" onclick="addRulesSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
+                } else if (isActive) {
+                    // Если у категории нет разделов, показываем кнопку добавления
                     html += `<button class="rules-add-btn" onclick="addRulesSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
                 }
             });
@@ -2107,7 +2103,6 @@
             renderRulesMain();
         }
 
-        // Функция для начала редактирования названия категории (правила)
         function startRulesEditCategory(catId) {
             const item = document.querySelector(`.rules-cat-item[onclick*="${catId}"]`);
             if (item) {
@@ -2120,7 +2115,6 @@
             }
         }
 
-        // Функция для обновления названия категории (правила)
         function updateRulesCategoryTitle(input) {
             const catId = input.dataset.rulesCatId;
             const newTitle = input.value.trim() || 'Без названия';
@@ -2134,7 +2128,6 @@
             }
         }
 
-        // Завершение редактирования категории (правила)
         function finishRulesCategoryEdit(input) {
             const item = input.closest('.rules-cat-item');
             if (item) {
@@ -2143,7 +2136,6 @@
             }
         }
 
-        // Функция для редактирования названия раздела (правила)
         function editRulesSectionTitle(secId) {
             for (let cat of rulesCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
@@ -2205,6 +2197,7 @@
 
         function selectRulesCategory(catId) {
             rulesSelectedCat = catId;
+            // Ищем первый раздел в выбранной категории
             const cat = rulesCategories.find(c => c.id === catId);
             if (cat && cat.sections && cat.sections.length > 0) {
                 rulesSelectedSec = cat.sections[0].id;
@@ -2228,7 +2221,6 @@
             renderRulesSidebar();
             unsavedRules = true;
             showToast('✅ Добавлена категория', 'success');
-            // Автоматически открываем редактирование новой категории
             setTimeout(() => startRulesEditCategory(newId), 200);
         }
 
@@ -2251,8 +2243,8 @@
         function addRulesSection(catId) {
             const cat = rulesCategories.find(c => c.id === catId);
             if (!cat) return;
-            const newId = 'rules_sec_' + Date.now();
             if (!cat.sections) cat.sections = [];
+            const newId = 'rules_sec_' + catId + '_' + Date.now();
             cat.sections.push({ id: newId, title: 'Новый раздел', items: [] });
             setData('rules_categories', rulesCategories);
             rulesSelectedSec = newId;
@@ -2270,7 +2262,11 @@
                 }
             }
             setData('rules_categories', rulesCategories);
-            if (rulesSelectedSec === secId) {
+            // Проверяем, был ли удалён выбранный раздел
+            const stillExists = rulesCategories.some(cat => 
+                cat.sections && cat.sections.some(s => s.id === rulesSelectedSec)
+            );
+            if (!stillExists) {
                 const cat = rulesCategories.find(c => c.id === rulesSelectedCat);
                 rulesSelectedSec = cat?.sections?.[0]?.id || null;
             }
