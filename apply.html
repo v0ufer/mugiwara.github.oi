@@ -670,6 +670,12 @@
 
     <script>
         // ============================================================
+        // ====== КОНФИГУРАЦИЯ JSONBin.io ======
+        // ============================================================
+        const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
+        const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
+
+        // ============================================================
         // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
         // ============================================================
         
@@ -707,26 +713,6 @@
             } else {
                 icon.className = 'fa-regular fa-moon';
                 localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        async function updateOnline() {
-            const el = document.getElementById('online-count');
-            try {
-                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
-                    signal: AbortSignal.timeout(4000)
-                });
-                const data = await resp.json();
-                if (data.online) {
-                    el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "font-semibold text-white game-font";
-                } else {
-                    el.textContent = "0/100";
-                    el.className = "font-semibold text-neutral-500 game-font";
-                }
-            } catch {
-                el.textContent = "—";
-                el.className = "font-semibold text-neutral-500 game-font";
             }
         }
 
@@ -787,7 +773,7 @@
         // ============================================================
         // ====== ОТПРАВКА ЗАЯВКИ ======
         // ============================================================
-        function submitApplication(event) {
+        async function submitApplication(event) {
             event.preventDefault();
             
             const form = document.getElementById('applyForm');
@@ -807,6 +793,7 @@
                 discord_nick: document.getElementById('discord_nick').value.trim()
             };
 
+            // Валидация
             if (!data.minecraft_nick || !data.age || !data.how_found || !data.experience || !data.expectations || !data.discord_nick) {
                 status.textContent = '❌ Пожалуйста, заполните все обязательные поля';
                 status.className = 'form-status error';
@@ -828,25 +815,32 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Отправка...';
 
-            let applications = [];
             try {
-                const saved = localStorage.getItem('mugivara_applications');
-                if (saved) {
-                    applications = JSON.parse(saved);
-                }
-            } catch (e) {}
+                // Сохраняем в localStorage
+                let applications = [];
+                try {
+                    const saved = localStorage.getItem('mugivara_applications');
+                    if (saved) {
+                        applications = JSON.parse(saved);
+                    }
+                } catch (e) {}
 
-            applications.push(data);
-            
-            try {
+                applications.push(data);
+                
+                // Сохраняем в mugivara_applications
                 localStorage.setItem('mugivara_applications', JSON.stringify(applications));
                 
-                // Также сохраняем в общее хранилище для синхронизации
-                const mainData = localStorage.getItem('mugivara_main_data');
-                let main = mainData ? JSON.parse(mainData) : {};
-                main.applications = applications;
-                localStorage.setItem('mugivara_main_data', JSON.stringify(main));
-                
+                // Сохраняем в mugivara_main_data для синхронизации
+                try {
+                    const mainData = localStorage.getItem('mugivara_main_data');
+                    let main = mainData ? JSON.parse(mainData) : {};
+                    main.applications = applications;
+                    localStorage.setItem('mugivara_main_data', JSON.stringify(main));
+                } catch (e) {}
+
+                // Отправляем в облако
+                await saveApplicationToCloud(applications);
+
                 status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения в течение 24 часов.';
                 status.className = 'form-status success';
                 form.reset();
@@ -860,11 +854,74 @@
                 
                 showToast('✅ Заявка отправлена!', 'success');
             } catch (e) {
+                console.error('Ошибка сохранения:', e);
                 status.textContent = '❌ Ошибка при сохранении заявки. Попробуйте позже.';
                 status.className = 'form-status error';
                 btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
                 btn.disabled = false;
                 showToast('⚠️ Ошибка отправки заявки', 'error');
+            }
+        }
+
+        // Сохранение в облако
+        async function saveApplicationToCloud(applications) {
+            try {
+                // Загружаем текущие данные из облака
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+
+                let cloudData = {};
+                if (response.ok) {
+                    const data = await response.json();
+                    cloudData = data.record || {};
+                }
+
+                // Обновляем заявки
+                cloudData.applications = applications;
+                cloudData.updated = new Date().toISOString();
+
+                // Сохраняем обратно в облако
+                const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(cloudData)
+                });
+
+                if (!saveResponse.ok) {
+                    console.warn('Не удалось сохранить в облако:', saveResponse.status);
+                } else {
+                    console.log('✅ Заявка сохранена в облако');
+                }
+            } catch (error) {
+                console.warn('⚠️ Ошибка сохранения в облако:', error);
+                // Не показываем ошибку пользователю, так как заявка уже сохранена локально
+            }
+        }
+
+        // ============================================================
+        // ====== ОНЛАЙН ======
+        // ============================================================
+        async function updateOnline() {
+            const el = document.getElementById('online-count');
+            try {
+                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
+                    signal: AbortSignal.timeout(4000)
+                });
+                const data = await resp.json();
+                if (data.online) {
+                    el.textContent = `${data.players.online}/${data.players.max}`;
+                    el.className = "font-semibold text-white game-font";
+                } else {
+                    el.textContent = "0/100";
+                    el.className = "font-semibold text-neutral-500 game-font";
+                }
+            } catch {
+                el.textContent = "—";
+                el.className = "font-semibold text-neutral-500 game-font";
             }
         }
 
