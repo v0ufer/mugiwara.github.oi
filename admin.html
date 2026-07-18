@@ -652,6 +652,74 @@
         body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
         body.light .section-controls .save-btn:hover { background: #444; }
 
+        /* ===== КНОПКА ОБНОВЛЕНИЯ ЗАЯВОК ===== */
+        .refresh-apps-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 10px;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat Alternates', sans-serif;
+            margin-left: 12px;
+        }
+        .refresh-apps-btn:hover {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: rgba(78, 205, 196, 0.4);
+            transform: scale(1.02);
+        }
+        .refresh-apps-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .refresh-apps-btn .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .app-header-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .auto-refresh-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.08);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .auto-refresh-badge .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: pulse-dot 2s infinite;
+        }
+
+        body.light .refresh-apps-btn {
+            background: rgba(78, 205, 196, 0.08);
+            border-color: rgba(78, 205, 196, 0.15);
+        }
+        body.light .refresh-apps-btn:hover {
+            background: rgba(78, 205, 196, 0.15);
+        }
+
+        /* ===== ОСТАЛЬНЫЕ СТИЛИ ===== */
         .settings-section {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.06);
@@ -746,6 +814,11 @@
             padding: 16px 20px;
             margin-bottom: 12px;
             transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .application-card:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); transform: translateX(4px); }
         .application-card .app-header {
@@ -840,12 +913,21 @@
             border-radius: 12px;
             padding: 16px 20px;
             text-align: center;
+            transition: all 0.3s ease;
         }
-        .stat-card .number { font-size: 32px; font-weight: 700; color: #fff; }
+        .stat-card .number { font-size: 32px; font-weight: 700; color: #fff; transition: all 0.3s ease; }
         .stat-card .label { font-size: 12px; color: #888; margin-top: 4px; }
         .stat-card.pending .number { color: #ffaa44; }
         .stat-card.approved .number { color: #4ecdc4; }
         .stat-card.rejected .number { color: #ff6b6b; }
+        .stat-card .number.pulse {
+            animation: numberPulse 0.4s ease;
+        }
+        @keyframes numberPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
 
         body.light .stat-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
         body.light .stat-card .number { color: #1a1a1a; }
@@ -1053,8 +1135,20 @@
 
         <!-- APPLICATIONS -->
         <div id="tab-applications" class="admin-panel">
-            <h2><i class="fa-regular fa-pen-to-square"></i> Управление заявками</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;">Принятие заявки автоматически добавляет игрока в вайтлист.</p>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+                <h2 style="margin-bottom:0;"><i class="fa-regular fa-pen-to-square"></i> Управление заявками</h2>
+                <div class="app-header-actions">
+                    <button class="refresh-apps-btn" id="refreshAppsBtn" onclick="refreshApplications()">
+                        <i class="fa-regular fa-rotate"></i>
+                        <span>Обновить</span>
+                    </button>
+                    <span class="auto-refresh-badge">
+                        <span class="dot"></span>
+                        Авто-обновление
+                    </span>
+                </div>
+            </div>
+            <p style="color:#666;margin-bottom:20px;font-size:14px;">Принятие заявки автоматически добавляет игрока в вайтлист. Заявки обновляются автоматически каждые 10 секунд.</p>
             <div class="applications-stats" id="statsContainer">
                 <div class="stat-card pending"><div class="number" id="pendingCount">0</div><div class="label">Ожидают</div></div>
                 <div class="stat-card approved"><div class="number" id="approvedCount">0</div><div class="label">Принято</div></div>
@@ -1167,6 +1261,8 @@
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
         let unsavedWiki = false;
         let unsavedRules = false;
+        let applicationsRefreshInterval = null;
+        let isRefreshing = false;
 
         // ====== LOGIN ======
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -1187,6 +1283,10 @@
         });
 
         function logout() {
+            if (applicationsRefreshInterval) {
+                clearInterval(applicationsRefreshInterval);
+                applicationsRefreshInterval = null;
+            }
             document.getElementById('adminPage').classList.remove('active');
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('passwordInput').value = '';
@@ -1302,7 +1402,6 @@
             } catch (error) {
                 console.error('❌ Ошибка сохранения в облако:', error);
                 updateSyncStatus(false, 'Ошибка сохранения');
-                showToast('⚠️ Ошибка синхронизации с облаком', 'error');
                 return false;
             }
         }
@@ -1326,12 +1425,6 @@
                     
                     console.log('✅ Данные загружены из облака');
                     updateSyncStatus(true, 'Облако Онлайн');
-                    showToast('✅ Данные синхронизированы из облака', 'success');
-                    
-                    loadApplications();
-                    loadScreenshots();
-                    renderWikiEditor();
-                    renderRulesEditor();
                     return true;
                 }
                 return false;
@@ -1469,10 +1562,15 @@
         }
 
         // ============================================================
-        // ====== APPLICATIONS ======
+        // ====== APPLICATIONS — С АВТО-ОБНОВЛЕНИЕМ ======
         // ============================================================
         let applications = [];
         let currentFilter = 'all';
+        let lastApplicationsHash = '';
+
+        function getApplicationsHash(apps) {
+            return JSON.stringify(apps.map(a => a.id + a.status));
+        }
 
         function loadApplications() {
             applications = getData('mugivara_applications', []);
@@ -1480,16 +1578,82 @@
             renderApplications(currentFilter);
         }
 
+        // Функция обновления заявок (вызывается по кнопке или автоматически)
+        async function refreshApplications() {
+            const btn = document.getElementById('refreshAppsBtn');
+            if (isRefreshing) return;
+            
+            isRefreshing = true;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Обновление...';
+            
+            try {
+                // Загружаем свежие данные из облака
+                const success = await loadFromCloud();
+                if (success) {
+                    const newApps = getData('mugivara_applications', []);
+                    const newHash = getApplicationsHash(newApps);
+                    
+                    if (newHash !== lastApplicationsHash) {
+                        applications = newApps;
+                        lastApplicationsHash = newHash;
+                        updateStats();
+                        renderApplications(currentFilter);
+                        showToast('🔄 Заявки обновлены', 'success');
+                    } else {
+                        showToast('✅ Заявки актуальны', 'success');
+                    }
+                } else {
+                    // Если облако недоступно, просто перезагружаем из localStorage
+                    applications = getData('mugivara_applications', []);
+                    lastApplicationsHash = getApplicationsHash(applications);
+                    updateStats();
+                    renderApplications(currentFilter);
+                    showToast('📦 Заявки загружены из локального хранилища', 'info');
+                }
+            } catch (error) {
+                console.error('Ошибка обновления:', error);
+                showToast('⚠️ Ошибка обновления заявок', 'error');
+            }
+            
+            btn.innerHTML = '<i class="fa-regular fa-rotate"></i> Обновить';
+            btn.disabled = false;
+            isRefreshing = false;
+        }
+
         function saveApplications() {
             setData('mugivara_applications', applications);
+            lastApplicationsHash = getApplicationsHash(applications);
             updateStats();
             renderApplications(currentFilter);
         }
 
         function updateStats() {
-            document.getElementById('pendingCount').textContent = applications.filter(a => a.status === 'pending').length;
-            document.getElementById('approvedCount').textContent = applications.filter(a => a.status === 'approved').length;
-            document.getElementById('rejectedCount').textContent = applications.filter(a => a.status === 'rejected').length;
+            const pending = applications.filter(a => a.status === 'pending').length;
+            const approved = applications.filter(a => a.status === 'approved').length;
+            const rejected = applications.filter(a => a.status === 'rejected').length;
+            
+            const pendingEl = document.getElementById('pendingCount');
+            const approvedEl = document.getElementById('approvedCount');
+            const rejectedEl = document.getElementById('rejectedCount');
+            
+            // Анимация при изменении чисел
+            if (pendingEl.textContent != pending) {
+                pendingEl.classList.add('pulse');
+                setTimeout(() => pendingEl.classList.remove('pulse'), 400);
+            }
+            if (approvedEl.textContent != approved) {
+                approvedEl.classList.add('pulse');
+                setTimeout(() => approvedEl.classList.remove('pulse'), 400);
+            }
+            if (rejectedEl.textContent != rejected) {
+                rejectedEl.classList.add('pulse');
+                setTimeout(() => rejectedEl.classList.remove('pulse'), 400);
+            }
+            
+            pendingEl.textContent = pending;
+            approvedEl.textContent = approved;
+            rejectedEl.textContent = rejected;
         }
 
         function filterApplications(filter, btn) {
@@ -1806,7 +1970,6 @@
             renderWikiMain();
         }
 
-        // === Редактирование категории (вики) ===
         function startWikiEditCategory(catId) {
             const item = document.querySelector(`.wiki-cat-item[onclick*="${catId}"]`);
             if (item) {
@@ -1821,7 +1984,7 @@
 
         function updateWikiCategoryTitle(input) {
             const catId = input.dataset.catId;
-            const newTitle = input.value; // сохраняем как есть, включая пробелы
+            const newTitle = input.value;
             const cat = wikiCategories.find(c => c.id === catId);
             if (cat) {
                 cat.title = newTitle;
@@ -1840,7 +2003,6 @@
             }
         }
 
-        // === Редактирование раздела (вики) inline ===
         function startWikiEditSection(secId) {
             const item = document.querySelector(`.wiki-section-item[onclick*="${secId}"]`);
             if (item) {
@@ -1855,7 +2017,7 @@
 
         function updateWikiSectionTitleInline(input) {
             const secId = input.dataset.secId;
-            const newTitle = input.value; // сохраняем как есть, включая пробелы
+            const newTitle = input.value;
             for (let cat of wikiCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
@@ -1999,7 +2161,7 @@
             for (let cat of wikiCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
-                    sec.title = value; // сохраняем как есть, включая пробелы
+                    sec.title = value;
                     setData('wiki_categories', wikiCategories);
                     unsavedWiki = true;
                     break;
@@ -2181,7 +2343,6 @@
             renderRulesMain();
         }
 
-        // === Редактирование категории (правила) ===
         function startRulesEditCategory(catId) {
             const item = document.querySelector(`.rules-cat-item[onclick*="${catId}"]`);
             if (item) {
@@ -2196,7 +2357,7 @@
 
         function updateRulesCategoryTitle(input) {
             const catId = input.dataset.rulesCatId;
-            const newTitle = input.value; // сохраняем как есть, включая пробелы
+            const newTitle = input.value;
             const cat = rulesCategories.find(c => c.id === catId);
             if (cat) {
                 cat.title = newTitle;
@@ -2215,7 +2376,6 @@
             }
         }
 
-        // === Редактирование раздела (правила) inline ===
         function startRulesEditSection(secId) {
             const item = document.querySelector(`.rules-section-item[onclick*="${secId}"]`);
             if (item) {
@@ -2230,7 +2390,7 @@
 
         function updateRulesSectionTitleInline(input) {
             const secId = input.dataset.rulesSecId;
-            const newTitle = input.value; // сохраняем как есть, включая пробелы
+            const newTitle = input.value;
             for (let cat of rulesCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
@@ -2377,7 +2537,7 @@
             for (let cat of rulesCategories) {
                 const sec = cat.sections ? cat.sections.find(s => s.id === secId) : null;
                 if (sec) {
-                    sec.title = value; // сохраняем как есть, включая пробелы
+                    sec.title = value;
                     setData('rules_categories', rulesCategories);
                     unsavedRules = true;
                     break;
@@ -2477,12 +2637,28 @@
                 document.body.classList.add('light');
                 document.querySelector('#themeToggle i').className = 'fa-regular fa-sun';
             }
-            setTimeout(() => { loadFromCloud(); }, 500);
-            loadApplications();
+            
+            // Загружаем данные из облака
+            setTimeout(async () => {
+                await loadFromCloud();
+                loadApplications();
+                lastApplicationsHash = getApplicationsHash(applications);
+            }, 500);
+            
             loadScreenshots();
             renderWikiEditor();
             renderRulesEditor();
             loadSettings();
+            
+            // Запускаем авто-обновление заявок каждые 10 секунд
+            if (applicationsRefreshInterval) {
+                clearInterval(applicationsRefreshInterval);
+            }
+            applicationsRefreshInterval = setInterval(() => {
+                if (document.getElementById('tab-applications').style.display !== 'none') {
+                    refreshApplications();
+                }
+            }, 10000);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
