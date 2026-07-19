@@ -24,7 +24,6 @@
         }
     </script>
     <style>
-        /* Базовые стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
@@ -37,7 +36,6 @@
         .game-font { font-family: 'Montserrat Alternates', sans-serif; }
         .game-bold-font { font-family: 'Exo 2', sans-serif; }
 
-        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
@@ -137,7 +135,6 @@
             letter-spacing: 0.04em;
         }
 
-        /* Форма заявки */
         .form-container {
             max-width: 700px;
             margin: 0 auto;
@@ -243,7 +240,6 @@
             color: #ff6b6b;
         }
 
-        /* Кастомный селект */
         .custom-select {
             position: relative;
             width: 100%;
@@ -348,7 +344,6 @@
             border-radius: 10px;
         }
 
-        /* Светлая тема */
         body.light {
             background-color: #f0f0f0;
             color: #1a1a1a;
@@ -572,19 +567,16 @@
 
             <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10">
                 <form id="applyForm" onsubmit="submitApplication(event)">
-                    <!-- 1. Ник -->
                     <div class="form-group">
                         <label for="minecraft_nick">1. Твой игровой ник (Minecraft) <span class="text-red-400">*</span></label>
                         <input type="text" id="minecraft_nick" placeholder="Например: PlayerName" required>
                     </div>
 
-                    <!-- 2. Возраст -->
                     <div class="form-group">
                         <label for="age">2. Твой возраст <span class="text-red-400">*</span></label>
                         <input type="number" id="age" placeholder="Например: 16" min="8" max="99" required>
                     </div>
 
-                    <!-- 3. Как узнал — КАСТОМНЫЙ СЕЛЕКТ -->
                     <div class="form-group">
                         <label for="how_found">3. Как ты узнал о нас? <span class="text-red-400">*</span></label>
                         <div class="custom-select" id="howFoundSelect">
@@ -594,43 +586,35 @@
                             </div>
                             <div class="options" id="optionsList">
                                 <div class="option" data-value="discord" onclick="selectOption('discord')">
-                                    <span class="option-icon"><i class="fa-brands fa-discord"></i></span>
-                                    Discord
+                                    <span class="option-icon"><i class="fa-brands fa-discord"></i></span> Discord
                                 </div>
                                 <div class="option" data-value="tiktok" onclick="selectOption('tiktok')">
-                                    <span class="option-icon"><i class="fa-brands fa-tiktok"></i></span>
-                                    TikTok
+                                    <span class="option-icon"><i class="fa-brands fa-tiktok"></i></span> TikTok
                                 </div>
                                 <div class="option" data-value="youtube" onclick="selectOption('youtube')">
-                                    <span class="option-icon"><i class="fa-brands fa-youtube"></i></span>
-                                    YouTube
+                                    <span class="option-icon"><i class="fa-brands fa-youtube"></i></span> YouTube
                                 </div>
                                 <div class="option" data-value="friend" onclick="selectOption('friend')">
-                                    <span class="option-icon"><i class="fa-regular fa-user-group"></i></span>
-                                    От друзей
+                                    <span class="option-icon"><i class="fa-regular fa-user-group"></i></span> От друзей
                                 </div>
                                 <div class="option" data-value="other" onclick="selectOption('other')">
-                                    <span class="option-icon"><i class="fa-regular fa-ellipsis"></i></span>
-                                    Другое
+                                    <span class="option-icon"><i class="fa-regular fa-ellipsis"></i></span> Другое
                                 </div>
                             </div>
                         </div>
                         <input type="hidden" id="how_found" value="">
                     </div>
 
-                    <!-- 4. Опыт -->
                     <div class="form-group">
                         <label for="experience">4. Есть ли у тебя опыт игры на хардкорных/ванильных серверах? <span class="text-red-400">*</span></label>
                         <textarea id="experience" placeholder="Расскажи о своем опыте..." required></textarea>
                     </div>
 
-                    <!-- 5. Ожидания -->
                     <div class="form-group">
                         <label for="expectations">5. Чего ты ждёшь от MugiwaraCraft? <span class="text-red-400">*</span></label>
                         <textarea id="expectations" placeholder="Что ты хочешь найти на нашем сервере?" required></textarea>
                     </div>
 
-                    <!-- 6. Правила -->
                     <div class="form-group">
                         <label>6. Подтверждаешь ли ты ознакомление с Кодексом Мугивар? <span class="text-red-400">*</span></label>
                         <div class="checkbox-group">
@@ -639,7 +623,6 @@
                         </div>
                     </div>
 
-                    <!-- 7. Discord -->
                     <div class="form-group">
                         <label for="discord_nick">7. Оставь дс/тг/вк для связи <span class="text-red-400">*</span></label>
                         <input type="text" id="discord_nick" placeholder="@твойник" required>
@@ -656,7 +639,7 @@
         </div>
     </div>
 
-    <!-- FOOTER с кнопкой админки -->
+    <!-- FOOTER -->
     <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
             <div class="flex justify-center">
@@ -793,7 +776,6 @@
                 discord_nick: document.getElementById('discord_nick').value.trim()
             };
 
-            // Валидация
             if (!data.minecraft_nick || !data.age || !data.how_found || !data.experience || !data.expectations || !data.discord_nick) {
                 status.textContent = '❌ Пожалуйста, заполните все обязательные поля';
                 status.className = 'form-status error';
@@ -816,7 +798,7 @@
             btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Отправка...';
 
             try {
-                // Сохраняем в localStorage
+                // === 1. СОХРАНЯЕМ ЛОКАЛЬНО ===
                 let applications = [];
                 try {
                     const saved = localStorage.getItem('mugivara_applications');
@@ -826,11 +808,8 @@
                 } catch (e) {}
 
                 applications.push(data);
-                
-                // Сохраняем в mugivara_applications
                 localStorage.setItem('mugivara_applications', JSON.stringify(applications));
                 
-                // Сохраняем в mugivara_main_data для синхронизации
                 try {
                     const mainData = localStorage.getItem('mugivara_main_data');
                     let main = mainData ? JSON.parse(mainData) : {};
@@ -838,35 +817,40 @@
                     localStorage.setItem('mugivara_main_data', JSON.stringify(main));
                 } catch (e) {}
 
-                // Отправляем в облако
-                await saveApplicationToCloud(applications);
+                // === 2. СОХРАНЯЕМ В ОБЛАКО ===
+                const cloudSuccess = await saveToCloud(applications);
 
-                status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения в течение 24 часов.';
-                status.className = 'form-status success';
-                form.reset();
-                document.getElementById('selectedText').textContent = 'Выберите вариант...';
-                document.getElementById('selectedText').className = 'placeholder';
-                document.getElementById('how_found').value = '';
-                document.querySelectorAll('.options .option').forEach(opt => opt.classList.remove('selected-option'));
-                
-                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
-                btn.disabled = false;
-                
-                showToast('✅ Заявка отправлена!', 'success');
+                if (cloudSuccess) {
+                    status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения.';
+                    status.className = 'form-status success';
+                    form.reset();
+                    document.getElementById('selectedText').textContent = 'Выберите вариант...';
+                    document.getElementById('selectedText').className = 'placeholder';
+                    document.getElementById('how_found').value = '';
+                    document.querySelectorAll('.options .option').forEach(opt => opt.classList.remove('selected-option'));
+                    showToast('✅ Заявка отправлена!', 'success');
+                } else {
+                    status.textContent = '⚠️ Заявка сохранена локально. Проверьте интернет-соединение.';
+                    status.className = 'form-status error';
+                    showToast('⚠️ Заявка сохранена локально', 'error');
+                }
             } catch (e) {
-                console.error('Ошибка сохранения:', e);
-                status.textContent = '❌ Ошибка при сохранении заявки. Попробуйте позже.';
+                console.error('Ошибка:', e);
+                status.textContent = '❌ Ошибка при отправке заявки. Попробуйте позже.';
                 status.className = 'form-status error';
-                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
-                btn.disabled = false;
-                showToast('⚠️ Ошибка отправки заявки', 'error');
+                showToast('⚠️ Ошибка отправки', 'error');
             }
+
+            btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
+            btn.disabled = false;
         }
 
         // Сохранение в облако
-        async function saveApplicationToCloud(applications) {
+        async function saveToCloud(applications) {
             try {
-                // Загружаем текущие данные из облака
+                console.log('📤 Отправка в облако...');
+                
+                // Получаем текущие данные из облака
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                     headers: { 'X-Master-Key': JSONBIN_API_KEY }
                 });
@@ -875,13 +859,16 @@
                 if (response.ok) {
                     const data = await response.json();
                     cloudData = data.record || {};
+                    console.log('📥 Текущие данные из облака получены');
+                } else {
+                    console.log('ℹ️ Облако пустое, создаём новую запись');
                 }
 
                 // Обновляем заявки
                 cloudData.applications = applications;
                 cloudData.updated = new Date().toISOString();
 
-                // Сохраняем обратно в облако
+                // Сохраняем в облако
                 const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                     method: 'PUT',
                     headers: {
@@ -892,13 +879,15 @@
                 });
 
                 if (!saveResponse.ok) {
-                    console.warn('Не удалось сохранить в облако:', saveResponse.status);
-                } else {
-                    console.log('✅ Заявка сохранена в облако');
+                    console.error('❌ Ошибка сохранения в облако:', saveResponse.status);
+                    return false;
                 }
+                
+                console.log('✅ Заявка сохранена в облако!');
+                return true;
             } catch (error) {
-                console.warn('⚠️ Ошибка сохранения в облако:', error);
-                // Не показываем ошибку пользователю, так как заявка уже сохранена локально
+                console.error('❌ Ошибка соединения с облаком:', error);
+                return false;
             }
         }
 
