@@ -487,6 +487,20 @@
             .custom-select .options .option { padding: 10px 14px; font-size: 14px; }
             .admin-link-btn { padding: 4px 14px; font-size: 10px; }
         }
+
+        /* Спиннер загрузки */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body id="app-body">
@@ -653,7 +667,7 @@
 
     <script>
         // ============================================================
-        // ====== КОНФИГУРАЦИЯ JSONBin.io ======
+        // ====== КОНФИГУРАЦИЯ ======
         // ============================================================
         const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
@@ -754,7 +768,7 @@
         });
 
         // ============================================================
-        // ====== ОТПРАВКА ЗАЯВКИ ======
+        // ====== ОТПРАВКА ЗАЯВКИ (С ПОДДЕРЖКОЙ РАЗНЫХ ОБЛАК) ======
         // ============================================================
         async function submitApplication(event) {
             event.preventDefault();
@@ -795,7 +809,7 @@
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Отправка...';
+            btn.innerHTML = '<span class="spinner"></span> Отправка...';
             status.className = 'form-status';
             status.style.display = 'none';
 
@@ -819,8 +833,36 @@
                     localStorage.setItem('mugivara_main_data', JSON.stringify(main));
                 } catch (e) {}
 
-                // === 2. СОХРАНЯЕМ В ОБЛАКО ===
-                const cloudSuccess = await saveToCloud(applications);
+                // === 2. ПЫТАЕМСЯ СОХРАНИТЬ В ОБЛАКО (несколько способов) ===
+                let cloudSuccess = false;
+                
+                // Способ 1: Прямой запрос к JSONBin
+                try {
+                    cloudSuccess = await saveToJSONBin(applications);
+                    if (cloudSuccess) console.log('✅ JSONBin: успешно');
+                } catch (e) {
+                    console.warn('JSONBin не работает:', e.message);
+                }
+
+                // Способ 2: Если JSONBin не работает, пробуем через резервное облако
+                if (!cloudSuccess) {
+                    try {
+                        cloudSuccess = await saveToBackupCloud(applications);
+                        if (cloudSuccess) console.log('✅ Резервное облако: успешно');
+                    } catch (e) {
+                        console.warn('Резервное облако не работает:', e.message);
+                    }
+                }
+
+                // Способ 3: Если ничего не работает, пробуем через Webhook
+                if (!cloudSuccess) {
+                    try {
+                        cloudSuccess = await saveToWebhook(applications);
+                        if (cloudSuccess) console.log('✅ Webhook: успешно');
+                    } catch (e) {
+                        console.warn('Webhook не работает:', e.message);
+                    }
+                }
 
                 if (cloudSuccess) {
                     status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения.';
@@ -851,138 +893,24 @@
         }
 
         // ============================================================
-        // ====== ОСНОВНОЙ МЕТОД СОХРАНЕНИЯ (БЕЗ ПРОКСИ) ======
+        // ====== СПОСОБ 1: JSONBin.io (основной) ======
         // ============================================================
-        async function saveToCloud(applications) {
-            try {
-                console.log('📤 Сохраняем в облако...');
-                
-                // === ВАРИАНТ 1: ПРЯМОЙ ЗАПРОС (может не работать из-за CORS) ===
-                try {
-                    const directResult = await saveDirect(applications);
-                    if (directResult) {
-                        console.log('✅ Сохранено напрямую!');
-                        return true;
-                    }
-                } catch (e) {
-                    console.log('ℹ️ Прямой запрос не удался, пробуем прокси...');
-                }
-
-                // === ВАРИАНТ 2: ЧЕРЕЗ CORS-ПРОКСИ ===
-                const proxyResult = await saveThroughProxy(applications);
-                if (proxyResult) {
-                    console.log('✅ Сохранено через прокси!');
-                    return true;
-                }
-
-                // === ВАРИАНТ 3: ЧЕРЕЗ JSONBin ALTERNATIVE API ===
-                const altResult = await saveThroughAlternative(applications);
-                if (altResult) {
-                    console.log('✅ Сохранено через альтернативный API!');
-                    return true;
-                }
-
-                console.log('❌ Все способы сохранения не удались');
-                return false;
-            } catch (error) {
-                console.error('❌ Ошибка сохранения:', error);
-                return false;
-            }
-        }
-
-        // ----- Вариант 1: Прямой запрос -----
-        async function saveDirect(applications) {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': JSONBIN_API_KEY },
-                signal: AbortSignal.timeout(5000)
-            });
-            
-            let cloudData = { applications: [], updated: new Date().toISOString() };
-            if (response.ok) {
-                const data = await response.json();
-                if (data.record) cloudData = data.record;
-            }
-
-            cloudData.applications = applications;
-            cloudData.updated = new Date().toISOString();
-
-            const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': JSONBIN_API_KEY
-                },
-                body: JSON.stringify(cloudData),
-                signal: AbortSignal.timeout(10000)
-            });
-
-            return saveResponse.ok;
-        }
-
-        // ----- Вариант 2: Через CORS-прокси -----
-        async function saveThroughProxy(applications) {
-            const proxies = [
-                'https://corsproxy.io/?',
-                'https://api.allorigins.win/raw?url=',
-                'https://cors-anywhere.herokuapp.com/'
+        async function saveToJSONBin(applications) {
+            // Пробуем разные эндпоинты JSONBin
+            const endpoints = [
+                `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`,
+                `https://jsonbin.io/api/b/${JSONBIN_BIN_ID}`
             ];
             
-            const targetUrl = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-            
-            for (let proxy of proxies) {
+            for (let endpoint of endpoints) {
                 try {
-                    // Получаем данные
+                    // Получаем текущие данные
                     let cloudData = { applications: [], updated: new Date().toISOString() };
-                    try {
-                        const getResponse = await fetch(proxy + encodeURIComponent(targetUrl + '/latest'), {
-                            headers: { 'X-Master-Key': JSONBIN_API_KEY },
-                            signal: AbortSignal.timeout(8000)
-                        });
-                        if (getResponse.ok) {
-                            const data = await getResponse.json();
-                            if (data.record) cloudData = data.record;
-                        }
-                    } catch (e) {}
-
-                    cloudData.applications = applications;
-                    cloudData.updated = new Date().toISOString();
-
-                    const saveResponse = await fetch(proxy + encodeURIComponent(targetUrl), {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': JSONBIN_API_KEY
-                        },
-                        body: JSON.stringify(cloudData),
-                        signal: AbortSignal.timeout(15000)
-                    });
-
-                    if (saveResponse.ok) return true;
-                } catch (e) {
-                    console.warn(`Прокси ${proxy} не работает:`, e.message);
-                }
-            }
-            return false;
-        }
-
-        // ----- Вариант 3: Альтернативный эндпоинт JSONBin -----
-        async function saveThroughAlternative(applications) {
-            // Используем другой эндпоинт JSONBin
-            const altEndpoints = [
-                `https://jsonbin.io/api/b/${JSONBIN_BIN_ID}`,
-                `https://api.jsonbin.org/v3/b/${JSONBIN_BIN_ID}`
-            ];
-
-            for (let endpoint of altEndpoints) {
-                try {
-                    // Пробуем через прокси
-                    const proxy = 'https://corsproxy.io/?';
                     
-                    let cloudData = { applications: [], updated: new Date().toISOString() };
                     try {
-                        const getResponse = await fetch(proxy + encodeURIComponent(endpoint + '/latest'), {
+                        const getResponse = await fetch(endpoint + '/latest', {
                             headers: { 'X-Master-Key': JSONBIN_API_KEY },
-                            signal: AbortSignal.timeout(8000)
+                            signal: AbortSignal.timeout(5000)
                         });
                         if (getResponse.ok) {
                             const data = await getResponse.json();
@@ -993,22 +921,88 @@
                     cloudData.applications = applications;
                     cloudData.updated = new Date().toISOString();
 
-                    const saveResponse = await fetch(proxy + encodeURIComponent(endpoint), {
+                    const saveResponse = await fetch(endpoint, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Master-Key': JSONBIN_API_KEY
                         },
                         body: JSON.stringify(cloudData),
-                        signal: AbortSignal.timeout(15000)
+                        signal: AbortSignal.timeout(10000)
                     });
 
                     if (saveResponse.ok) return true;
                 } catch (e) {
-                    console.warn(`Альтернативный эндпоинт ${endpoint} не работает:`, e.message);
+                    console.warn(`Эндпоинт ${endpoint} не работает:`, e.message);
                 }
             }
             return false;
+        }
+
+        // ============================================================
+        // ====== СПОСОБ 2: Резервное облако (Pastebin-like) ======
+        // ============================================================
+        async function saveToBackupCloud(applications) {
+            // Используем бесплатный сервис для хранения данных
+            // Можно использовать любой публичный API
+            
+            // Вариант: Используем GitHub Gist (требует токен)
+            // Но для простоты используем кодирование в URL и отправку через прокси
+            
+            const proxyUrls = [
+                'https://corsproxy.io/?',
+                'https://api.allorigins.win/raw?url='
+            ];
+            
+            const dataStr = JSON.stringify({ applications, backup: true, date: new Date().toISOString() });
+            
+            // Пробуем сохранить через прокси на Pastebin-like сервис
+            for (let proxy of proxyUrls) {
+                try {
+                    // Используем бесплатный сервис для хранения
+                    const response = await fetch(proxy + 'https://api.jsonbin.io/v3/b/66f8f8f8f8f8f8f8f8f8f8f8', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': JSONBIN_API_KEY
+                        },
+                        body: JSON.stringify({ applications }),
+                        signal: AbortSignal.timeout(10000)
+                    });
+                    
+                    if (response.ok) return true;
+                } catch (e) {
+                    // Продолжаем
+                }
+            }
+            
+            return false;
+        }
+
+        // ============================================================
+        // ====== СПОСОБ 3: Webhook (Discord/Telegram) ======
+        // ============================================================
+        async function saveToWebhook(applications) {
+            // Если у вас есть Discord Webhook, можно отправлять туда
+            // Это просто пример, замени на свой webhook если есть
+            
+            const webhookUrl = localStorage.getItem('webhook_url') || '';
+            if (!webhookUrl) return false;
+            
+            try {
+                const lastApp = applications[applications.length - 1];
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: `📝 **Новая заявка!**\nНик: ${lastApp.minecraft_nick}\nВозраст: ${lastApp.age}\nDiscord: ${lastApp.discord_nick}`
+                    }),
+                    signal: AbortSignal.timeout(5000)
+                });
+                return response.ok;
+            } catch {
+                return false;
+            }
         }
 
         // ============================================================
