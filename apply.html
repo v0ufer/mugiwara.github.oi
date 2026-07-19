@@ -479,6 +479,22 @@
         .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
         .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
 
+        /* Спиннер */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 640px) {
             .form-container { padding: 0 10px; }
             .form-group input,
@@ -486,20 +502,6 @@
             .custom-select .selected { font-size: 14px; padding: 10px 14px; min-height: 46px; }
             .custom-select .options .option { padding: 10px 14px; font-size: 14px; }
             .admin-link-btn { padding: 4px 14px; font-size: 10px; }
-        }
-
-        /* Спиннер загрузки */
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -669,8 +671,7 @@
         // ============================================================
         // ====== КОНФИГУРАЦИЯ ======
         // ============================================================
-        const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
-        const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
+        const API_URL = 'https://v0ufer.pythonanywhere.com';
 
         // ============================================================
         // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
@@ -768,7 +769,7 @@
         });
 
         // ============================================================
-        // ====== ОТПРАВКА ЗАЯВКИ (С ПОДДЕРЖКОЙ РАЗНЫХ ОБЛАК) ======
+        // ====== ОТПРАВКА ЗАЯВКИ ======
         // ============================================================
         async function submitApplication(event) {
             event.preventDefault();
@@ -790,6 +791,7 @@
                 discord_nick: document.getElementById('discord_nick').value.trim()
             };
 
+            // Валидация
             if (!data.minecraft_nick || !data.age || !data.how_found || !data.experience || !data.expectations || !data.discord_nick) {
                 status.textContent = '❌ Пожалуйста, заполните все обязательные поля';
                 status.className = 'form-status error';
@@ -810,8 +812,6 @@
 
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span> Отправка...';
-            status.className = 'form-status';
-            status.style.display = 'none';
 
             try {
                 // === 1. СОХРАНЯЕМ ЛОКАЛЬНО ===
@@ -822,52 +822,21 @@
                         applications = JSON.parse(saved);
                     }
                 } catch (e) {}
-
                 applications.push(data);
                 localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-                
-                try {
-                    const mainData = localStorage.getItem('mugivara_main_data');
-                    let main = mainData ? JSON.parse(mainData) : {};
-                    main.applications = applications;
-                    localStorage.setItem('mugivara_main_data', JSON.stringify(main));
-                } catch (e) {}
 
-                // === 2. ПЫТАЕМСЯ СОХРАНИТЬ В ОБЛАКО (несколько способов) ===
-                let cloudSuccess = false;
-                
-                // Способ 1: Прямой запрос к JSONBin
-                try {
-                    cloudSuccess = await saveToJSONBin(applications);
-                    if (cloudSuccess) console.log('✅ JSONBin: успешно');
-                } catch (e) {
-                    console.warn('JSONBin не работает:', e.message);
-                }
+                // === 2. ОТПРАВЛЯЕМ В ОБЛАКО (PythonAnywhere) ===
+                const response = await fetch(`${API_URL}/applications`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-                // Способ 2: Если JSONBin не работает, пробуем через резервное облако
-                if (!cloudSuccess) {
-                    try {
-                        cloudSuccess = await saveToBackupCloud(applications);
-                        if (cloudSuccess) console.log('✅ Резервное облако: успешно');
-                    } catch (e) {
-                        console.warn('Резервное облако не работает:', e.message);
-                    }
-                }
+                const result = await response.json();
 
-                // Способ 3: Если ничего не работает, пробуем через Webhook
-                if (!cloudSuccess) {
-                    try {
-                        cloudSuccess = await saveToWebhook(applications);
-                        if (cloudSuccess) console.log('✅ Webhook: успешно');
-                    } catch (e) {
-                        console.warn('Webhook не работает:', e.message);
-                    }
-                }
-
-                if (cloudSuccess) {
-                    status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения.';
+                if (result.success) {
+                    status.textContent = '✅ Заявка успешно отправлена! Ожидайте рассмотрения в течение 24 часов.';
                     status.className = 'form-status success';
-                    status.style.display = 'block';
                     form.reset();
                     document.getElementById('selectedText').textContent = 'Выберите вариант...';
                     document.getElementById('selectedText').className = 'placeholder';
@@ -875,134 +844,19 @@
                     document.querySelectorAll('.options .option').forEach(opt => opt.classList.remove('selected-option'));
                     showToast('✅ Заявка отправлена!', 'success');
                 } else {
-                    status.textContent = '⚠️ Заявка сохранена локально. Администратор увидит её при следующей синхронизации.';
+                    status.textContent = '⚠️ ' + (result.error || 'Ошибка отправки. Заявка сохранена локально.');
                     status.className = 'form-status error';
-                    status.style.display = 'block';
-                    showToast('⚠️ Заявка сохранена локально', 'error');
+                    showToast('⚠️ Ошибка отправки', 'error');
                 }
-            } catch (e) {
-                console.error('Ошибка:', e);
-                status.textContent = '❌ Ошибка при отправке заявки. Попробуйте позже.';
+            } catch (error) {
+                console.error('Ошибка:', error);
+                status.textContent = '⚠️ Заявка сохранена локально. Проверьте интернет-соединение.';
                 status.className = 'form-status error';
-                status.style.display = 'block';
-                showToast('⚠️ Ошибка отправки', 'error');
+                showToast('⚠️ Ошибка соединения с сервером', 'error');
             }
 
             btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Отправить заявку';
             btn.disabled = false;
-        }
-
-        // ============================================================
-        // ====== СПОСОБ 1: JSONBin.io (основной) ======
-        // ============================================================
-        async function saveToJSONBin(applications) {
-            // Пробуем разные эндпоинты JSONBin
-            const endpoints = [
-                `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`,
-                `https://jsonbin.io/api/b/${JSONBIN_BIN_ID}`
-            ];
-            
-            for (let endpoint of endpoints) {
-                try {
-                    // Получаем текущие данные
-                    let cloudData = { applications: [], updated: new Date().toISOString() };
-                    
-                    try {
-                        const getResponse = await fetch(endpoint + '/latest', {
-                            headers: { 'X-Master-Key': JSONBIN_API_KEY },
-                            signal: AbortSignal.timeout(5000)
-                        });
-                        if (getResponse.ok) {
-                            const data = await getResponse.json();
-                            if (data.record) cloudData = data.record;
-                        }
-                    } catch (e) {}
-
-                    cloudData.applications = applications;
-                    cloudData.updated = new Date().toISOString();
-
-                    const saveResponse = await fetch(endpoint, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': JSONBIN_API_KEY
-                        },
-                        body: JSON.stringify(cloudData),
-                        signal: AbortSignal.timeout(10000)
-                    });
-
-                    if (saveResponse.ok) return true;
-                } catch (e) {
-                    console.warn(`Эндпоинт ${endpoint} не работает:`, e.message);
-                }
-            }
-            return false;
-        }
-
-        // ============================================================
-        // ====== СПОСОБ 2: Резервное облако (Pastebin-like) ======
-        // ============================================================
-        async function saveToBackupCloud(applications) {
-            // Используем бесплатный сервис для хранения данных
-            // Можно использовать любой публичный API
-            
-            // Вариант: Используем GitHub Gist (требует токен)
-            // Но для простоты используем кодирование в URL и отправку через прокси
-            
-            const proxyUrls = [
-                'https://corsproxy.io/?',
-                'https://api.allorigins.win/raw?url='
-            ];
-            
-            const dataStr = JSON.stringify({ applications, backup: true, date: new Date().toISOString() });
-            
-            // Пробуем сохранить через прокси на Pastebin-like сервис
-            for (let proxy of proxyUrls) {
-                try {
-                    // Используем бесплатный сервис для хранения
-                    const response = await fetch(proxy + 'https://api.jsonbin.io/v3/b/66f8f8f8f8f8f8f8f8f8f8f8', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': JSONBIN_API_KEY
-                        },
-                        body: JSON.stringify({ applications }),
-                        signal: AbortSignal.timeout(10000)
-                    });
-                    
-                    if (response.ok) return true;
-                } catch (e) {
-                    // Продолжаем
-                }
-            }
-            
-            return false;
-        }
-
-        // ============================================================
-        // ====== СПОСОБ 3: Webhook (Discord/Telegram) ======
-        // ============================================================
-        async function saveToWebhook(applications) {
-            // Если у вас есть Discord Webhook, можно отправлять туда
-            // Это просто пример, замени на свой webhook если есть
-            
-            const webhookUrl = localStorage.getItem('webhook_url') || '';
-            if (!webhookUrl) return false;
-            
-            try {
-                const lastApp = applications[applications.length - 1];
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: `📝 **Новая заявка!**\nНик: ${lastApp.minecraft_nick}\nВозраст: ${lastApp.age}\nDiscord: ${lastApp.discord_nick}`
-                    }),
-                    signal: AbortSignal.timeout(5000)
-                });
-                return response.ok;
-            } catch {
-                return false;
-            }
         }
 
         // ============================================================
