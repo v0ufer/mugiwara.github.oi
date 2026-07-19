@@ -635,7 +635,6 @@
 
         function loadWikiFromStorage() {
             try {
-                // Пытаемся загрузить из основного хранилища
                 const mainData = localStorage.getItem('mugivara_main_data');
                 if (mainData) {
                     const data = JSON.parse(mainData);
@@ -647,7 +646,6 @@
                 }
             } catch (e) {}
             
-            // Пробуем из отдельного хранилища
             try {
                 const data = localStorage.getItem('wiki_categories');
                 if (data) {
@@ -738,7 +736,6 @@
         function saveWikiToStorage() {
             try {
                 localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                // Обновляем основное хранилище
                 const mainData = localStorage.getItem('mugivara_main_data');
                 let data = mainData ? JSON.parse(mainData) : {};
                 data.wikiCategories = wikiCategories;
@@ -767,7 +764,6 @@
 
                 if (cloudData && cloudData.wikiCategories) {
                     localStorage.setItem('wiki_categories', JSON.stringify(cloudData.wikiCategories));
-                    // Обновляем основное хранилище
                     const mainData = localStorage.getItem('mugivara_main_data');
                     let main = mainData ? JSON.parse(mainData) : {};
                     main.wikiCategories = cloudData.wikiCategories;
@@ -777,8 +773,8 @@
                     const loaded = loadWikiFromStorage();
                     if (loaded) {
                         renderSidebar();
-                        const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
-                        loadWikiPage(currentPage, navItem);
+                        // Загружаем первый доступный раздел
+                        loadFirstAvailablePage();
                         showToast('✅ Вики обновлена из облака', 'success');
                     }
                 } else {
@@ -792,6 +788,27 @@
             if (btn) {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
+            }
+        }
+
+        // Новая функция: загрузка первого доступного раздела
+        function loadFirstAvailablePage() {
+            // Ищем первый раздел в первой категории
+            if (wikiCategories.length > 0) {
+                const firstCat = wikiCategories[0];
+                if (firstCat.sections && firstCat.sections.length > 0) {
+                    const firstSec = firstCat.sections[0];
+                    currentPage = firstSec.id;
+                    const navItem = document.querySelector(`.nav-item[data-page="${firstSec.id}"]`);
+                    loadWikiPage(firstSec.id, navItem);
+                    return;
+                }
+            }
+            // Если разделов нет, показываем home
+            if (sectionsMap['home']) {
+                currentPage = 'home';
+                const navItem = document.querySelector('.nav-item[data-page="home"]');
+                loadWikiPage('home', navItem);
             }
         }
 
@@ -814,7 +831,6 @@
                     if (cloudTime > localTime && cloudData.wikiCategories) {
                         console.log('🔄 Найдены обновления вики в облаке');
                         localStorage.setItem('wiki_categories', JSON.stringify(cloudData.wikiCategories));
-                        // Обновляем основное хранилище
                         const mainData = localStorage.getItem('mugivara_main_data');
                         let main = mainData ? JSON.parse(mainData) : {};
                         main.wikiCategories = cloudData.wikiCategories;
@@ -824,8 +840,13 @@
                         const loaded = loadWikiFromStorage();
                         if (loaded) {
                             renderSidebar();
+                            // Если текущая страница существует, обновляем её, иначе загружаем первую
                             const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
-                            loadWikiPage(currentPage, navItem);
+                            if (navItem && sectionsMap[currentPage]) {
+                                loadWikiPage(currentPage, navItem);
+                            } else {
+                                loadFirstAvailablePage();
+                            }
                             showToast('🔄 Вики обновлена из облака', 'info');
                         }
                     }
@@ -844,21 +865,8 @@
             }
             renderSidebar();
             
-            const urlParams = new URLSearchParams(window.location.search);
-            const pageParam = urlParams.get('page');
-            if (pageParam && sectionsMap[pageParam]) {
-                currentPage = pageParam;
-            } else {
-                currentPage = 'home';
-            }
-            
-            loadWikiPage(currentPage);
-            
-            document.querySelectorAll('.nav-item').forEach(el => {
-                if (el.dataset.page === currentPage) {
-                    el.classList.add('nav-active');
-                }
-            });
+            // Вместо проверки URL параметра — всегда загружаем первый раздел
+            loadFirstAvailablePage();
             
             const dateEl = document.getElementById('update-date');
             if (dateEl) {
@@ -879,7 +887,8 @@
                 html += `<ul>`;
                 (cat.sections || []).forEach(sec => {
                     const icon = getSectionIcon(sec.id);
-                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="nav-item" data-page="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
+                    const isActive = currentPage === sec.id;
+                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="nav-item ${isActive ? 'nav-active' : ''}" data-page="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
                 });
                 html += `</ul></div>`;
             });
@@ -894,20 +903,14 @@
                 'claims': 'fa-solid fa-map-pin',
                 'commands': 'fa-solid fa-terminal',
                 'tips': 'fa-solid fa-lightbulb',
-                'shaders': 'fa-solid fa-sun',
-                'rules1': 'fa-solid fa-gavel',
-                'rules2': 'fa-solid fa-comment',
-                'rules3': 'fa-solid fa-shield-halved',
-                'rules4': 'fa-solid fa-scale-balanced',
-                'rules5': 'fa-solid fa-triangle-exclamation',
-                'rules6': 'fa-solid fa-handshake',
-                'rules7': 'fa-solid fa-bell'
+                'shaders': 'fa-solid fa-sun'
             };
             return icons[id] || 'fa-solid fa-circle';
         }
 
         function loadWikiPage(page, element = null) {
             const content = document.getElementById('wiki-content');
+            // Обновляем активный элемент в сайдбаре
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
             if (element) {
                 element.classList.add('nav-active');
@@ -1014,7 +1017,11 @@
                 if (loaded) {
                     renderSidebar();
                     const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
-                    loadWikiPage(currentPage, navItem);
+                    if (navItem && sectionsMap[currentPage]) {
+                        loadWikiPage(currentPage, navItem);
+                    } else {
+                        loadFirstAvailablePage();
+                    }
                     
                     const dateEl = document.getElementById('update-date');
                     if (dateEl) {
