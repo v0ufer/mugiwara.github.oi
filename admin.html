@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Все стили такие же как были — оставляем без изменений */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Montserrat Alternates', sans-serif;
@@ -1910,7 +1909,7 @@
         }
 
         // ============================================================
-        // ====== WIKI — JSONBin ======
+        // ====== WIKI — JSONBin (с полной синхронизацией) ======
         // ============================================================
         let wikiCategories = [];
         let wikiSelectedCat = null;
@@ -1944,7 +1943,47 @@
             ];
         }
 
+        // Функция загрузки вики из JSONBin
+        async function loadWikiFromCloud() {
+            try {
+                const data = await loadFromJSONBin();
+                if (data && data.wikiCategories && data.wikiCategories.length > 0) {
+                    wikiCategories = data.wikiCategories;
+                    localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Ошибка загрузки вики из облака:', error);
+                return false;
+            }
+        }
+
+        // Функция сохранения вики в JSONBin
+        async function saveWikiToCloud() {
+            try {
+                // Сначала загружаем текущие данные из облака
+                const currentData = await loadFromJSONBin();
+                if (!currentData) return false;
+                
+                // Обновляем только вики
+                currentData.wikiCategories = wikiCategories;
+                currentData.updated = new Date().toISOString();
+                
+                const success = await saveToJSONBin(currentData);
+                if (success) {
+                    showToast('✅ Вики сохранена в облако!', 'success');
+                }
+                return success;
+            } catch (error) {
+                console.error('Ошибка сохранения вики в облако:', error);
+                showToast('⚠️ Ошибка сохранения вики', 'error');
+                return false;
+            }
+        }
+
         function renderWikiEditor() {
+            // Пытаемся загрузить из localStorage
             wikiCategories = getData('wiki_categories', null);
             if (!wikiCategories || wikiCategories.length === 0) {
                 wikiCategories = getDefaultWiki();
@@ -2139,10 +2178,10 @@
             const newId = 'cat_' + Date.now();
             wikiCategories.push({ id: newId, title: 'Новая категория', sections: [] });
             setData('wiki_categories', wikiCategories);
+            unsavedWiki = true;
             wikiSelectedCat = newId;
             wikiSelectedSec = null;
             renderWikiSidebar();
-            unsavedWiki = true;
             showToast('✅ Добавлена категория', 'success');
             setTimeout(() => startWikiEditCategory(newId), 200);
         }
@@ -2154,12 +2193,12 @@
             }
             wikiCategories = wikiCategories.filter(c => c.id !== catId);
             setData('wiki_categories', wikiCategories);
+            unsavedWiki = true;
             if (wikiSelectedCat === catId) {
                 wikiSelectedCat = wikiCategories[0]?.id || null;
                 wikiSelectedSec = wikiCategories[0]?.sections?.[0]?.id || null;
             }
             renderWikiSidebar();
-            unsavedWiki = true;
             showToast('🗑️ Категория удалена', 'info');
         }
 
@@ -2170,9 +2209,9 @@
             if (!cat.sections) cat.sections = [];
             cat.sections.push({ id: newId, title: 'Новый раздел', items: [] });
             setData('wiki_categories', wikiCategories);
+            unsavedWiki = true;
             wikiSelectedSec = newId;
             renderWikiSidebar();
-            unsavedWiki = true;
             showToast('✅ Добавлен раздел', 'success');
             setTimeout(() => startWikiEditSection(newId), 200);
         }
@@ -2186,12 +2225,12 @@
                 }
             }
             setData('wiki_categories', wikiCategories);
+            unsavedWiki = true;
             if (wikiSelectedSec === secId) {
                 const cat = wikiCategories.find(c => c.id === wikiSelectedCat);
                 wikiSelectedSec = cat?.sections?.[0]?.id || null;
             }
             renderWikiSidebar();
-            unsavedWiki = true;
             showToast('🗑️ Раздел удален', 'info');
         }
 
@@ -2254,14 +2293,32 @@
             }
         }
 
-        function saveAllWikiSections() {
+        // ОБНОВЛЁННАЯ ФУНКЦИЯ СОХРАНЕНИЯ ВИКИ
+        async function saveAllWikiSections() {
+            // Сохраняем локально
             setData('wiki_categories', wikiCategories);
             unsavedWiki = false;
+            
             const status = document.getElementById('wikiStatus');
-            status.textContent = '✅ Вики сохранена!';
+            status.textContent = '⏳ Сохранение в облако...';
             status.className = 'section-status';
-            showToast('✅ Вики сохранена', 'success');
-            setTimeout(() => { if (!unsavedWiki) status.textContent = ''; }, 3000);
+            
+            // Сохраняем в облако
+            const success = await saveWikiToCloud();
+            
+            if (success) {
+                status.textContent = '✅ Вики сохранена в облако!';
+                status.className = 'section-status';
+                showToast('✅ Вики сохранена!', 'success');
+            } else {
+                status.textContent = '⚠️ Вики сохранена локально. Ошибка облака.';
+                status.className = 'section-status error';
+                showToast('⚠️ Ошибка сохранения в облако', 'error');
+            }
+            
+            setTimeout(() => { 
+                if (!unsavedWiki) status.textContent = ''; 
+            }, 3000);
         }
 
         function previewWikiFull() {
@@ -2291,7 +2348,7 @@
         }
 
         // ============================================================
-        // ====== RULES — JSONBin ======
+        // ====== RULES — JSONBin (с полной синхронизацией) ======
         // ============================================================
         let rulesCategories = [];
         let rulesSelectedCat = null;
@@ -2315,6 +2372,43 @@
                     ] 
                 }
             ];
+        }
+
+        // Функция загрузки правил из JSONBin
+        async function loadRulesFromCloud() {
+            try {
+                const data = await loadFromJSONBin();
+                if (data && data.rulesCategories && data.rulesCategories.length > 0) {
+                    rulesCategories = data.rulesCategories;
+                    localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Ошибка загрузки правил из облака:', error);
+                return false;
+            }
+        }
+
+        // Функция сохранения правил в JSONBin
+        async function saveRulesToCloud() {
+            try {
+                const currentData = await loadFromJSONBin();
+                if (!currentData) return false;
+                
+                currentData.rulesCategories = rulesCategories;
+                currentData.updated = new Date().toISOString();
+                
+                const success = await saveToJSONBin(currentData);
+                if (success) {
+                    showToast('✅ Правила сохранены в облако!', 'success');
+                }
+                return success;
+            } catch (error) {
+                console.error('Ошибка сохранения правил в облако:', error);
+                showToast('⚠️ Ошибка сохранения правил', 'error');
+                return false;
+            }
         }
 
         function renderRulesEditor() {
@@ -2512,10 +2606,10 @@
             const newId = 'rules_cat_' + Date.now();
             rulesCategories.push({ id: newId, title: 'Новая категория', sections: [] });
             setData('rules_categories', rulesCategories);
+            unsavedRules = true;
             rulesSelectedCat = newId;
             rulesSelectedSec = null;
             renderRulesSidebar();
-            unsavedRules = true;
             showToast('✅ Добавлена категория', 'success');
             setTimeout(() => startRulesEditCategory(newId), 200);
         }
@@ -2527,12 +2621,12 @@
             }
             rulesCategories = rulesCategories.filter(c => c.id !== catId);
             setData('rules_categories', rulesCategories);
+            unsavedRules = true;
             if (rulesSelectedCat === catId) {
                 rulesSelectedCat = rulesCategories[0]?.id || null;
                 rulesSelectedSec = rulesCategories[0]?.sections?.[0]?.id || null;
             }
             renderRulesSidebar();
-            unsavedRules = true;
             showToast('🗑️ Категория удалена', 'info');
         }
 
@@ -2543,9 +2637,9 @@
             const newId = 'rules_sec_' + catId + '_' + Date.now();
             cat.sections.push({ id: newId, title: 'Новый раздел', items: [] });
             setData('rules_categories', rulesCategories);
+            unsavedRules = true;
             rulesSelectedSec = newId;
             renderRulesSidebar();
-            unsavedRules = true;
             showToast('✅ Добавлен раздел', 'success');
             setTimeout(() => startRulesEditSection(newId), 200);
         }
@@ -2559,6 +2653,7 @@
                 }
             }
             setData('rules_categories', rulesCategories);
+            unsavedRules = true;
             const stillExists = rulesCategories.some(cat => 
                 cat.sections && cat.sections.some(s => s.id === rulesSelectedSec)
             );
@@ -2567,7 +2662,6 @@
                 rulesSelectedSec = cat?.sections?.[0]?.id || null;
             }
             renderRulesSidebar();
-            unsavedRules = true;
             showToast('🗑️ Раздел удален', 'info');
         }
 
@@ -2630,14 +2724,32 @@
             }
         }
 
-        function saveAllRulesSections() {
+        // ОБНОВЛЁННАЯ ФУНКЦИЯ СОХРАНЕНИЯ ПРАВИЛ
+        async function saveAllRulesSections() {
+            // Сохраняем локально
             setData('rules_categories', rulesCategories);
             unsavedRules = false;
+            
             const status = document.getElementById('rulesStatus');
-            status.textContent = '✅ Правила сохранены!';
+            status.textContent = '⏳ Сохранение в облако...';
             status.className = 'section-status';
-            showToast('✅ Правила сохранены', 'success');
-            setTimeout(() => { if (!unsavedRules) status.textContent = ''; }, 3000);
+            
+            // Сохраняем в облако
+            const success = await saveRulesToCloud();
+            
+            if (success) {
+                status.textContent = '✅ Правила сохранены в облако!';
+                status.className = 'section-status';
+                showToast('✅ Правила сохранены!', 'success');
+            } else {
+                status.textContent = '⚠️ Правила сохранены локально. Ошибка облака.';
+                status.className = 'section-status error';
+                showToast('⚠️ Ошибка сохранения в облако', 'error');
+            }
+            
+            setTimeout(() => { 
+                if (!unsavedRules) status.textContent = ''; 
+            }, 3000);
         }
 
         function previewRulesFull() {
@@ -2667,6 +2779,51 @@
         }
 
         // ============================================================
+        // ====== КНОПКА СИНХРОНИЗАЦИИ ВСЕХ ДАННЫХ ======
+        // ============================================================
+        async function manualSync() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Синхр.';
+            btn.disabled = true;
+            
+            try {
+                // Загружаем все данные из JSONBin
+                const jsonData = await loadFromJSONBin();
+                if (jsonData) {
+                    // Обновляем вики
+                    if (jsonData.wikiCategories) {
+                        wikiCategories = jsonData.wikiCategories;
+                        localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
+                        renderWikiEditor();
+                    }
+                    
+                    // Обновляем правила
+                    if (jsonData.rulesCategories) {
+                        rulesCategories = jsonData.rulesCategories;
+                        localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
+                        renderRulesEditor();
+                    }
+                    
+                    // Обновляем скриншоты
+                    if (jsonData.screenshots) {
+                        localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
+                        loadScreenshots();
+                    }
+                    
+                    showToast('✅ Все данные синхронизированы!', 'success');
+                } else {
+                    showToast('⚠️ Ошибка загрузки данных', 'error');
+                }
+            } catch (e) {
+                showToast('⚠️ Ошибка синхронизации', 'error');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        // ============================================================
         // ====== INIT ======
         // ============================================================
         async function initAdmin() {
@@ -2686,11 +2843,23 @@
                     localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
                 }
                 if (jsonData.wikiCategories) {
-                    localStorage.setItem('wiki_categories', JSON.stringify(jsonData.wikiCategories));
+                    wikiCategories = jsonData.wikiCategories;
+                    localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
+                } else {
+                    wikiCategories = getDefaultWiki();
+                    localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
                 }
                 if (jsonData.rulesCategories) {
-                    localStorage.setItem('rules_categories', JSON.stringify(jsonData.rulesCategories));
+                    rulesCategories = jsonData.rulesCategories;
+                    localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
+                } else {
+                    rulesCategories = getDefaultRules();
+                    localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
                 }
+            } else {
+                // Если JSONBin не отвечает, используем локальные данные
+                wikiCategories = getData('wiki_categories', getDefaultWiki());
+                rulesCategories = getData('rules_categories', getDefaultRules());
             }
             
             loadScreenshots();
