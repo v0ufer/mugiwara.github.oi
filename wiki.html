@@ -24,7 +24,6 @@
         }
     </script>
     <style>
-        /* Базовые стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
@@ -37,7 +36,6 @@
         .game-font { font-family: 'Montserrat Alternates', sans-serif; }
         .game-bold-font { font-family: 'Exo 2', sans-serif; }
 
-        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
@@ -89,10 +87,18 @@
             color: #fff;
         }
 
-        /* Wiki Sidebar */
+        #mobile-menu {
+            animation: slideDown 0.25s ease forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .wiki-sidebar {
             background: #121212;
             transition: background-color 0.3s ease;
+            border-right: 1px solid rgba(255,255,255,0.06);
         }
         .wiki-sidebar::-webkit-scrollbar { width: 4px; }
         .wiki-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
@@ -151,33 +157,11 @@
         body.light .sidebar-group-title { color: #888; }
         body.light .wiki-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
 
-        /* Wiki cards */
         .wiki-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .wiki-card:hover { transform: translateY(-6px); }
 
-        /* Mobile menu */
-        #mobile-menu {
-            animation: slideDown 0.25s ease forwards;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Анимация появления */
-        .section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Glitch эффект для заголовка */
         .glitch-title {
             position: relative;
             animation: glitchText 3s infinite;
@@ -205,7 +189,6 @@
             letter-spacing: 0.04em;
         }
 
-        /* ===== СВЕТЛАЯ ТЕМА ===== */
         body.light {
             background-color: #f0f0f0;
             color: #1a1a1a;
@@ -360,11 +343,6 @@
             border-color: rgba(0,0,0,0.08);
         }
 
-        .game-bold-text {
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 700;
-        }
-
         .sync-btn {
             padding: 4px 14px;
             border-radius: 8px;
@@ -389,100 +367,6 @@
             background: rgba(0,0,0,0.04);
             color: #000;
             border-color: rgba(0,0,0,0.1);
-        }
-
-        /* ===== МОБИЛЬНЫЙ САЙДБАР ===== */
-        .mobile-wiki-header {
-            display: none;
-            padding: 12px 16px;
-            background: rgba(20,20,30,0.8);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 64px;
-            z-index: 10;
-        }
-        .mobile-wiki-header .toggle-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #ccc;
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-family: 'Montserrat Alternates', sans-serif;
-            transition: all 0.3s ease;
-        }
-        .mobile-wiki-header .toggle-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-        }
-
-        .mobile-sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 999;
-            backdrop-filter: blur(4px);
-        }
-        .mobile-sidebar-overlay.active {
-            display: block;
-        }
-
-        .mobile-sidebar {
-            position: fixed;
-            top: 0;
-            left: -320px;
-            width: 300px;
-            height: 100vh;
-            background: #121212;
-            border-right: 1px solid rgba(255,255,255,0.06);
-            z-index: 1000;
-            transition: left 0.3s ease;
-            overflow-y: auto;
-            padding: 20px 16px;
-        }
-        .mobile-sidebar.open {
-            left: 0;
-        }
-        .mobile-sidebar .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .mobile-sidebar .close-btn:hover {
-            color: #fff;
-        }
-        .mobile-sidebar .nav-item {
-            font-size: 14px;
-        }
-
-        body.light .mobile-sidebar {
-            background: #e8e8e8;
-        }
-        body.light .mobile-sidebar-overlay {
-            background: rgba(0,0,0,0.4);
-        }
-        body.light .mobile-wiki-header {
-            background: rgba(235,235,235,0.9);
-            border-bottom-color: rgba(0,0,0,0.08);
-        }
-        body.light .mobile-wiki-header .toggle-btn {
-            border-color: rgba(0,0,0,0.1);
-            color: #666;
-        }
-        body.light .mobile-wiki-header .toggle-btn:hover {
-            background: rgba(0,0,0,0.06);
-            color: #000;
         }
 
         .wiki-page-content ul {
@@ -528,32 +412,150 @@
         .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
         .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
 
+        /* ===== МОБИЛЬНОЕ ВЫДВИЖНОЕ МЕНЮ ===== */
+        .hamburger-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .hamburger-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+        body.light .hamburger-btn {
+            border-color: rgba(0,0,0,0.1);
+            color: #666;
+        }
+        body.light .hamburger-btn:hover {
+            background: rgba(0,0,0,0.06);
+            color: #000;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            backdrop-filter: blur(4px);
+        }
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100vh;
+            background: #121212;
+            z-index: 999;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding: 20px 16px;
+            border-right: 1px solid rgba(255,255,255,0.06);
+        }
+        .mobile-sidebar.open {
+            left: 0;
+        }
+        .mobile-sidebar::-webkit-scrollbar { width: 4px; }
+        .mobile-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .mobile-sidebar .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .mobile-sidebar .sidebar-header h2 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .mobile-sidebar .close-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .mobile-sidebar .close-btn:hover {
+            color: #fff;
+        }
+
+        .mobile-sidebar .sidebar-group {
+            margin-bottom: 24px;
+        }
+        .mobile-sidebar .sidebar-group-title {
+            font-size: 0.6rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-family: 'Exo 2', sans-serif;
+        }
+        .mobile-sidebar .nav-item {
+            padding: 8px 14px;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+        .mobile-sidebar .nav-item i {
+            font-size: 14px;
+            width: 18px;
+        }
+
+        body.light .mobile-sidebar {
+            background: #e8e8e8;
+            border-right-color: rgba(0,0,0,0.06);
+        }
+        body.light .mobile-sidebar .sidebar-header h2 {
+            color: #1a1a1a;
+        }
+        body.light .mobile-sidebar .sidebar-header {
+            border-bottom-color: rgba(0,0,0,0.06);
+        }
+        body.light .mobile-sidebar .close-btn {
+            color: #666;
+        }
+        body.light .mobile-sidebar .close-btn:hover {
+            color: #1a1a1a;
+        }
+        body.light .mobile-sidebar .sidebar-group-title {
+            color: #888;
+        }
+        body.light .mobile-overlay {
+            background: rgba(0,0,0,0.3);
+        }
+
         @media (max-width: 1024px) {
             .wiki-sidebar {
                 display: none !important;
             }
-            .mobile-wiki-header {
-                display: flex !important;
+            .hamburger-btn {
+                display: inline-flex !important;
                 align-items: center;
-                justify-content: space-between;
+                gap: 8px;
             }
-            .mobile-sidebar-overlay.active {
+            .mobile-overlay.active {
                 display: block;
             }
         }
         @media (max-width: 640px) {
-            .screenshot-item {
-                flex: 0 0 180px;
-                height: 120px;
-            }
-            .screenshots-track {
-                gap: 12px;
-                animation-duration: 20s;
-            }
-            .screenshots-track-right {
-                gap: 12px;
-                animation-duration: 20s;
-            }
             .admin-link-btn {
                 padding: 4px 14px;
                 font-size: 10px;
@@ -562,9 +564,9 @@
                 width: 280px;
                 left: -300px;
             }
-            .mobile-wiki-header {
-                top: 56px;
-                padding: 10px 12px;
+            .hamburger-btn {
+                padding: 6px 12px;
+                font-size: 14px;
             }
         }
     </style>
@@ -635,8 +637,8 @@
 
     <!-- ====== ВИКИ ====== -->
     <div class="flex min-h-screen pt-16 lg:pt-20">
-        <!-- Десктопный Sidebar -->
-        <div class="wiki-sidebar w-72 border-r border-neutral-800 p-6 hidden lg:block fixed h-[calc(100vh-4rem)] overflow-y-auto transition-colors duration-300">
+        <!-- Десктопный Сайдбар -->
+        <div class="wiki-sidebar w-72 p-6 hidden lg:block fixed h-[calc(100vh-4rem)] overflow-y-auto transition-colors duration-300">
             <div class="mb-8">
                 <h1 class="text-2xl font-semibold text-white glitch-title"><i class="fa-solid fa-book mr-2"></i>ВИКИ</h1>
                 <p class="text-sm text-neutral-500 game-font">Mugivara • 1.21.11</p>
@@ -660,26 +662,29 @@
             </div>
         </div>
 
-        <!-- Мобильный хедер -->
-        <div class="mobile-wiki-header">
-            <button class="toggle-btn" onclick="toggleMobileSidebar()">
+        <!-- Мобильный хедер с кнопкой гамбургера -->
+        <div class="lg:hidden fixed top-16 z-20 w-full bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800 px-4 py-3 flex items-center justify-between">
+            <button class="hamburger-btn" onclick="toggleMobileSidebar()">
                 <i class="fa-solid fa-bars"></i> Меню
             </button>
             <span class="text-white/60 text-sm game-font">📖 Вики</span>
-            <button class="toggle-btn" onclick="loadAllWikiFromCloud()" style="border-color: rgba(78, 205, 196, 0.3); color: #4ecdc4;">
-                <i class="fa-regular fa-rotate"></i> Обновить
+            <button class="hamburger-btn" onclick="loadAllWikiFromCloud()" style="border-color: rgba(78, 205, 196, 0.3); color: #4ecdc4;">
+                <i class="fa-regular fa-rotate"></i>
             </button>
         </div>
 
         <!-- Мобильный оверлей -->
-        <div class="mobile-sidebar-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+        <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
 
-        <!-- Мобильный сайдбар -->
+        <!-- Мобильный выдвижной сайдбар -->
         <div class="mobile-sidebar" id="mobileSidebar">
-            <button class="close-btn" onclick="closeMobileSidebar()">
-                <i class="fa-regular fa-xmark"></i>
-            </button>
-            <div class="mt-8 space-y-6" id="mobileSidebarNav">
+            <div class="sidebar-header">
+                <h2>📖 Вики</h2>
+                <button class="close-btn" onclick="closeMobileSidebar()">
+                    <i class="fa-regular fa-xmark"></i>
+                </button>
+            </div>
+            <div id="mobileSidebarNav">
                 <!-- Загружается через JS -->
             </div>
             <div class="mt-6 pt-4 border-t border-neutral-800">
@@ -690,8 +695,10 @@
         </div>
 
         <!-- Контент -->
-        <div class="flex-1 lg:ml-72 p-4 sm:p-6 lg:p-10" id="wiki-content">
-            <!-- Загружается через JS -->
+        <div class="flex-1 lg:ml-72 pt-4 lg:pt-0 px-4 sm:px-6 lg:p-10">
+            <div id="wiki-content" class="max-w-3xl mx-auto">
+                <!-- Загружается через JS -->
+            </div>
         </div>
     </div>
 
@@ -770,7 +777,7 @@
             }, 4000);
         }
 
-        // ====== МОБИЛЬНЫЙ САЙДБАР ======
+        // ====== МОБИЛЬНОЕ МЕНЮ ======
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('mobileSidebar');
             const overlay = document.getElementById('mobileOverlay');
@@ -909,7 +916,7 @@
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
             if (btn) {
-                btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Загрузка...';
+                btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i>';
                 btn.disabled = true;
             }
 
@@ -933,7 +940,7 @@
                     
                     const loaded = loadWikiFromStorage();
                     if (loaded) {
-                        renderSidebars();
+                        renderAllSidebars();
                         loadFirstAvailablePage();
                         showToast('✅ Вики обновлена из облака', 'success');
                     }
@@ -958,8 +965,7 @@
                     const firstSec = firstCat.sections[0];
                     currentPage = firstSec.id;
                     const navItem = document.querySelector(`.nav-item[data-page="${firstSec.id}"]`);
-                    const mobileNavItem = document.querySelector(`.mobile-nav-item[data-page="${firstSec.id}"]`);
-                    loadWikiPage(firstSec.id, navItem || mobileNavItem);
+                    loadWikiPage(firstSec.id, navItem);
                     return;
                 }
             }
@@ -996,7 +1002,7 @@
                         
                         const loaded = loadWikiFromStorage();
                         if (loaded) {
-                            renderSidebars();
+                            renderAllSidebars();
                             const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
                             if (navItem && sectionsMap[currentPage]) {
                                 loadWikiPage(currentPage, navItem);
@@ -1019,7 +1025,7 @@
                 buildSectionsMap();
                 saveWikiToStorage();
             }
-            renderSidebars();
+            renderAllSidebars();
             loadFirstAvailablePage();
             
             const date = new Date();
@@ -1028,14 +1034,14 @@
             document.getElementById('mobile-update-date').textContent = dateStr;
         }
 
-        function renderSidebars() {
+        function renderAllSidebars() {
             renderDesktopSidebar();
             renderMobileSidebar();
         }
 
         function renderDesktopSidebar() {
             const nav = document.getElementById('sidebarNav');
-            nav.innerHTML = buildSidebarHTML();
+            nav.innerHTML = buildSidebarHTML(false);
         }
 
         function renderMobileSidebar() {
@@ -1052,8 +1058,9 @@
                 (cat.sections || []).forEach(sec => {
                     const icon = getSectionIcon(sec.id);
                     const isActive = currentPage === sec.id;
-                    const className = isMobile ? 'nav-item mobile-nav-item' : 'nav-item';
-                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="${className} ${isActive ? 'nav-active' : ''}" data-page="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
+                    const className = isMobile ? 'nav-item' : 'nav-item';
+                    const dataAttr = isMobile ? 'data-page' : 'data-page';
+                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="${className} ${isActive ? 'nav-active' : ''}" ${dataAttr}="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
                 });
                 html += `</ul></div>`;
             });
@@ -1078,18 +1085,15 @@
             
             // Обновляем активные элементы
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
-            document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('nav-active'));
             
             if (element) {
                 element.classList.add('nav-active');
-                // Если это мобильный элемент, обновляем и десктопный
-                const desktopEl = document.querySelector(`.nav-item[data-page="${page}"]`);
-                if (desktopEl) desktopEl.classList.add('nav-active');
+                // Обновляем такой же элемент в другой версии
+                const allNavItems = document.querySelectorAll(`.nav-item[data-page="${page}"]`);
+                allNavItems.forEach(el => el.classList.add('nav-active'));
             } else {
-                const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
-                if (navItem) navItem.classList.add('nav-active');
-                const mobileNavItem = document.querySelector(`.mobile-nav-item[data-page="${page}"]`);
-                if (mobileNavItem) mobileNavItem.classList.add('nav-active');
+                const navItems = document.querySelectorAll(`.nav-item[data-page="${page}"]`);
+                navItems.forEach(el => el.classList.add('nav-active'));
             }
 
             currentPage = page;
@@ -1110,7 +1114,7 @@
         function getWikiContent(pageId) {
             const section = sectionsMap[pageId];
             if (!section) {
-                return `<div class="max-w-3xl"><div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8"><p class="text-neutral-400">Раздел не найден</p></div></div>`;
+                return `<div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8"><p class="text-neutral-400">Раздел не найден</p></div>`;
             }
 
             const items = section.items || [];
@@ -1128,7 +1132,7 @@
                 ];
                 extraHtml = `<div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     ${cards.map(c => `
-                        <div onclick="loadWikiPage('${c.id}', document.querySelector('.nav-item[data-page="${c.id}"]') || document.querySelector('.mobile-nav-item[data-page="${c.id}"]'))" class="wiki-card cursor-pointer bg-neutral-950 p-6 rounded-2xl border border-neutral-700 hover:border-white/30 transition-all">
+                        <div onclick="loadWikiPage('${c.id}', document.querySelector('.nav-item[data-page="${c.id}"]'))" class="wiki-card cursor-pointer bg-neutral-950 p-6 rounded-2xl border border-neutral-700 hover:border-white/30 transition-all">
                             <div class="wiki-icon text-3xl mb-3"><i class="${c.icon}"></i></div>
                             <h3 class="text-lg font-semibold text-white game-font">${c.title}</h3>
                             <p class="text-sm text-neutral-400 mt-1 game-font">${c.desc}</p>
@@ -1138,7 +1142,7 @@
             }
 
             return `
-                <div class="max-w-3xl wiki-page-content">
+                <div class="wiki-page-content">
                     <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 sm:p-10">
                         <h1 class="text-3xl sm:text-4xl font-semibold text-white mb-6 game-heading">${section.title}</h1>
                         <div class="text-neutral-300 leading-relaxed game-font">
@@ -1183,8 +1187,8 @@
             if (e.key === 'wiki_categories' || e.key === 'mugivara_main_data') {
                 const loaded = loadWikiFromStorage();
                 if (loaded) {
-                    renderSidebars();
-                    const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`) || document.querySelector(`.mobile-nav-item[data-page="${currentPage}"]`);
+                    renderAllSidebars();
+                    const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
                     if (navItem && sectionsMap[currentPage]) {
                         loadWikiPage(currentPage, navItem);
                     } else {
