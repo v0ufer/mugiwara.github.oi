@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Админ-панель</title>
+    <!-- ===== ФАВИКОН: чёрная Z на белом фоне с закруглёнными краями ===== -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1260,13 +1263,9 @@
         // ============================================================
         // ====== КОНФИГУРАЦИЯ ======
         // ============================================================
-        // PythonAnywhere — для заявок
         const API_URL = 'https://v0ufer.pythonanywhere.com';
-        
-        // JSONBin.io — для вики, правил, скриншотов
         const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
-        
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
 
         // ============================================================
@@ -1943,7 +1942,6 @@
             ];
         }
 
-        // Функция загрузки вики из JSONBin
         async function loadWikiFromCloud() {
             try {
                 const data = await loadFromJSONBin();
@@ -1959,14 +1957,11 @@
             }
         }
 
-        // Функция сохранения вики в JSONBin
         async function saveWikiToCloud() {
             try {
-                // Сначала загружаем текущие данные из облака
                 const currentData = await loadFromJSONBin();
                 if (!currentData) return false;
                 
-                // Обновляем только вики
                 currentData.wikiCategories = wikiCategories;
                 currentData.updated = new Date().toISOString();
                 
@@ -1983,7 +1978,6 @@
         }
 
         function renderWikiEditor() {
-            // Пытаемся загрузить из localStorage
             wikiCategories = getData('wiki_categories', null);
             if (!wikiCategories || wikiCategories.length === 0) {
                 wikiCategories = getDefaultWiki();
@@ -2293,9 +2287,7 @@
             }
         }
 
-        // ОБНОВЛЁННАЯ ФУНКЦИЯ СОХРАНЕНИЯ ВИКИ
         async function saveAllWikiSections() {
-            // Сохраняем локально
             setData('wiki_categories', wikiCategories);
             unsavedWiki = false;
             
@@ -2303,7 +2295,6 @@
             status.textContent = '⏳ Сохранение в облако...';
             status.className = 'section-status';
             
-            // Сохраняем в облако
             const success = await saveWikiToCloud();
             
             if (success) {
@@ -2348,7 +2339,7 @@
         }
 
         // ============================================================
-        // ====== RULES — JSONBin (с полной синхронизацией) ======
+        // ====== RULES — JSONBin ======
         // ============================================================
         let rulesCategories = [];
         let rulesSelectedCat = null;
@@ -2374,7 +2365,6 @@
             ];
         }
 
-        // Функция загрузки правил из JSONBin
         async function loadRulesFromCloud() {
             try {
                 const data = await loadFromJSONBin();
@@ -2390,7 +2380,6 @@
             }
         }
 
-        // Функция сохранения правил в JSONBin
         async function saveRulesToCloud() {
             try {
                 const currentData = await loadFromJSONBin();
@@ -2724,9 +2713,7 @@
             }
         }
 
-        // ОБНОВЛЁННАЯ ФУНКЦИЯ СОХРАНЕНИЯ ПРАВИЛ
         async function saveAllRulesSections() {
-            // Сохраняем локально
             setData('rules_categories', rulesCategories);
             unsavedRules = false;
             
@@ -2734,7 +2721,6 @@
             status.textContent = '⏳ Сохранение в облако...';
             status.className = 'section-status';
             
-            // Сохраняем в облако
             const success = await saveRulesToCloud();
             
             if (success) {
@@ -2778,9 +2764,6 @@
             if (win) { win.document.write(html); win.document.close(); }
         }
 
-        // ============================================================
-        // ====== КНОПКА СИНХРОНИЗАЦИИ ВСЕХ ДАННЫХ ======
-        // ============================================================
         async function manualSync() {
             const btn = event.target;
             const originalText = btn.innerHTML;
@@ -2788,24 +2771,20 @@
             btn.disabled = true;
             
             try {
-                // Загружаем все данные из JSONBin
                 const jsonData = await loadFromJSONBin();
                 if (jsonData) {
-                    // Обновляем вики
                     if (jsonData.wikiCategories) {
                         wikiCategories = jsonData.wikiCategories;
                         localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
                         renderWikiEditor();
                     }
                     
-                    // Обновляем правила
                     if (jsonData.rulesCategories) {
                         rulesCategories = jsonData.rulesCategories;
                         localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
                         renderRulesEditor();
                     }
                     
-                    // Обновляем скриншоты
                     if (jsonData.screenshots) {
                         localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
                         loadScreenshots();
@@ -2833,10 +2812,8 @@
                 document.querySelector('#themeToggle i').className = 'fa-regular fa-sun';
             }
             
-            // Загружаем заявки из PythonAnywhere
             loadApplications();
             
-            // Загружаем вики, правила, скриншоты из JSONBin
             const jsonData = await loadFromJSONBin();
             if (jsonData) {
                 if (jsonData.screenshots) {
@@ -2857,7 +2834,6 @@
                     localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
                 }
             } else {
-                // Если JSONBin не отвечает, используем локальные данные
                 wikiCategories = getData('wiki_categories', getDefaultWiki());
                 rulesCategories = getData('rules_categories', getDefaultRules());
             }
@@ -2867,7 +2843,6 @@
             renderRulesEditor();
             loadSettings();
             
-            // Авто-обновление заявок
             if (applicationsRefreshInterval) {
                 clearInterval(applicationsRefreshInterval);
             }

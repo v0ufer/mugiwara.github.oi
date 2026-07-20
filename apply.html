@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Подача заявки</title>
+    <!-- ===== ФАВИКОН: чёрная Z на белом фоне с закруглёнными краями ===== -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -344,6 +347,43 @@
             border-radius: 10px;
         }
 
+        .glitch-text {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(255,255,255,0.05);
+            animation: glitchPulse 3s ease-in-out infinite;
+        }
+        @keyframes glitchPulse {
+            0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02); }
+            50% { text-shadow: 0 0 40px rgba(255,255,255,0.1), 0 0 80px rgba(255,255,255,0.04), 0 0 120px rgba(255,255,255,0.02); }
+        }
+        body.light .glitch-text {
+            text-shadow: 0 0 30px rgba(0,0,0,0.04);
+        }
+
+        .online-dot {
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         body.light {
             background-color: #f0f0f0;
             color: #1a1a1a;
@@ -436,28 +476,6 @@
         body.light .custom-select .options::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
         body.light .form-group .checkbox-group label a { color: #1a1a1a; }
 
-        .glitch-text {
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 800;
-            text-shadow: 0 0 30px rgba(255,255,255,0.05);
-            animation: glitchPulse 3s ease-in-out infinite;
-        }
-        @keyframes glitchPulse {
-            0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02); }
-            50% { text-shadow: 0 0 40px rgba(255,255,255,0.1), 0 0 80px rgba(255,255,255,0.04), 0 0 120px rgba(255,255,255,0.02); }
-        }
-        body.light .glitch-text {
-            text-shadow: 0 0 30px rgba(0,0,0,0.04);
-        }
-
-        .online-dot {
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
         .toast {
             position: fixed;
             bottom: 30px;
@@ -478,22 +496,6 @@
         .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
         .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
         .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
-
-        /* Спиннер */
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
 
         @media (max-width: 640px) {
             .form-container { padding: 0 10px; }
@@ -573,7 +575,7 @@
     <div class="pt-20 pb-12 px-4 sm:px-6">
         <div class="form-container">
             <div class="text-center mb-10">
-                <h1 class="text-4xl sm:text-5xl font-semibold mb-3 glitch-text text-white">📝 Подача заявки</h1>
+                <h1 class="text-4xl sm:text-5xl font-semibold mb-3 glitch-text text-white"><i class="fa-regular fa-pen-to-square mr-3"></i>Подача заявки</h1>
                 <p class="text-neutral-400 game-font">Заполните анкету для получения доступа на сервер</p>
                 <p class="text-xs text-neutral-500 mt-2 game-font">
                     <i class="fa-regular fa-circle-check text-green-400"></i>
@@ -791,7 +793,6 @@
                 discord_nick: document.getElementById('discord_nick').value.trim()
             };
 
-            // Валидация
             if (!data.minecraft_nick || !data.age || !data.how_found || !data.experience || !data.expectations || !data.discord_nick) {
                 status.textContent = '❌ Пожалуйста, заполните все обязательные поля';
                 status.className = 'form-status error';
@@ -814,7 +815,6 @@
             btn.innerHTML = '<span class="spinner"></span> Отправка...';
 
             try {
-                // === 1. СОХРАНЯЕМ ЛОКАЛЬНО ===
                 let applications = [];
                 try {
                     const saved = localStorage.getItem('mugivara_applications');
@@ -825,7 +825,6 @@
                 applications.push(data);
                 localStorage.setItem('mugivara_applications', JSON.stringify(applications));
 
-                // === 2. ОТПРАВЛЯЕМ В ОБЛАКО (PythonAnywhere) ===
                 const response = await fetch(`${API_URL}/applications`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

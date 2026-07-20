@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Вики</title>
+    <!-- ===== ФАВИКОН: чёрная Z на белом фоне с закруглёнными краями ===== -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,16 +27,21 @@
         }
     </script>
     <style>
+        /* Базовые стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
             font-family: 'Montserrat Alternates', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
             background-color: #0a0a0a;
             color: #e5e5e5;
         }
+        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
         .game-font { font-family: 'Montserrat Alternates', sans-serif; }
+        .game-bold-font { font-family: 'Exo 2', sans-serif; }
 
-        ::-webkit-scrollbar { width: 8px; }
+        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
         ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)); }
@@ -84,18 +92,9 @@
             color: #fff;
         }
 
-        #mobile-menu {
-            animation: slideDown 0.25s ease forwards;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ===== САЙДБАР ===== */
+        /* Wiki Sidebar */
         .wiki-sidebar {
             background: #121212;
-            border-right: 1px solid rgba(255,255,255,0.06);
             transition: background-color 0.3s ease;
         }
         .wiki-sidebar::-webkit-scrollbar { width: 4px; }
@@ -119,6 +118,7 @@
         .nav-item i {
             width: 20px;
             color: #666;
+            transition: color 0.2s ease;
         }
         .nav-item:hover i { color: #fff; }
         .nav-active {
@@ -152,43 +152,35 @@
         body.light .nav-item i { color: #888; }
         body.light .nav-item:hover i { color: #000; }
         body.light .sidebar-group-title { color: #888; }
-        body.light .wiki-sidebar { background: #d8d8d8; border-right-color: #bbbbbb; }
+        body.light .wiki-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
 
-        /* ===== КОНТЕНТ ===== */
-        .wiki-content-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        .wiki-page-content ul {
-            list-style: none;
-            padding: 0;
-        }
-        .wiki-page-content ul li {
-            padding: 8px 12px;
-            margin: 4px 0;
-            background: rgba(255,255,255,0.02);
-            border-radius: 8px;
-            border-left: 3px solid rgba(255,255,255,0.1);
-            font-family: 'Montserrat Alternates', sans-serif;
-        }
-        .wiki-page-content ul li:before {
-            content: "•";
-            color: #888;
-            margin-right: 10px;
-        }
-        body.light .wiki-page-content ul li {
-            background: rgba(0,0,0,0.02);
-            border-left-color: rgba(0,0,0,0.1);
-        }
-
+        /* Wiki cards */
         .wiki-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .wiki-card:hover { transform: translateY(-6px); }
-        .wiki-icon { transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .wiki-card:hover .wiki-icon { transform: rotate(15deg) scale(1.1); }
 
+        /* Mobile menu */
+        #mobile-menu {
+            animation: slideDown 0.25s ease forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Анимация появления */
+        .section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glitch эффект для заголовка */
         .glitch-title {
             position: relative;
             animation: glitchText 3s infinite;
@@ -203,11 +195,113 @@
             98% { transform: translate(1px, -2px); }
         }
 
+        .wiki-icon {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .wiki-card:hover .wiki-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
         .game-heading {
             font-family: 'Montserrat Alternates', sans-serif;
             font-weight: 700;
             letter-spacing: 0.04em;
         }
+
+        /* ===== СВЕТЛАЯ ТЕМА ===== */
+        body.light {
+            background-color: #f0f0f0;
+            color: #1a1a1a;
+        }
+        body.light .bg-neutral-950 { background-color: #e8e8e8; }
+        body.light .bg-neutral-900 { background-color: #dddddd; }
+        body.light .bg-neutral-800 { background-color: #d0d0d0; }
+        body.light .bg-black { background-color: #d5d5d5; }
+        body.light .border-neutral-800 { border-color: #bbbbbb; }
+        body.light .border-neutral-700 { border-color: #aaaaaa; }
+        body.light .border-neutral-600 { border-color: #999999; }
+        body.light .border-white\/10 { border-color: rgba(0,0,0,0.08); }
+        body.light .border-white\/20 { border-color: rgba(0,0,0,0.15); }
+        body.light .text-white { color: #111111 !important; }
+        body.light .text-neutral-400 { color: #444444 !important; }
+        body.light .text-neutral-500 { color: #555555 !important; }
+        body.light .text-neutral-300 { color: #333333 !important; }
+        body.light .text-neutral-200 { color: #222222 !important; }
+        body.light .text-white\/80 { color: #333333 !important; }
+        body.light .text-white\/70 { color: #444444 !important; }
+        body.light .text-white\/90 { color: #222222 !important; }
+        body.light .text-white\/60 { color: #444444 !important; }
+        body.light .text-white\/40 { color: #666666 !important; }
+        body.light .wiki-sidebar { 
+            background: #d8d8d8 !important; 
+            border-color: #bbbbbb !important; 
+        }
+        body.light #navbar { 
+            background-color: rgba(235,235,235,0.95) !important; 
+            border-color: #bbbbbb !important; 
+        }
+        body.light #navbar .text-white { color: #111111 !important; }
+        body.light #navbar .text-neutral-300 { color: #333333 !important; }
+        body.light #navbar .text-white\/80 { color: #333333 !important; }
+        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+        body.light .theme-toggle { 
+            border-color: rgba(0,0,0,0.15) !important; 
+            color: #333 !important; 
+        }
+        body.light .theme-toggle:hover { 
+            background: rgba(0,0,0,0.06) !important; 
+            color: #000 !important; 
+        }
+        body.light .nav-btn-ip {
+            background: rgba(0,0,0,0.05) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+            color: #333 !important;
+        }
+        body.light .nav-btn-ip:hover {
+            background: rgba(0,0,0,0.1) !important;
+            border-color: rgba(0,0,0,0.2) !important;
+            color: #000 !important;
+        }
+        body.light .wiki-card { 
+            background-color: #e0e0e0 !important; 
+            border-color: #bbbbbb !important; 
+        }
+        body.light .wiki-card .text-white { color: #111111 !important; }
+        body.light .wiki-card .text-neutral-300 { color: #333333 !important; }
+        body.light .wiki-card .text-neutral-400 { color: #444444 !important; }
+        body.light .wiki-card .text-white\/80 { color: #333333 !important; }
+        body.light .wiki-card .text-white\/70 { color: #444444 !important; }
+        body.light .wiki-card .text-white\/60 { color: #444444 !important; }
+        body.light .bg-neutral-800 { background-color: #ccc !important; }
+        body.light .bg-neutral-800:hover { background-color: #bbb !important; }
+        body.light .bg-neutral-950\/95 { background-color: rgba(220,220,220,0.95) !important; }
+        body.light .border-l-4 { border-color: #555 !important; }
+        body.light #mobile-menu {
+            background-color: #e8e8e8 !important;
+            border-color: #bbbbbb !important;
+        }
+        body.light #mobile-menu .text-white { color: #111111 !important; }
+        body.light #mobile-menu .border-neutral-800 { border-color: #bbbbbb !important; }
+        body.light #mobile-menu .bg-neutral-800 { background-color: #ccc !important; }
+        body.light #mobile-menu .bg-neutral-800:hover { background-color: #bbb !important; }
+        body.light #mobile-menu .border-neutral-600 { border-color: #999 !important; }
+        body.light .bg-white\/5 { background-color: rgba(0,0,0,0.05) !important; }
+        body.light .text-white\/40 { color: #666666 !important; }
+        body.light .text-white\/30 { color: #777777 !important; }
+        body.light .cmd-block { 
+            background: rgba(0,0,0,0.03) !important;
+            border-color: rgba(0,0,0,0.06) !important;
+        }
+        body.light .cmd-block:hover {
+            background: rgba(0,0,0,0.06) !important;
+            border-color: rgba(0,0,0,0.15) !important;
+        }
+        body.light .cmd-code {
+            background: rgba(0,0,0,0.06) !important;
+            color: #111 !important;
+        }
+        body.light .bg-neutral-950 { background-color: #e8e8e8 !important; }
+
         .dot-pulse {
             animation: dotPulse 2s infinite;
         }
@@ -216,30 +310,23 @@
             50% { opacity: 0.2; }
         }
 
-        .sync-btn {
-            padding: 4px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
+        .cmd-block {
             background: rgba(255,255,255,0.03);
-            color: #888;
-            cursor: pointer;
-            font-size: 11px;
+            border: 1px solid rgba(255,255,255,0.06);
             transition: all 0.3s ease;
-            font-family: 'Montserrat Alternates', sans-serif;
         }
-        .sync-btn:hover {
+        .cmd-block:hover {
             background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(4px);
+        }
+        .cmd-code {
+            font-family: 'Exo 2', 'Monaco', monospace;
+            font-size: 13px;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 10px;
+            border-radius: 6px;
             color: #fff;
-            border-color: rgba(255,255,255,0.12);
-        }
-        body.light .sync-btn {
-            border-color: rgba(0,0,0,0.06);
-            color: #666;
-        }
-        body.light .sync-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: #000;
-            border-color: rgba(0,0,0,0.1);
         }
 
         .admin-link-btn {
@@ -274,6 +361,59 @@
             background: rgba(0,0,0,0.04);
             color: rgba(0,0,0,0.3);
             border-color: rgba(0,0,0,0.08);
+        }
+
+        .game-bold-text {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+        }
+
+        .sync-btn {
+            padding: 4px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+            color: #888;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .sync-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            border-color: rgba(255,255,255,0.12);
+        }
+        body.light .sync-btn {
+            border-color: rgba(0,0,0,0.06);
+            color: #666;
+        }
+        body.light .sync-btn:hover {
+            background: rgba(0,0,0,0.04);
+            color: #000;
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .wiki-page-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        .wiki-page-content ul li {
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            border-left: 3px solid rgba(255,255,255,0.1);
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .wiki-page-content ul li:before {
+            content: "•";
+            color: #888;
+            margin-right: 10px;
+        }
+        body.light .wiki-page-content ul li {
+            background: rgba(0,0,0,0.02);
+            border-left-color: rgba(0,0,0,0.1);
         }
 
         .toast {
@@ -427,46 +567,6 @@
         body.light .mobile-sidebar .sidebar-group-title { color: #888; }
         body.light .mobile-overlay { background: rgba(0,0,0,0.3); }
 
-        body.light {
-            background-color: #f0f0f0;
-            color: #1a1a1a;
-        }
-        body.light .bg-neutral-950 { background-color: #e8e8e8; }
-        body.light .bg-neutral-900 { background-color: #dddddd; }
-        body.light .bg-neutral-800 { background-color: #d0d0d0; }
-        body.light .bg-black { background-color: #d5d5d5; }
-        body.light .border-neutral-800 { border-color: #bbbbbb; }
-        body.light .border-neutral-700 { border-color: #aaaaaa; }
-        body.light .text-white { color: #111111 !important; }
-        body.light .text-neutral-400 { color: #444444 !important; }
-        body.light .text-neutral-500 { color: #555555 !important; }
-        body.light .text-neutral-300 { color: #333333 !important; }
-        body.light #navbar { 
-            background-color: rgba(235,235,235,0.95) !important; 
-            border-color: #bbbbbb !important; 
-        }
-        body.light #navbar .text-white { color: #111111 !important; }
-        body.light #navbar .text-neutral-300 { color: #333333 !important; }
-        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
-        body.light .theme-toggle { 
-            border-color: rgba(0,0,0,0.15) !important; 
-            color: #333 !important; 
-        }
-        body.light .theme-toggle:hover { 
-            background: rgba(0,0,0,0.06) !important; 
-            color: #000 !important; 
-        }
-        body.light .nav-btn-ip {
-            background: rgba(0,0,0,0.05) !important;
-            border-color: rgba(0,0,0,0.1) !important;
-            color: #333 !important;
-        }
-        body.light .nav-btn-ip:hover {
-            background: rgba(0,0,0,0.1) !important;
-            border-color: rgba(0,0,0,0.2) !important;
-            color: #000 !important;
-        }
-
         @media (max-width: 1024px) {
             .wiki-sidebar {
                 display: none !important;
@@ -598,7 +698,7 @@
         <!-- Мобильный выдвижной сайдбар -->
         <div class="mobile-sidebar" id="mobileSidebar">
             <div class="sidebar-header">
-                <h2>📖 Вики</h2>
+                <h2><i class="fa-solid fa-book mr-2"></i>Вики</h2>
                 <button class="close-btn" onclick="closeMobileSidebar()">
                     <i class="fa-regular fa-xmark"></i>
                 </button>
@@ -719,7 +819,6 @@
         let wikiCategories = [];
         let currentPage = 'home';
         let sectionsMap = {};
-        let isCloudLoaded = false;
 
         function loadWikiFromStorage() {
             try {
@@ -771,44 +870,50 @@
                 },
                 { 
                     id: 'cat2', 
-                    title: '🎨 Рекомендации по визуалу', 
+                    title: 'Рекомендации по визуалу', 
                     sections: [
                         { id: 'resourcepacks', title: 'Ресурс-паки', items: [
-                            'Vanilla Tweaks — лучший выбор для ванильного сервера.',
-                            'Faithful 32x — классические текстуры в высоком разрешении.',
-                            'Bare Bones — минималистичный пак для производительности.'
+                            'Vanilla Tweaks — лучший выбор для ванильного сервера. Улучшает текстуры, звуки и добавляет удобства.',
+                            'Faithful 32x — классические текстуры в высоком разрешении. Сохраняет оригинальный стиль игры.',
+                            'Bare Bones — минималистичный пак для максимальной производительности и чистого вида.'
                         ] }
                     ] 
                 },
                 { 
                     id: 'cat3', 
-                    title: '🧩 Рекомендации по клиенту', 
+                    title: 'Рекомендации по клиенту', 
                     sections: [
                         { id: 'mods', title: 'Рекомендуемые моды (Fabric 1.21.11)', items: [
                             'Sodium — невероятный прирост FPS без потери качества.',
-                            'Iris Shaders — позволяет использовать шейдеры.',
-                            'Xaero\'s Minimap — удобная мини-карта.',
-                            'AppleSkin — информация о насыщении от еды.',
-                            'ReplayMod — запись игровых повторов.',
-                            'Entity Culling — оптимизация FPS.'
+                            'Iris Shaders — позволяет использовать шейдеры вместе с Sodium.',
+                            'Xaero\'s Minimap — удобная мини-карта с возможностью ставить метки.',
+                            'AppleSkin — показывает информацию о насыщении и голоде от еды.',
+                            'ReplayMod — запись игровых повторов для создания красивых видео.',
+                            'Entity Culling — оптимизация FPS за счет скрытия невидимых сущностей.'
                         ] }
                     ] 
                 },
                 { 
                     id: 'cat4', 
-                    title: '🎮 Геймплей и механики', 
+                    title: 'Геймплей и механики', 
                     sections: [
+                        { id: 'claims', title: 'Метки на онлайн карте', items: [
+                            'Поставьте баннер в нужном месте на карте мира.',
+                            'Переименуйте его в анвиле — это название будет отображаться на карте.',
+                            'Метка автоматически появится на Dynmap через несколько секунд.'
+                        ] },
                         { id: 'commands', title: 'Полезные команды', items: [
                             '/skin ник — поставить скин (даже без лицензии!)',
-                            '/cd create remote "ссылка" "имя" — кастомная пластинка',
+                            '/cd create remote "ссылка" "имя" — создать кастомную пластинку',
                             '/co i — режим Шерлока Холмса',
-                            '/ping — узнать пинг до сервера'
+                            '/ping — узнать пинг до сервера',
+                            '/msg ник текст — личное сообщение'
                         ] },
                         { id: 'tips', title: 'Советы новичкам', items: [
-                            'Начните с базы рядом со спавном.',
-                            'Постройте автоматические фермы для еды и дерева.',
+                            'Начните с базы рядом со спавном — так будет проще ориентироваться.',
+                            'Постройте автоматические фермы для еды, дерева и железа.',
                             'Общайтесь с соседями! На сервере дружелюбное комьюнити.',
-                            'Используйте Dynmap для навигации.'
+                            'Используйте Dynmap для навигации — это онлайн-карта мира.'
                         ] }
                     ] 
                 }
@@ -825,7 +930,7 @@
             } catch (e) {}
         }
 
-        // ===== ЗАГРУЗКА ИЗ ОБЛАКА (СИНХРОНИЗАЦИЯ) =====
+        // Загрузка вики из облака
         async function loadAllWikiFromCloud() {
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
@@ -847,7 +952,6 @@
                 if (cloudData && cloudData.wikiCategories && cloudData.wikiCategories.length > 0) {
                     wikiCategories = cloudData.wikiCategories;
                     localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                    
                     const mainData = localStorage.getItem('mugivara_main_data');
                     let main = mainData ? JSON.parse(mainData) : {};
                     main.wikiCategories = wikiCategories;
@@ -857,7 +961,6 @@
                     buildSectionsMap();
                     renderAllSidebars();
                     loadFirstAvailablePage();
-                    isCloudLoaded = true;
                     showToast('✅ Вики обновлена из облака', 'success');
                 } else {
                     showToast('ℹ️ В облаке нет данных вики', 'info');
@@ -889,7 +992,6 @@
             }
         }
 
-        // ===== АВТОМАТИЧЕСКАЯ ПРОВЕРКА ОБНОВЛЕНИЙ =====
         async function checkWikiUpdates() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
@@ -909,7 +1011,6 @@
                         console.log('🔄 Найдены обновления вики в облаке');
                         wikiCategories = cloudData.wikiCategories;
                         localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                        
                         const mainData = localStorage.getItem('mugivara_main_data');
                         let main = mainData ? JSON.parse(mainData) : {};
                         main.wikiCategories = wikiCategories;
@@ -918,12 +1019,7 @@
                         
                         buildSectionsMap();
                         renderAllSidebars();
-                        // Если текущая страница существует, обновляем её
-                        if (sectionsMap[currentPage]) {
-                            loadWikiPage(currentPage);
-                        } else {
-                            loadFirstAvailablePage();
-                        }
+                        loadFirstAvailablePage();
                         showToast('🔄 Вики обновлена из облака', 'info');
                     }
                 }
@@ -933,45 +1029,19 @@
         }
 
         function initWiki() {
-            // Сначала загружаем из localStorage
             const loaded = loadWikiFromStorage();
             if (!loaded) {
                 wikiCategories = getDefaultWikiCategories();
                 buildSectionsMap();
                 saveWikiToStorage();
             }
+            renderAllSidebars();
+            loadFirstAvailablePage();
             
-            // Загружаем из облака (асинхронно)
-            setTimeout(async () => {
-                try {
-                    const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                        headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        const cloudData = data.record;
-                        if (cloudData && cloudData.wikiCategories && cloudData.wikiCategories.length > 0) {
-                            wikiCategories = cloudData.wikiCategories;
-                            localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                            const mainData = localStorage.getItem('mugivara_main_data');
-                            let main = mainData ? JSON.parse(mainData) : {};
-                            main.wikiCategories = wikiCategories;
-                            localStorage.setItem('mugivara_main_data', JSON.stringify(main));
-                            localStorage.setItem('mugivara_last_update', Date.now().toString());
-                            buildSectionsMap();
-                        }
-                    }
-                } catch (e) {
-                    console.log('ℹ️ Облако недоступно, используем локальные данные');
-                }
-                renderAllSidebars();
-                loadFirstAvailablePage();
-                
-                const date = new Date();
-                const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
-                document.getElementById('update-date').textContent = dateStr;
-                document.getElementById('mobile-update-date').textContent = dateStr;
-            }, 300);
+            const date = new Date();
+            const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('update-date').textContent = dateStr;
+            document.getElementById('mobile-update-date').textContent = dateStr;
         }
 
         function renderAllSidebars() {
@@ -1032,7 +1102,6 @@
                 return;
             }
             
-            // Обновляем активные элементы
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
             document.querySelectorAll(`.nav-item[data-page="${page}"]`).forEach(el => el.classList.add('nav-active'));
 
@@ -1085,8 +1154,8 @@
 
             return `
                 <div class="wiki-page-content">
-                    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10">
-                        <h1 class="text-2xl sm:text-3xl font-semibold text-white mb-6 game-heading">${section.title}</h1>
+                    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 sm:p-10">
+                        <h1 class="text-3xl sm:text-4xl font-semibold text-white mb-6 game-heading">${section.title}</h1>
                         <div class="text-neutral-300 leading-relaxed game-font">
                             ${itemsHtml}
                         </div>
@@ -1130,7 +1199,8 @@
                 const loaded = loadWikiFromStorage();
                 if (loaded) {
                     renderAllSidebars();
-                    if (sectionsMap[currentPage]) {
+                    const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
+                    if (navItem && sectionsMap[currentPage]) {
                         loadWikiPage(currentPage);
                     } else {
                         loadFirstAvailablePage();
@@ -1165,7 +1235,6 @@
             setTimeout(updateOnline, 300);
             setInterval(updateOnline, 10000);
 
-            // Проверка обновлений каждые 30 секунд
             setTimeout(checkWikiUpdates, 5000);
             setInterval(checkWikiUpdates, 30000);
         });

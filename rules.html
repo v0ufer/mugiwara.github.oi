@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Правила Сервера</title>
+    <!-- ===== ФАВИКОН: чёрная Z на белом фоне с закруглёнными краями ===== -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -413,7 +416,7 @@
     <!-- ====== ОСНОВНОЙ КОНТЕНТ ====== -->
     <div class="pt-20 pb-12 px-4 sm:px-6 max-w-4xl mx-auto">
         <div class="text-center mb-12 sm:mb-16 section">
-            <h1 class="text-4xl sm:text-5xl font-semibold mb-4 glitch-text text-white stagger-child">📜 Кодекс Мугивар</h1>
+            <h1 class="text-4xl sm:text-5xl font-semibold mb-4 glitch-text text-white stagger-child"><i class="fa-solid fa-scroll mr-3"></i>Кодекс Мугивар</h1>
             <p class="text-white/60 text-lg stagger-child game-font">Правила сервера чистого выживания</p>
             <div class="mt-2 text-xs text-neutral-500 stagger-child game-font">
                 <i class="fa-regular fa-circle-check text-green-400"></i>
@@ -430,7 +433,7 @@
 
         <div class="text-center mt-12 text-neutral-400 italic text-sm sm:text-base section">
             <p class="stagger-child game-font">Нарушение правил может повлечь предупреждение, мут или бан.</p>
-            <p class="text-white/80 mt-1 stagger-child game-font">Береги себя и других. Играй честно 🙌</p>
+            <p class="text-white/80 mt-1 stagger-child game-font">Береги себя и других. Играй честно <i class="fa-regular fa-hand-peace"></i></p>
         </div>
     </div>
 
@@ -766,7 +769,7 @@
             }
         }
 
-        // ===== ОТОБРАЖЕНИЕ ПРАВИЛ (ИСПРАВЛЕННОЕ) =====
+        // ===== ОТОБРАЖЕНИЕ ПРАВИЛ =====
         function renderRules() {
             const container = document.getElementById('rulesContainer');
             
@@ -874,11 +877,14 @@
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
 
+            // Загрузка правил
             initRules();
             
+            // Онлайн
             setTimeout(updateOnline, 300);
             setInterval(updateOnline, 10000);
             
+            // Анимация
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -898,6 +904,7 @@
                 });
             }, 100);
 
+            // Проверка обновлений из облака
             setTimeout(checkRulesUpdates, 2000);
             setInterval(checkRulesUpdates, 30000);
         });
