@@ -391,6 +391,100 @@
             border-color: rgba(0,0,0,0.1);
         }
 
+        /* ===== МОБИЛЬНЫЙ САЙДБАР ===== */
+        .mobile-wiki-header {
+            display: none;
+            padding: 12px 16px;
+            background: rgba(20,20,30,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 64px;
+            z-index: 10;
+        }
+        .mobile-wiki-header .toggle-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Montserrat Alternates', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .mobile-wiki-header .toggle-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+        }
+
+        .mobile-sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+        .mobile-sidebar-overlay.active {
+            display: block;
+        }
+
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100vh;
+            background: #121212;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 20px 16px;
+        }
+        .mobile-sidebar.open {
+            left: 0;
+        }
+        .mobile-sidebar .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .mobile-sidebar .close-btn:hover {
+            color: #fff;
+        }
+        .mobile-sidebar .nav-item {
+            font-size: 14px;
+        }
+
+        body.light .mobile-sidebar {
+            background: #e8e8e8;
+        }
+        body.light .mobile-sidebar-overlay {
+            background: rgba(0,0,0,0.4);
+        }
+        body.light .mobile-wiki-header {
+            background: rgba(235,235,235,0.9);
+            border-bottom-color: rgba(0,0,0,0.08);
+        }
+        body.light .mobile-wiki-header .toggle-btn {
+            border-color: rgba(0,0,0,0.1);
+            color: #666;
+        }
+        body.light .mobile-wiki-header .toggle-btn:hover {
+            background: rgba(0,0,0,0.06);
+            color: #000;
+        }
+
         .wiki-page-content ul {
             list-style: none;
             padding: 0;
@@ -434,6 +528,19 @@
         .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
         .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
 
+        @media (max-width: 1024px) {
+            .wiki-sidebar {
+                display: none !important;
+            }
+            .mobile-wiki-header {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .mobile-sidebar-overlay.active {
+                display: block;
+            }
+        }
         @media (max-width: 640px) {
             .screenshot-item {
                 flex: 0 0 180px;
@@ -450,6 +557,14 @@
             .admin-link-btn {
                 padding: 4px 14px;
                 font-size: 10px;
+            }
+            .mobile-sidebar {
+                width: 280px;
+                left: -300px;
+            }
+            .mobile-wiki-header {
+                top: 56px;
+                padding: 10px 12px;
             }
         }
     </style>
@@ -520,7 +635,7 @@
 
     <!-- ====== ВИКИ ====== -->
     <div class="flex min-h-screen pt-16 lg:pt-20">
-        <!-- Sidebar -->
+        <!-- Десктопный Sidebar -->
         <div class="wiki-sidebar w-72 border-r border-neutral-800 p-6 hidden lg:block fixed h-[calc(100vh-4rem)] overflow-y-auto transition-colors duration-300">
             <div class="mb-8">
                 <h1 class="text-2xl font-semibold text-white glitch-title"><i class="fa-solid fa-book mr-2"></i>ВИКИ</h1>
@@ -545,13 +660,42 @@
             </div>
         </div>
 
+        <!-- Мобильный хедер -->
+        <div class="mobile-wiki-header">
+            <button class="toggle-btn" onclick="toggleMobileSidebar()">
+                <i class="fa-solid fa-bars"></i> Меню
+            </button>
+            <span class="text-white/60 text-sm game-font">📖 Вики</span>
+            <button class="toggle-btn" onclick="loadAllWikiFromCloud()" style="border-color: rgba(78, 205, 196, 0.3); color: #4ecdc4;">
+                <i class="fa-regular fa-rotate"></i> Обновить
+            </button>
+        </div>
+
+        <!-- Мобильный оверлей -->
+        <div class="mobile-sidebar-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+
+        <!-- Мобильный сайдбар -->
+        <div class="mobile-sidebar" id="mobileSidebar">
+            <button class="close-btn" onclick="closeMobileSidebar()">
+                <i class="fa-regular fa-xmark"></i>
+            </button>
+            <div class="mt-8 space-y-6" id="mobileSidebarNav">
+                <!-- Загружается через JS -->
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-800">
+                <div class="text-xs text-neutral-500 game-font">
+                    <i class="fa-regular fa-clock"></i> <span id="mobile-update-date">сегодня</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Контент -->
         <div class="flex-1 lg:ml-72 p-4 sm:p-6 lg:p-10" id="wiki-content">
             <!-- Загружается через JS -->
         </div>
     </div>
 
-    <!-- FOOTER с кнопкой админки -->
+    <!-- FOOTER -->
     <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
             <div class="flex justify-center">
@@ -624,6 +768,23 @@
                 toast.style.transition = 'all 0.4s ease';
                 setTimeout(() => toast.remove(), 500);
             }, 4000);
+        }
+
+        // ====== МОБИЛЬНЫЙ САЙДБАР ======
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         // ============================================================
@@ -772,8 +933,7 @@
                     
                     const loaded = loadWikiFromStorage();
                     if (loaded) {
-                        renderSidebar();
-                        // Загружаем первый доступный раздел
+                        renderSidebars();
                         loadFirstAvailablePage();
                         showToast('✅ Вики обновлена из облака', 'success');
                     }
@@ -791,20 +951,18 @@
             }
         }
 
-        // Новая функция: загрузка первого доступного раздела
         function loadFirstAvailablePage() {
-            // Ищем первый раздел в первой категории
             if (wikiCategories.length > 0) {
                 const firstCat = wikiCategories[0];
                 if (firstCat.sections && firstCat.sections.length > 0) {
                     const firstSec = firstCat.sections[0];
                     currentPage = firstSec.id;
                     const navItem = document.querySelector(`.nav-item[data-page="${firstSec.id}"]`);
-                    loadWikiPage(firstSec.id, navItem);
+                    const mobileNavItem = document.querySelector(`.mobile-nav-item[data-page="${firstSec.id}"]`);
+                    loadWikiPage(firstSec.id, navItem || mobileNavItem);
                     return;
                 }
             }
-            // Если разделов нет, показываем home
             if (sectionsMap['home']) {
                 currentPage = 'home';
                 const navItem = document.querySelector('.nav-item[data-page="home"]');
@@ -812,7 +970,6 @@
             }
         }
 
-        // Автоматическая проверка обновлений
         async function checkWikiUpdates() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
@@ -839,8 +996,7 @@
                         
                         const loaded = loadWikiFromStorage();
                         if (loaded) {
-                            renderSidebar();
-                            // Если текущая страница существует, обновляем её, иначе загружаем первую
+                            renderSidebars();
                             const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
                             if (navItem && sectionsMap[currentPage]) {
                                 loadWikiPage(currentPage, navItem);
@@ -863,23 +1019,31 @@
                 buildSectionsMap();
                 saveWikiToStorage();
             }
-            renderSidebar();
-            
-            // Вместо проверки URL параметра — всегда загружаем первый раздел
+            renderSidebars();
             loadFirstAvailablePage();
             
-            const dateEl = document.getElementById('update-date');
-            if (dateEl) {
-                const now = new Date();
-                dateEl.textContent = now.toLocaleDateString('ru-RU', { 
-                    day: 'numeric', month: 'long', year: 'numeric' 
-                });
-            }
+            const date = new Date();
+            const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('update-date').textContent = dateStr;
+            document.getElementById('mobile-update-date').textContent = dateStr;
         }
 
-        function renderSidebar() {
+        function renderSidebars() {
+            renderDesktopSidebar();
+            renderMobileSidebar();
+        }
+
+        function renderDesktopSidebar() {
             const nav = document.getElementById('sidebarNav');
-            
+            nav.innerHTML = buildSidebarHTML();
+        }
+
+        function renderMobileSidebar() {
+            const nav = document.getElementById('mobileSidebarNav');
+            nav.innerHTML = buildSidebarHTML(true);
+        }
+
+        function buildSidebarHTML(isMobile = false) {
             let html = '';
             wikiCategories.forEach(cat => {
                 html += `<div class="sidebar-group">`;
@@ -888,11 +1052,12 @@
                 (cat.sections || []).forEach(sec => {
                     const icon = getSectionIcon(sec.id);
                     const isActive = currentPage === sec.id;
-                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="nav-item ${isActive ? 'nav-active' : ''}" data-page="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
+                    const className = isMobile ? 'nav-item mobile-nav-item' : 'nav-item';
+                    html += `<li><a href="#" onclick="loadWikiPage('${sec.id}', this); return false;" class="${className} ${isActive ? 'nav-active' : ''}" data-page="${sec.id}"><i class="${icon}"></i> ${sec.title}</a></li>`;
                 });
                 html += `</ul></div>`;
             });
-            nav.innerHTML = html;
+            return html;
         }
 
         function getSectionIcon(id) {
@@ -910,24 +1075,27 @@
 
         function loadWikiPage(page, element = null) {
             const content = document.getElementById('wiki-content');
-            // Обновляем активный элемент в сайдбаре
+            
+            // Обновляем активные элементы
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
+            document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('nav-active'));
+            
             if (element) {
                 element.classList.add('nav-active');
-                const sidebar = document.querySelector('.wiki-sidebar');
-                if (sidebar) {
-                    const rect = element.getBoundingClientRect();
-                    const sidebarRect = sidebar.getBoundingClientRect();
-                    if (rect.top < sidebarRect.top || rect.bottom > sidebarRect.bottom) {
-                        element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-                    }
-                }
+                // Если это мобильный элемент, обновляем и десктопный
+                const desktopEl = document.querySelector(`.nav-item[data-page="${page}"]`);
+                if (desktopEl) desktopEl.classList.add('nav-active');
             } else {
                 const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
                 if (navItem) navItem.classList.add('nav-active');
+                const mobileNavItem = document.querySelector(`.mobile-nav-item[data-page="${page}"]`);
+                if (mobileNavItem) mobileNavItem.classList.add('nav-active');
             }
 
             currentPage = page;
+
+            // Закрываем мобильный сайдбар
+            closeMobileSidebar();
 
             content.style.opacity = '0';
             content.style.transform = 'translateY(20px)';
@@ -960,7 +1128,7 @@
                 ];
                 extraHtml = `<div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     ${cards.map(c => `
-                        <div onclick="loadWikiPage('${c.id}', document.querySelector('.nav-item[data-page="${c.id}"]'))" class="wiki-card cursor-pointer bg-neutral-950 p-6 rounded-2xl border border-neutral-700 hover:border-white/30 transition-all">
+                        <div onclick="loadWikiPage('${c.id}', document.querySelector('.nav-item[data-page="${c.id}"]') || document.querySelector('.mobile-nav-item[data-page="${c.id}"]'))" class="wiki-card cursor-pointer bg-neutral-950 p-6 rounded-2xl border border-neutral-700 hover:border-white/30 transition-all">
                             <div class="wiki-icon text-3xl mb-3"><i class="${c.icon}"></i></div>
                             <h3 class="text-lg font-semibold text-white game-font">${c.title}</h3>
                             <p class="text-sm text-neutral-400 mt-1 game-font">${c.desc}</p>
@@ -1015,21 +1183,18 @@
             if (e.key === 'wiki_categories' || e.key === 'mugivara_main_data') {
                 const loaded = loadWikiFromStorage();
                 if (loaded) {
-                    renderSidebar();
-                    const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
+                    renderSidebars();
+                    const navItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`) || document.querySelector(`.mobile-nav-item[data-page="${currentPage}"]`);
                     if (navItem && sectionsMap[currentPage]) {
                         loadWikiPage(currentPage, navItem);
                     } else {
                         loadFirstAvailablePage();
                     }
                     
-                    const dateEl = document.getElementById('update-date');
-                    if (dateEl) {
-                        const now = new Date();
-                        dateEl.textContent = now.toLocaleDateString('ru-RU', { 
-                            day: 'numeric', month: 'long', year: 'numeric' 
-                        });
-                    }
+                    const date = new Date();
+                    const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+                    document.getElementById('update-date').textContent = dateStr;
+                    document.getElementById('mobile-update-date').textContent = dateStr;
                 }
             }
         });
@@ -1052,14 +1217,6 @@
 
             // Инициализация вики
             initWiki();
-            
-            const dateEl = document.getElementById('update-date');
-            if (dateEl) {
-                const now = new Date();
-                dateEl.textContent = now.toLocaleDateString('ru-RU', { 
-                    day: 'numeric', month: 'long', year: 'numeric' 
-                });
-            }
 
             // Онлайн
             setTimeout(updateOnline, 300);
