@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Карта Мира</title>
-    <!-- ===== ФАВИКОН: чёрная Z на белом фоне с закруглёнными краями ===== -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,29 +17,22 @@
                 extend: {
                     fontFamily: {
                         'inter': ['Inter', 'system-ui', 'sans-serif'],
-                        'game': ['Montserrat Alternates', 'sans-serif'],
-                        'game-bold': ['Exo 2', 'sans-serif'],
-                        'pixel': ['Pixelify Sans', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Базовые стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
             background-color: #0a0a0a;
             color: #e5e5e5;
+            font-weight: 400;
         }
-        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
-        .game-font { font-family: 'Montserrat Alternates', sans-serif; }
-        .game-bold-font { font-family: 'Exo 2', sans-serif; }
 
-        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
@@ -50,7 +42,7 @@
         body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
         body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
 
-        .nav-link { transition: all 0.2s ease; font-family: 'Montserrat Alternates', sans-serif; font-weight: 500; letter-spacing: 0.03em; }
+        .nav-link { transition: all 0.2s ease; font-weight: 500; letter-spacing: 0.03em; }
         .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
 
         .nav-btn {
@@ -59,7 +51,7 @@
             border-radius: 9999px;
             font-weight: 500;
             letter-spacing: 0.03em;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .nav-btn-ip {
             background: rgba(255,255,255,0.05);
@@ -115,7 +107,7 @@
             transition: all 0.4s ease;
             text-decoration: none;
             cursor: pointer;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .admin-link-btn:hover {
             background: rgba(255,255,255,0.06);
@@ -132,26 +124,6 @@
             background: rgba(0,0,0,0.04);
             color: rgba(0,0,0,0.3);
             border-color: rgba(0,0,0,0.08);
-        }
-
-        .game-heading {
-            font-family: 'Montserrat Alternates', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        .glitch-text {
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 800;
-            text-shadow: 0 0 30px rgba(255,255,255,0.05);
-            animation: glitchPulse 3s ease-in-out infinite;
-        }
-        @keyframes glitchPulse {
-            0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02); }
-            50% { text-shadow: 0 0 40px rgba(255,255,255,0.1), 0 0 80px rgba(255,255,255,0.04), 0 0 120px rgba(255,255,255,0.02); }
-        }
-        body.light .glitch-text {
-            text-shadow: 0 0 30px rgba(0,0,0,0.04);
         }
 
         .map-icon-wrapper {
@@ -205,7 +177,7 @@
             align-items: center;
             gap: 0.75rem;
             border: 1px solid transparent;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             text-transform: uppercase;
         }
         .btn-premium-primary {
@@ -236,6 +208,11 @@
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
+        }
+
+        /* ===== БУРГЕР-КНОПКА С ПЛАВНОЙ АНИМАЦИЕЙ ===== */
+        #mobile-menu-button i {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body.light {
@@ -310,8 +287,8 @@
     <nav id="navbar" class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg game-font">Z</div>
-                <span class="game-font text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg">Z</div>
+                <span class="text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -325,8 +302,8 @@
             <div class="flex items-center gap-2 sm:gap-3">
                 <div class="hidden sm:flex items-center gap-1.5 bg-neutral-900/60 px-3 py-1.5 rounded-full border border-white/10 text-xs">
                     <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
-                    <span class="font-medium text-white/80 game-font">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-white game-font">Загрузка...</span>
+                    <span class="font-medium text-white/80">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
                 </div>
 
                 <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
@@ -345,7 +322,7 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white">
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white transition-all duration-300">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
             </div>
@@ -353,13 +330,13 @@
 
         <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
             <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-white py-2 game-font">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
+                <a href="index.html" class="text-white py-2">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition py-2"><i class="fa-solid fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition py-2"><i class="fa-solid fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition py-2"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition py-2"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
                 <div class="pt-3 border-t border-neutral-800">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white game-font">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white">
                         <i class="fa-solid fa-copy"></i>
                         <span>Скопировать IP: play.mugivaracraft.ru</span>
                     </button>
@@ -375,11 +352,11 @@
                 <div class="map-icon-wrapper mb-6">
                     <i class="fa-solid fa-map"></i>
                 </div>
-                <h1 class="text-4xl sm:text-5xl font-semibold mb-4 glitch-text text-white">Карта Мира</h1>
-                <p class="text-neutral-400 text-lg game-font">Просмотр мира в реальном времени</p>
+                <h1 class="text-4xl sm:text-5xl font-semibold mb-4 text-white">Карта Мира</h1>
+                <p class="text-neutral-400 text-lg">Просмотр мира в реальном времени</p>
                 <div class="mt-3 inline-flex items-center gap-2 bg-neutral-900/60 px-4 py-1.5 rounded-full border border-white/5 text-xs">
                     <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                    <span class="text-neutral-400 game-font">Dynmap • Обновляется в реальном времени</span>
+                    <span class="text-neutral-400">Dynmap • Обновляется в реальном времени</span>
                 </div>
             </div>
 
@@ -390,13 +367,13 @@
                 <i class="fa-solid fa-arrow-right text-xs opacity-60"></i>
             </a>
 
-            <div class="mt-6 text-neutral-500 text-sm max-w-xs mx-auto game-font">
+            <div class="mt-6 text-neutral-500 text-sm max-w-xs mx-auto">
                 <i class="fa-regular fa-window-restore mr-1"></i>
                 Карта открывается в новой вкладке
                 <span class="block text-neutral-600 text-xs mt-1">(Так работает стабильнее всего)</span>
             </div>
 
-            <div class="mt-12 flex items-center justify-center gap-4 text-xs text-neutral-600 game-font">
+            <div class="mt-12 flex items-center justify-center gap-4 text-xs text-neutral-600">
                 <span><i class="fa-regular fa-circle-check text-green-400/60 mr-1"></i> Онлайн-карта</span>
                 <span class="w-px h-4 bg-neutral-700"></span>
                 <span><i class="fa-regular fa-clock text-blue-400/60 mr-1"></i> Реальное время</span>
@@ -406,7 +383,7 @@
         </div>
     </div>
 
-    <!-- FOOTER с кнопкой админки -->
+    <!-- FOOTER -->
     <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
             <div class="flex justify-center">
@@ -443,6 +420,7 @@
             menu.classList.toggle('hidden');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
+            icon.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
         }
 
         function toggleTheme() {
@@ -467,14 +445,14 @@
                 const data = await resp.json();
                 if (data.online) {
                     el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "font-semibold text-white game-font";
+                    el.className = "font-semibold text-white";
                 } else {
                     el.textContent = "0/100";
-                    el.className = "font-semibold text-neutral-500 game-font";
+                    el.className = "font-semibold text-neutral-500";
                 }
             } catch {
                 el.textContent = "—";
-                el.className = "font-semibold text-neutral-500 game-font";
+                el.className = "font-semibold text-neutral-500";
             }
         }
 

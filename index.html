@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -318,6 +318,18 @@
         }
         .nav-btn-discord:hover {
             background: #4752C4;
+        }
+
+        /* ===== ПЛАВНАЯ АНИМАЦИЯ БУРГЕРА ===== */
+        #mobile-menu-button i {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+        }
+        #mobile-menu-button i.fa-times {
+            transform: rotate(90deg) scale(1.1);
+        }
+        #mobile-menu-button i.fa-bars {
+            transform: rotate(0deg) scale(1);
         }
 
         /* ===== СКРИНШОТЫ ===== */
@@ -816,7 +828,7 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white">
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white transition-all duration-300">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
             </div>
@@ -1254,8 +1266,11 @@
             const btn = document.getElementById('mobile-menu-button');
             const icon = btn.querySelector('i');
             menu.classList.toggle('hidden');
+            // Плавная смена иконки с переходом
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
+            // Сброс и принудительное применение transition через свойство style
+            icon.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
         }
 
         function toggleTheme() {

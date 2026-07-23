@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Правила Сервера</title>
-    <!-- ===== ФАВИКОН: чёрная Z на белом фоне с закруглёнными краями ===== -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,29 +17,22 @@
                 extend: {
                     fontFamily: {
                         'inter': ['Inter', 'system-ui', 'sans-serif'],
-                        'game': ['Montserrat Alternates', 'sans-serif'],
-                        'game-bold': ['Exo 2', 'sans-serif'],
-                        'pixel': ['Pixelify Sans', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Базовые стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
             background-color: #0a0a0a;
             color: #e5e5e5;
+            font-weight: 400;
         }
-        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
-        .game-font { font-family: 'Montserrat Alternates', sans-serif; }
-        .game-bold-font { font-family: 'Exo 2', sans-serif; }
 
-        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
@@ -50,7 +42,7 @@
         body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
         body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
 
-        .nav-link { transition: all 0.2s ease; font-family: 'Montserrat Alternates', sans-serif; font-weight: 500; letter-spacing: 0.03em; }
+        .nav-link { transition: all 0.2s ease; font-weight: 500; letter-spacing: 0.03em; }
         .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
 
         .nav-btn {
@@ -59,7 +51,7 @@
             border-radius: 9999px;
             font-weight: 500;
             letter-spacing: 0.03em;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .nav-btn-ip {
             background: rgba(255,255,255,0.05);
@@ -115,7 +107,7 @@
             transition: all 0.4s ease;
             text-decoration: none;
             cursor: pointer;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .admin-link-btn:hover {
             background: rgba(255,255,255,0.06);
@@ -134,13 +126,6 @@
             border-color: rgba(0,0,0,0.08);
         }
 
-        .game-heading {
-            font-family: 'Montserrat Alternates', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        /* Правила */
         .rule-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -160,7 +145,6 @@
             font-weight: 700;
             font-size: 16px;
             flex-shrink: 0;
-            font-family: 'Exo 2', sans-serif;
         }
         body.light .rule-number {
             background: rgba(0,0,0,0.04);
@@ -168,7 +152,6 @@
             color: #111;
         }
 
-        /* Анимация появления */
         .section {
             opacity: 0;
             transform: translateY(30px);
@@ -188,7 +171,66 @@
             transform: translateY(0);
         }
 
-        /* Светлая тема */
+        .online-dot {
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .sync-btn {
+            padding: 4px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+            color: #888;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .sync-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            border-color: rgba(255,255,255,0.12);
+        }
+        body.light .sync-btn {
+            border-color: rgba(0,0,0,0.06);
+            color: #666;
+        }
+        body.light .sync-btn:hover {
+            background: rgba(0,0,0,0.04);
+            color: #000;
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: toastSlide 0.4s ease;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
+        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
+        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
+
+        /* ===== БУРГЕР-КНОПКА С ПЛАВНОЙ АНИМАЦИЕЙ ===== */
+        #mobile-menu-button i {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
         body.light {
             background-color: #f0f0f0;
             color: #1a1a1a;
@@ -265,86 +307,7 @@
         body.light #mobile-menu .bg-neutral-800:hover { background-color: #bbb !important; }
         body.light #mobile-menu .border-neutral-600 { border-color: #999 !important; }
 
-        .glitch-text {
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 800;
-            text-shadow: 0 0 30px rgba(255,255,255,0.05);
-            animation: glitchPulse 3s ease-in-out infinite;
-        }
-        @keyframes glitchPulse {
-            0%, 100% { text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02); }
-            50% { text-shadow: 0 0 40px rgba(255,255,255,0.1), 0 0 80px rgba(255,255,255,0.04), 0 0 120px rgba(255,255,255,0.02); }
-        }
-        body.light .glitch-text {
-            text-shadow: 0 0 30px rgba(0,0,0,0.04);
-        }
-
-        .online-dot {
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .sync-btn {
-            padding: 4px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.03);
-            color: #888;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.3s ease;
-            font-family: 'Montserrat Alternates', sans-serif;
-        }
-        .sync-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            border-color: rgba(255,255,255,0.12);
-        }
-        body.light .sync-btn {
-            border-color: rgba(0,0,0,0.06);
-            color: #666;
-        }
-        body.light .sync-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: #000;
-            border-color: rgba(0,0,0,0.1);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 2000;
-            animation: toastSlide 0.4s ease;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        @keyframes toastSlide {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
-        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
-        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
-
         @media (max-width: 640px) {
-            .login-box { padding: 32px 24px; }
-            .admin-nav { flex-direction: column; align-items: stretch; }
-            .admin-tabs { justify-content: center; }
-            .screenshot-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .admin-panel { padding: 16px; }
-            .application-card .app-details { grid-template-columns: 1fr; }
-            .modal-content { padding: 20px; margin: 10px; }
-            .settings-section .setting-row { flex-direction: column; align-items: stretch; }
-            .settings-section .setting-row label { min-width: auto; }
-            .settings-section .setting-row input { min-width: auto; }
             .admin-link-btn { padding: 4px 14px; font-size: 10px; }
         }
     </style>
@@ -355,8 +318,8 @@
     <nav id="navbar" class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg game-font">Z</div>
-                <span class="game-font text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg">Z</div>
+                <span class="text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -370,8 +333,8 @@
             <div class="flex items-center gap-2 sm:gap-3">
                 <div class="hidden sm:flex items-center gap-1.5 bg-neutral-900/60 px-3 py-1.5 rounded-full border border-white/10 text-xs">
                     <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
-                    <span class="font-medium text-white/80 game-font">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-white game-font">Загрузка...</span>
+                    <span class="font-medium text-white/80">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
                 </div>
 
                 <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
@@ -390,7 +353,7 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white">
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white transition-all duration-300">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
             </div>
@@ -398,13 +361,13 @@
 
         <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
             <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-white py-2 game-font">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
+                <a href="index.html" class="text-white py-2">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition py-2"><i class="fa-solid fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition py-2"><i class="fa-solid fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition py-2"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition py-2"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
                 <div class="pt-3 border-t border-neutral-800">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white game-font">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white">
                         <i class="fa-solid fa-copy"></i>
                         <span>Скопировать IP: play.mugivaracraft.ru</span>
                     </button>
@@ -416,9 +379,9 @@
     <!-- ====== ОСНОВНОЙ КОНТЕНТ ====== -->
     <div class="pt-20 pb-12 px-4 sm:px-6 max-w-4xl mx-auto">
         <div class="text-center mb-12 sm:mb-16 section">
-            <h1 class="text-4xl sm:text-5xl font-semibold mb-4 glitch-text text-white stagger-child"><i class="fa-solid fa-scroll mr-3"></i>Кодекс Мугивар</h1>
-            <p class="text-white/60 text-lg stagger-child game-font">Правила сервера чистого выживания</p>
-            <div class="mt-2 text-xs text-neutral-500 stagger-child game-font">
+            <h1 class="text-4xl sm:text-5xl font-semibold mb-4 text-white stagger-child"><i class="fa-solid fa-scroll mr-3"></i>Кодекс Мугивар</h1>
+            <p class="text-white/60 text-lg stagger-child">Правила сервера чистого выживания</p>
+            <div class="mt-2 text-xs text-neutral-500 stagger-child">
                 <i class="fa-regular fa-circle-check text-green-400"></i>
                 <span id="sync-status">Синхронизировано с облаком</span>
             </div>
@@ -432,12 +395,12 @@
         </div>
 
         <div class="text-center mt-12 text-neutral-400 italic text-sm sm:text-base section">
-            <p class="stagger-child game-font">Нарушение правил может повлечь предупреждение, мут или бан.</p>
-            <p class="text-white/80 mt-1 stagger-child game-font">Береги себя и других. Играй честно <i class="fa-regular fa-hand-peace"></i></p>
+            <p class="stagger-child">Нарушение правил может повлечь предупреждение, мут или бан.</p>
+            <p class="text-white/80 mt-1 stagger-child">Береги себя и других. Играй честно <i class="fa-regular fa-hand-peace"></i></p>
         </div>
     </div>
 
-    <!-- FOOTER с кнопкой админки -->
+    <!-- FOOTER -->
     <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
             <div class="flex justify-center">
@@ -482,6 +445,7 @@
             menu.classList.toggle('hidden');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
+            icon.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
         }
 
         function toggleTheme() {
@@ -518,7 +482,6 @@
         let rulesCategories = [];
         let flatRulesItems = [];
 
-        // ===== ЗАГРУЗКА ИЗ STORAGE =====
         function loadRulesFromStorage() {
             try {
                 const mainData = localStorage.getItem('mugivara_main_data');
@@ -567,7 +530,6 @@
             return false;
         }
 
-        // ===== СОХРАНЕНИЕ В STORAGE =====
         function saveRulesToStorage() {
             try {
                 localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
@@ -590,7 +552,6 @@
             } catch (e) {}
         }
 
-        // ===== ПРЕОБРАЗОВАНИЕ В ПЛОСКИЙ СПИСОК =====
         function flattenRules() {
             flatRulesItems = [];
             rulesCategories.forEach(cat => {
@@ -605,7 +566,6 @@
             });
         }
 
-        // ===== ДЕФОЛТНЫЕ ПРАВИЛА =====
         function getDefaultRulesCategories() {
             return [
                 { 
@@ -644,7 +604,6 @@
             ];
         }
 
-        // ===== ЗАГРУЗКА ИЗ ОБЛАКА =====
         async function loadAllRulesFromCloud() {
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
@@ -702,7 +661,6 @@
             }
         }
 
-        // ===== ПРОВЕРКА ОБНОВЛЕНИЙ =====
         async function checkRulesUpdates() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
@@ -769,15 +727,14 @@
             }
         }
 
-        // ===== ОТОБРАЖЕНИЕ ПРАВИЛ =====
         function renderRules() {
             const container = document.getElementById('rulesContainer');
             
             if (!flatRulesItems || flatRulesItems.length === 0) {
                 container.innerHTML = `
                     <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 text-center">
-                        <p class="text-neutral-400 game-font">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
-                        <a href="admin.html" class="inline-block mt-4 text-white/60 hover:text-white transition-all text-sm game-font">
+                        <p class="text-neutral-400">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
+                        <a href="admin.html" class="inline-block mt-4 text-white/60 hover:text-white transition-all text-sm">
                             <i class="fa-regular fa-crown"></i> Открыть админ-панель
                         </a>
                     </div>
@@ -791,12 +748,12 @@
                         <span class="rule-number flex-shrink-0">${index + 1}</span>
                         <div class="flex-1 min-w-0">
                             ${section.category && section.category !== 'Без категории' ? `
-                                <div class="text-xs text-neutral-500 game-font mb-0.5">${section.category}</div>
+                                <div class="text-xs text-neutral-500 mb-0.5">${section.category}</div>
                             ` : ''}
-                            <h2 class="text-2xl sm:text-3xl font-semibold text-white game-heading leading-tight">${section.title || 'Без названия'}</h2>
+                            <h2 class="text-2xl sm:text-3xl font-semibold text-white leading-tight">${section.title || 'Без названия'}</h2>
                         </div>
                     </div>
-                    <div class="space-y-3 text-neutral-300 text-[15px] sm:text-base pl-2 stagger-child game-font">
+                    <div class="space-y-3 text-neutral-300 text-[15px] sm:text-base pl-2 stagger-child">
                         ${section.items && section.items.length > 0 
                             ? section.items.map(item => `
                                 <div class="flex gap-3 items-start">
@@ -837,14 +794,14 @@
                 const data = await resp.json();
                 if (data.online) {
                     el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "font-semibold text-white game-font";
+                    el.className = "font-semibold text-white";
                 } else {
                     el.textContent = "0/100";
-                    el.className = "font-semibold text-neutral-500 game-font";
+                    el.className = "font-semibold text-neutral-500";
                 }
             } catch {
                 el.textContent = "—";
-                el.className = "font-semibold text-neutral-500 game-font";
+                el.className = "font-semibold text-neutral-500";
             }
         }
 
@@ -877,14 +834,11 @@
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
 
-            // Загрузка правил
             initRules();
             
-            // Онлайн
             setTimeout(updateOnline, 300);
             setInterval(updateOnline, 10000);
             
-            // Анимация
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -904,7 +858,6 @@
                 });
             }, 100);
 
-            // Проверка обновлений из облака
             setTimeout(checkRulesUpdates, 2000);
             setInterval(checkRulesUpdates, 30000);
         });
