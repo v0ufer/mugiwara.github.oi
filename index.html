@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat+Alternates:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,10 +18,6 @@
                 extend: {
                     fontFamily: {
                         'inter': ['Inter', 'system-ui', 'sans-serif'],
-                        'game': ['Montserrat Alternates', 'sans-serif'],
-                        'game-bold': ['Exo 2', 'sans-serif'],
-                        'pixel': ['Pixelify Sans', 'sans-serif'],
-                        'minecraft': ['Press Start 2P', 'cursive'],
                     }
                 }
             }
@@ -31,15 +27,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
             background-color: #0a0a0a;
             color: #e8e8e8;
+            font-weight: 400;
         }
-        .pixel-font { font-family: 'Pixelify Sans', sans-serif; }
-        .game-font { font-family: 'Montserrat Alternates', sans-serif; }
-        .game-bold-font { font-family: 'Exo 2', sans-serif; }
-        .minecraft-font { font-family: 'Press Start 2P', cursive; }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
@@ -95,6 +88,7 @@
             z-index: 0;
         }
 
+        /* ===== ПЛАВАЮЩИЕ ЧАСТИЦЫ ===== */
         .floating-particles {
             position: absolute;
             inset: 0;
@@ -135,11 +129,24 @@
 
         .hero-content { position: relative; z-index: 2; }
 
-        .hero-title {
-            font-family: 'Press Start 2P', cursive;
-            font-weight: 400;
-            font-size: clamp(2.5rem, 8vw, 7rem);
-            letter-spacing: 0.08em;
+        /* ===== ЛОГОТИП (БОЛЬШОЙ) ===== */
+        .hero-logo {
+            max-width: 800px;
+            width: 95%;
+            height: auto;
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+        .hero-logo:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-title-fallback {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 800;
+            font-size: clamp(3rem, 10vw, 7rem);
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             text-shadow: 
                 0 0 30px rgba(255,255,255,0.05),
@@ -147,25 +154,15 @@
                 3px 3px 0 rgba(0,0,0,0.5),
                 6px 6px 0 rgba(0,0,0,0.3),
                 0 8px 20px rgba(0,0,0,0.4);
-            animation: minecraftPulse 3s ease-in-out infinite;
-            transform: scaleY(1.02);
-            line-height: 1.2;
-            image-rendering: pixelated;
             color: #ffffff;
-        }
-        @keyframes minecraftPulse {
-            0%, 100% { 
-                text-shadow: 0 0 30px rgba(255,255,255,0.05), 0 0 60px rgba(255,255,255,0.02), 3px 3px 0 rgba(0,0,0,0.5), 6px 6px 0 rgba(0,0,0,0.3), 0 8px 20px rgba(0,0,0,0.4);
-                transform: scaleY(1.02) scaleX(1);
-            }
-            50% { 
-                text-shadow: 0 0 40px rgba(255,255,255,0.08), 0 0 80px rgba(255,255,255,0.04), 3px 3px 0 rgba(0,0,0,0.5), 6px 6px 0 rgba(0,0,0,0.3), 0 8px 30px rgba(0,0,0,0.5);
-                transform: scaleY(1.04) scaleX(1.01);
-            }
+            display: none;
         }
 
-        .nav-link { transition: all 0.2s ease; font-family: 'Montserrat Alternates', sans-serif; font-weight: 500; letter-spacing: 0.03em; }
+        .nav-link { transition: all 0.2s ease; font-weight: 500; letter-spacing: 0.03em; }
         .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
+
+        .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card:hover { transform: translateY(-6px); }
 
         .section {
             opacity: 0;
@@ -187,6 +184,22 @@
             transform: translateY(0);
         }
 
+        /* ===== АНИМАЦИЯ ЦИФР ===== */
+        .stat-number {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+        .stat-number.count-up {
+            animation: countUp 0.8s ease forwards;
+        }
+        @keyframes countUp {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ===== ЭФФЕКТ СТЕКЛА (Glassmorphism) ===== */
         .glass-card {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(12px);
@@ -203,128 +216,19 @@
             box-shadow: 0 12px 48px rgba(0,0,0,0.4);
         }
 
-        .section-bg-animated {
-            position: relative;
-            overflow: hidden;
-        }
-        .section-bg-animated .section-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .bg-animate-float {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .bg-animate-float .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.04;
-            animation: floatOrb 25s ease-in-out infinite alternate;
-        }
-        .bg-animate-float .orb:nth-child(1) {
-            width: 500px;
-            height: 500px;
-            background: #555;
-            top: -10%;
-            left: -5%;
-            animation-duration: 25s;
-            animation-delay: 0s;
-        }
-        .bg-animate-float .orb:nth-child(2) {
-            width: 400px;
-            height: 400px;
-            background: #777;
-            bottom: -10%;
-            right: -5%;
-            animation-duration: 30s;
-            animation-delay: -5s;
-        }
-        .bg-animate-float .orb:nth-child(3) {
-            width: 300px;
-            height: 300px;
-            background: #444;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-duration: 22s;
-            animation-delay: -10s;
-        }
-
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            33% { transform: translate(60px, -40px) scale(1.1) rotate(120deg); }
-            66% { transform: translate(-30px, 50px) scale(0.9) rotate(240deg); }
-            100% { transform: translate(40px, -20px) scale(1.05) rotate(360deg); }
-        }
-
-        .bg-glow-pulse {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.015) 0%, transparent 70%);
-            animation: glowPulse 8s ease-in-out infinite alternate;
-        }
-        @keyframes glowPulse {
-            0% { opacity: 0.3; transform: scale(0.95); }
-            100% { opacity: 0.8; transform: scale(1.05); }
-        }
-
         .faq-answer {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.25s ease;
+            transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
         }
         .faq-item.open .faq-answer {
-            max-height: 300px;
+            max-height: 240px;
             opacity: 1;
-            padding-top: 14px;
-            padding-bottom: 18px;
+            padding-top: 20px;
+            padding-bottom: 24px;
         }
         .faq-item.open .faq-icon { transform: rotate(180deg); }
-        .faq-item .faq-icon {
-            transition: transform 0.35s ease;
-        }
-
-        .faq-item .faq-question {
-            cursor: pointer;
-            transition: background 0.2s ease;
-            border-radius: 16px;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            text-align: left;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-family: 'Montserrat Alternates', sans-serif;
-            font-size: 15px;
-            gap: 12px;
-        }
-        .faq-item .faq-question:hover {
-            background: rgba(255,255,255,0.03);
-        }
-        .faq-item.open .faq-question {
-            background: rgba(255,255,255,0.03);
-        }
-
-        body.light .faq-item .faq-question:hover {
-            background: rgba(0,0,0,0.03);
-        }
-        body.light .faq-item.open .faq-question {
-            background: rgba(0,0,0,0.03);
-        }
-        body.light .faq-item .faq-question {
-            color: #1a1a1a;
-        }
 
         #mobile-menu {
             animation: slideDown 0.25s ease forwards;
@@ -364,10 +268,8 @@
             align-items: center;
             gap: 0.5rem;
             border: 1px solid transparent;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
         }
         .btn-premium-primary {
             background: #ffffff;
@@ -397,7 +299,7 @@
             border-radius: 9999px;
             font-weight: 500;
             letter-spacing: 0.03em;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .nav-btn-ip {
             background: rgba(255,255,255,0.05);
@@ -418,6 +320,7 @@
             background: #4752C4;
         }
 
+        /* ===== СКРИНШОТЫ ===== */
         .screenshots-wrapper {
             overflow: hidden;
             position: relative;
@@ -509,7 +412,7 @@
             transition: all 0.4s ease;
             text-decoration: none;
             cursor: pointer;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .admin-link-btn:hover {
             background: rgba(255,255,255,0.06);
@@ -519,7 +422,6 @@
         }
 
         .game-heading {
-            font-family: 'Montserrat Alternates', sans-serif;
             font-weight: 700;
             letter-spacing: 0.04em;
         }
@@ -533,7 +435,7 @@
             cursor: pointer;
             font-size: 11px;
             transition: all 0.3s ease;
-            font-family: 'Montserrat Alternates', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
         .sync-btn:hover {
             background: rgba(255,255,255,0.06);
@@ -541,6 +443,7 @@
             border-color: rgba(255,255,255,0.12);
         }
 
+        /* ===== БЕЙДЖИ ===== */
         .badge {
             display: inline-flex;
             align-items: center;
@@ -568,6 +471,7 @@
             border: 1px solid rgba(78,205,196,0.15);
         }
 
+        /* ===== АВАТАРКИ ИГРОКОВ ===== */
         .player-avatar {
             width: 48px;
             height: 48px;
@@ -615,6 +519,7 @@
             text-align: center;
         }
 
+        /* ===== АНИМАЦИЯ СЧЁТЧИКА ===== */
         .online-count-wrap .count-number.pulse {
             animation: countPulse 0.4s ease;
         }
@@ -639,12 +544,6 @@
             background: rgba(255,255,255,0.7);
             border-color: rgba(255,255,255,0.5);
         }
-        body.light .bg-animate-float .orb {
-            opacity: 0.03;
-        }
-        body.light .bg-animate-float .orb:nth-child(1) { background: #888; }
-        body.light .bg-animate-float .orb:nth-child(2) { background: #aaa; }
-        body.light .bg-animate-float .orb:nth-child(3) { background: #777; }
         body.light .floating-particles .particle {
             background: rgba(0,0,0,0.08);
         }
@@ -704,9 +603,6 @@
             background-size: cover;
             background-position: center;
         }
-        body.light .hero-title {
-            color: #1a1a1a !important;
-        }
         body.light .hero-bg::before { 
             background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); 
@@ -717,15 +613,16 @@
         }
         body.light .online-dot { background-color: #333; }
         body.light #online-count { color: #1a1a1a !important; }
-        body.light .faq-item .faq-question {
-            color: #1a1a1a;
+        body.light .faq-item { 
+            background: rgba(255,255,255,0.4); 
+            backdrop-filter: blur(12px);
+            border-color: rgba(255,255,255,0.2); 
         }
-        body.light .faq-item .faq-question:hover {
-            background: rgba(0,0,0,0.03);
+        body.light .faq-item button:hover { 
+            background: rgba(255,255,255,0.2); 
         }
-        body.light .faq-item.open .faq-question {
-            background: rgba(0,0,0,0.03);
-        }
+        body.light .faq-item .text-white { color: #1a1a1a !important; }
+        body.light .faq-item .text-neutral-400 { color: #444 !important; }
         body.light .card { 
             background: rgba(255,255,255,0.6); 
             backdrop-filter: blur(12px);
@@ -800,9 +697,6 @@
             color: rgba(0,0,0,0.3);
             border-color: rgba(0,0,0,0.08);
         }
-        body.light .bg-glow-pulse {
-            background: radial-gradient(circle at center, rgba(0,0,0,0.015) 0%, transparent 70%);
-        }
         body.light .player-item .player-name {
             color: rgba(0,0,0,0.5);
         }
@@ -833,24 +727,12 @@
                 padding: 4px 14px;
                 font-size: 10px;
             }
-            .hero-title {
-                font-size: 2.2rem !important;
-                letter-spacing: 0.04em;
+            .hero-logo {
+                max-width: 450px;
+                width: 95%;
             }
-            .bg-animate-float .orb {
-                filter: blur(40px);
-            }
-            .bg-animate-float .orb:nth-child(1) {
-                width: 200px;
-                height: 200px;
-            }
-            .bg-animate-float .orb:nth-child(2) {
-                width: 150px;
-                height: 150px;
-            }
-            .bg-animate-float .orb:nth-child(3) {
-                width: 120px;
-                height: 120px;
+            .stat-number {
+                font-size: 1.5rem;
             }
             .player-avatar {
                 width: 40px;
@@ -863,15 +745,11 @@
                 font-size: 10px;
                 max-width: 50px;
             }
-            .faq-item .faq-question {
-                font-size: 14px;
-                padding: 12px 14px;
-            }
         }
         @media (max-width: 480px) {
-            .hero-title {
-                font-size: 1.8rem !important;
-                letter-spacing: 0.02em;
+            .hero-logo {
+                max-width: 340px;
+                width: 98%;
             }
         }
 
@@ -903,8 +781,8 @@
     <nav id="navbar" class="fixed top-0 w-full bg-black/95 backdrop-blur-md border-b border-white/5 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg game-font">Z</div>
-                <span class="game-font text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg">Z</div>
+                <span class="text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -918,8 +796,8 @@
             <div class="flex items-center gap-2 sm:gap-3">
                 <div class="hidden sm:flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 text-xs">
                     <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
-                    <span class="font-medium text-white/80 game-font">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-white game-font">Загрузка...</span>
+                    <span class="font-medium text-white/80">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
                 </div>
 
                 <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
@@ -946,13 +824,13 @@
 
         <div id="mobile-menu" class="hidden md:hidden bg-black border-t border-white/5 py-4 px-6">
             <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-white py-2 game-font">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition py-2 game-font"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
+                <a href="index.html" class="text-white py-2">Главная</a>
+                <a href="wiki.html" class="hover:text-white transition py-2"><i class="fa-solid fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-white transition py-2"><i class="fa-solid fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-white transition py-2"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-white transition py-2"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
                 <div class="pt-3 border-t border-white/5">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full flex items-center gap-2 text-sm text-white game-font">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full flex items-center gap-2 text-sm text-white">
                         <i class="fa-solid fa-copy"></i>
                         <span>Скопировать IP: play.mugivaracraft.ru</span>
                     </button>
@@ -971,14 +849,16 @@
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
         </div>
         <div class="hero-content max-w-5xl mx-auto px-4 sm:px-6 text-center w-full">
-            <div class="inline-flex items-center gap-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 mb-5 text-xs tracking-wider game-font">
+            <div class="inline-flex items-center gap-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 mb-5 text-xs tracking-wider">
                 <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
                 <span class="text-white/80 font-medium">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
             </div>
-            <h1 class="hero-title text-white">
-                MUGIVARA
-            </h1>
-            <p class="text-lg sm:text-xl md:text-2xl text-white/60 mb-8 max-w-2xl mx-auto px-4 font-light game-font">
+            
+            <!-- ===== ЛОГОТИП (БОЛЬШОЙ) ===== -->
+            <img src="images/logotip.png" alt="Mugivara" class="hero-logo" id="heroLogo" onerror="this.style.display='none'; document.getElementById('fallbackTitle').style.display='block';">
+            <h1 class="hero-title-fallback" id="fallbackTitle">MUGIVARA</h1>
+            
+            <p class="text-lg sm:text-xl md:text-2xl text-white/60 mb-8 max-w-2xl mx-auto px-4 font-light">
                 Ванильное выживание без PvP.<br>
                 Спокойная атмосфера и настоящие приключения
             </p>
@@ -993,13 +873,8 @@
         </div>
     </section>
 
-    <!-- SCREENSHOTS -->
-    <section id="screenshots" class="section py-16 sm:py-20 bg-black/50 transition-colors duration-300 section-bg-animated relative">
-        <div class="bg-animate-float">
-            <div class="orb"></div>
-            <div class="orb"></div>
-            <div class="orb"></div>
-        </div>
+    <!-- SCREENSHOTS — БЛОК 1 -->
+    <section id="screenshots" class="section py-16 sm:py-20 bg-black/50 transition-colors duration-300 relative">
         <div class="floating-particles">
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
@@ -1007,8 +882,8 @@
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 section-content">
             <div class="text-center mb-10">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child game-heading">Скриншоты сервера</h2>
-                <p class="text-white/40 mt-2 stagger-child game-font">Атмосфера ванильного выживания в кадре</p>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child">Скриншоты сервера</h2>
+                <p class="text-white/40 mt-2 stagger-child">Атмосфера ванильного выживания в кадре</p>
                 <button onclick="loadScreenshotsFromCloud()" class="sync-btn stagger-child" style="margin-top:8px;">
                     <i class="fa-regular fa-cloud-arrow-down"></i> Обновить скриншоты
                 </button>
@@ -1026,19 +901,14 @@
                 </div>
             </div>
             
-            <p class="text-center text-white/20 text-xs mt-6 stagger-child game-font">
+            <p class="text-center text-white/20 text-xs mt-6 stagger-child">
                 <i class="fa-regular fa-folder-open"></i> Управляйте скриншотами через <span class="text-white/40">админ-панель</span>
             </p>
         </div>
     </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="section py-16 sm:py-24 bg-black/70 transition-colors duration-300 section-bg-animated relative">
-        <div class="bg-animate-float">
-            <div class="orb"></div>
-            <div class="orb"></div>
-            <div class="orb"></div>
-        </div>
+    <!-- ABOUT — БЛОК 2 -->
+    <section id="about" class="section py-16 sm:py-24 bg-black/70 transition-colors duration-300 relative">
         <div class="floating-particles">
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
@@ -1047,20 +917,29 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 section-content">
             <div class="grid md:grid-cols-2 gap-10 sm:gap-16 items-center">
                 <div>
-                    <h2 class="text-3xl sm:text-4xl font-semibold mb-5 text-white stagger-child game-heading">Настоящее ванильное выживание</h2>
-                    <div class="space-y-5 text-base sm:text-lg text-white/50 stagger-child game-font">
+                    <h2 class="text-3xl sm:text-4xl font-semibold mb-5 text-white stagger-child">Настоящее ванильное выживание</h2>
+                    <div class="space-y-5 text-base sm:text-lg text-white/50 stagger-child">
                         <p>Mugivara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
                         <p class="text-white">Версия: 1.21.11</p>
                     </div>
-                    <div class="mt-10 grid grid-cols-3 gap-4 stagger-child">
-                        <div class="text-center"><div class="text-2xl font-bold text-white game-font">10к на 10к</div><div class="text-xs text-white/30 game-font">Мир</div></div>
-                        <div class="text-center"><div class="text-2xl font-bold text-white game-font">0.01%</div><div class="text-xs text-white/30 game-font">PvP</div></div>
-                        <div class="text-center"><div class="text-2xl font-bold text-white game-font">99.9%</div><div class="text-xs text-white/30 game-font">Ванилла</div></div>
+                    <div class="mt-10 grid grid-cols-3 gap-4 stagger-child" id="statsContainer">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-white"><span class="stat-number" data-target="10000">0</span></div>
+                            <div class="text-xs text-white/30">Мир</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-white"><span class="stat-number" data-target="0.01">0</span>%</div>
+                            <div class="text-xs text-white/30">PvP</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-white"><span class="stat-number" data-target="99.9">0</span>%</div>
+                            <div class="text-xs text-white/30">Ванилла</div>
+                        </div>
                     </div>
                 </div>
                 <div class="glass-card p-6 sm:p-8 stagger-child">
-                    <h3 class="text-white uppercase tracking-widest text-xs mb-4 game-font">Наши преимущества</h3>
-                    <ul class="space-y-4 text-sm text-white/60 game-font">
+                    <h3 class="text-white uppercase tracking-widest text-xs mb-4">Наши преимущества</h3>
+                    <ul class="space-y-4 text-sm text-white/60">
                         <li class="flex gap-3 items-start"><i class="fa-solid fa-leaf text-white/40 mt-0.5"></i><span>Спокойное выживание в красивом мире</span></li>
                         <li class="flex gap-3 items-start"><i class="fa-solid fa-users text-white/40 mt-0.5"></i><span>Дружелюбное сообщество</span></li>
                         <li class="flex gap-3 items-start"><i class="fa-solid fa-house text-white/40 mt-0.5"></i><span>Полная свобода строительства</span></li>
@@ -1071,14 +950,8 @@
         </div>
     </section>
 
-    <!-- WIKI -->
-    <section id="wiki" class="section py-16 sm:py-24 bg-black/50 transition-colors duration-300 section-bg-animated relative">
-        <div class="bg-animate-float">
-            <div class="orb"></div>
-            <div class="orb"></div>
-            <div class="orb"></div>
-        </div>
-        <div class="bg-glow-pulse"></div>
+    <!-- WIKI — БЛОК 3 -->
+    <section id="wiki" class="section py-16 sm:py-24 bg-black/50 transition-colors duration-300 relative">
         <div class="floating-particles">
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
@@ -1086,16 +959,16 @@
         </div>
         <div class="max-w-6xl mx-auto px-4 sm:px-6 section-content">
             <div class="text-center mb-12 sm:mb-16">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child game-heading">Рекомендации для приятной игры</h2>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child">Рекомендации для приятной игры</h2>
             </div>
             <div class="grid md:grid-cols-2 gap-6 sm:gap-10">
                 <div class="glass-card p-6 sm:p-8 stagger-child">
                     <div class="flex items-center gap-3 mb-5">
                         <i class="fa-solid fa-palette text-white/50 text-xl"></i>
-                        <h3 class="text-xl font-semibold text-white game-font">Ресурс-паки</h3>
+                        <h3 class="text-xl font-semibold text-white">Ресурс-паки</h3>
                         <span class="badge badge-popular ml-auto"><i class="fa-regular fa-fire"></i> Популярное</span>
                     </div>
-                    <div class="space-y-5 text-sm text-white/60 game-font">
+                    <div class="space-y-5 text-sm text-white/60">
                         <div><div class="font-medium text-white">Vanilla Tweaks</div><p class="text-white/30 text-xs mt-0.5">Улучшенные текстуры, звуки и удобства.</p><a href="https://vanillatweaks.net" target="_blank" class="text-white/50 text-xs hover:underline">Скачать <i class="fa-solid fa-arrow-right text-[10px]"></i></a></div>
                         <div><div class="font-medium text-white">Faithful 32x / 64x</div><p class="text-white/30 text-xs mt-0.5">Классический Faithful в высоком разрешении.</p></div>
                         <div><div class="font-medium text-white">Bare Bones</div><p class="text-white/30 text-xs mt-0.5">Минималистичный пак для производительности.</p></div>
@@ -1104,10 +977,10 @@
                 <div class="glass-card p-6 sm:p-8 stagger-child">
                     <div class="flex items-center gap-3 mb-5">
                         <i class="fa-solid fa-puzzle-piece text-white/50 text-xl"></i>
-                        <h3 class="text-xl font-semibold text-white game-font">Рекомендуемые моды</h3>
+                        <h3 class="text-xl font-semibold text-white">Рекомендуемые моды</h3>
                         <span class="badge badge-new ml-auto"><i class="fa-regular fa-star"></i> Обновлено</span>
                     </div>
-                    <div class="space-y-3 text-sm text-white/60 game-font">
+                    <div class="space-y-3 text-sm text-white/60">
                         <div class="flex justify-between"><span>Sodium + Iris</span><span class="text-white/40 text-xs">Обязательно</span></div>
                         <div>Xaero's Minimap</div><div>AppleSkin</div><div>ReplayMod</div><div>Entity Culling</div>
                     </div>
@@ -1117,13 +990,8 @@
         </div>
     </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="section py-16 sm:py-24 bg-black/70 transition-colors duration-300 section-bg-animated relative">
-        <div class="bg-animate-float">
-            <div class="orb"></div>
-            <div class="orb"></div>
-            <div class="orb"></div>
-        </div>
+    <!-- FAQ — БЛОК 4 -->
+    <section id="faq" class="section py-16 sm:py-24 bg-black/70 transition-colors duration-300 relative">
         <div class="floating-particles">
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
@@ -1131,62 +999,57 @@
         </div>
         <div class="max-w-4xl mx-auto px-4 sm:px-6 section-content">
             <div class="text-center mb-12 sm:mb-16">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child game-heading">Часто задаваемые вопросы</h2>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child">Часто задаваемые вопросы</h2>
                 <span class="badge badge-popular mt-3"><i class="fa-regular fa-fire"></i> Популярное</span>
             </div>
             <div class="space-y-3 stagger-child">
                 <div class="glass-card overflow-hidden">
                     <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="faq-question">
-                            <span>Можно ли играть с модами?</span>
-                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 text-xs"></i>
+                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                            <span class="font-medium text-sm sm:text-base text-white">Можно ли играть с модами?</span>
+                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 transition-transform duration-500 text-xs"></i>
                         </button>
-                        <div class="faq-answer px-4 text-white/50 text-sm game-font">Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.</div>
+                        <div class="faq-answer px-6 text-white/50 text-sm">Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.</div>
                     </div>
                 </div>
                 <div class="glass-card overflow-hidden">
                     <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="faq-question">
-                            <span>Нужна ли официальная лицензия?</span>
-                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 text-xs"></i>
+                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                            <span class="font-medium text-sm sm:text-base text-white">Нужна ли официальная лицензия?</span>
+                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 transition-transform duration-500 text-xs"></i>
                         </button>
-                        <div class="faq-answer px-4 text-white/50 text-sm game-font">Нет, на нашем сервере можно играть как с лицензии, так и с пиратки.</div>
+                        <div class="faq-answer px-6 text-white/50 text-sm">Нет, на нашем сервере можно играть как с лицензии, так и с пиратки.</div>
                     </div>
                 </div>
                 <div class="glass-card overflow-hidden">
                     <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="faq-question">
-                            <span>Есть ли донат и привилегии?</span>
-                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 text-xs"></i>
+                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                            <span class="font-medium text-sm sm:text-base text-white">Есть ли донат и привилегии?</span>
+                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 transition-transform duration-500 text-xs"></i>
                         </button>
-                        <div class="faq-answer px-4 text-white/50 text-sm game-font">Нет. Сервер полностью бесплатный и честный.</div>
+                        <div class="faq-answer px-6 text-white/50 text-sm">Нет. Сервер полностью бесплатный и честный.</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- COMMUNITY -->
-    <section id="community" class="section py-16 sm:py-24 bg-black/50 transition-colors duration-300 section-bg-animated relative">
-        <div class="bg-animate-float">
-            <div class="orb"></div>
-            <div class="orb"></div>
-            <div class="orb"></div>
-        </div>
+    <!-- COMMUNITY — БЛОК 5 -->
+    <section id="community" class="section py-16 sm:py-24 bg-black/50 transition-colors duration-300 relative">
         <div class="floating-particles">
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
             <span class="particle"></span><span class="particle"></span><span class="particle"></span>
         </div>
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center section-content">
-            <h2 class="text-3xl sm:text-4xl font-semibold mb-4 text-white stagger-child game-heading">Сейчас на сервере</h2>
-            <p class="text-white/40 mb-6 px-4 text-sm stagger-child game-font">Игроки онлайн</p>
+            <h2 class="text-3xl sm:text-4xl font-semibold mb-4 text-white stagger-child">Сейчас на сервере</h2>
+            <p class="text-white/40 mb-6 px-4 text-sm stagger-child">Игроки онлайн</p>
             
             <div class="stagger-child">
                 <div class="inline-flex items-center gap-3 glass-card px-6 py-3 rounded-full">
                     <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
-                    <span class="text-white/60 text-sm game-font">Онлайн:</span>
-                    <span id="online-count-hero" class="text-white font-bold text-xl game-font">Загрузка...</span>
+                    <span class="text-white/60 text-sm">Онлайн:</span>
+                    <span id="online-count-hero" class="text-white font-bold text-xl">Загрузка...</span>
                 </div>
             </div>
 
@@ -1203,13 +1066,13 @@
             <div class="mt-10 flex flex-col sm:flex-row gap-5 justify-center stagger-child">
                 <a href="https://discord.gg/W226UHyv6f" target="_blank" class="glass-card flex-1 max-w-xs mx-auto p-6 transition-all">
                     <i class="fa-brands fa-discord text-4xl sm:text-5xl text-[#5865F2] mb-4"></i>
-                    <div class="text-lg font-semibold text-white game-font">Discord</div>
-                    <div class="text-white/40 text-sm game-font">Общение и поддержка</div>
+                    <div class="text-lg font-semibold text-white">Discord</div>
+                    <div class="text-white/40 text-sm">Общение и поддержка</div>
                 </a>
                 <a href="https://tiktok.com/@mugiwara_craft" target="_blank" class="glass-card flex-1 max-w-xs mx-auto p-6 transition-all">
                     <i class="fa-brands fa-tiktok text-4xl sm:text-5xl text-[#FF0050] mb-4"></i>
-                    <div class="text-lg font-semibold text-white game-font">TikTok</div>
-                    <div class="text-white/40 text-sm game-font">Видео с сервера</div>
+                    <div class="text-lg font-semibold text-white">TikTok</div>
+                    <div class="text-white/40 text-sm">Видео с сервера</div>
                 </a>
             </div>
         </div>
@@ -1218,8 +1081,8 @@
     <!-- FOOTER -->
     <footer class="bg-black/90 py-8 sm:py-10 border-t border-white/5 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-white/30 text-xs">
-            <p class="text-white/60 game-font">© 2026 Mugivara • Чистое ванильное выживание</p>
-            <p class="mt-1 text-white/30 game-font">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
+            <p class="text-white/60">© 2026 Mugivara • Чистое ванильное выживание</p>
+            <p class="mt-1 text-white/30">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
             
             <div class="mt-4 flex flex-wrap items-center justify-center gap-4">
                 <button onclick="loadAllFromCloud()" class="sync-btn">
@@ -1380,14 +1243,10 @@
         }
 
         function toggleFAQ(btn) {
-            const item = btn.closest('.faq-item');
+            const item = btn.parentElement;
             const isOpen = item.classList.contains('open');
-            
             document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
-            
-            if (!isOpen) {
-                item.classList.add('open');
-            }
+            if (!isOpen) item.classList.add('open');
         }
 
         function toggleMobileMenu() {
@@ -1429,91 +1288,108 @@
             }, 4000);
         }
 
-        // ============================================================
-        // ====== ОНЛАЙН И АВАТАРКИ ======
-        // ============================================================
-
-        let lastOnlineCount = 0;
-
         async function updateOnline() {
             const el = document.getElementById('online-count');
-            const elHero = document.getElementById('online-count-hero');
-            const playerList = document.getElementById('playerList');
-            
             try {
                 const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
                     signal: AbortSignal.timeout(4000)
                 });
                 const data = await resp.json();
-                
                 if (data.online) {
-                    const count = data.players.online;
-                    
-                    if (count !== lastOnlineCount) {
-                        el.classList.add('pulse');
-                        elHero.classList.add('pulse');
-                        setTimeout(() => {
-                            el.classList.remove('pulse');
-                            elHero.classList.remove('pulse');
-                        }, 400);
-                        lastOnlineCount = count;
-                    }
-                    
-                    el.textContent = `${count}/${data.players.max}`;
-                    elHero.textContent = count;
-                    el.className = "font-semibold text-white game-font";
-                    elHero.className = "text-white font-bold text-xl game-font";
-                    
-                    if (data.players.sample && data.players.sample.length > 0) {
-                        const names = data.players.sample.map(p => p.name);
-                        renderPlayerAvatars(names);
-                    } else {
-                        renderPlayerAvatars([]);
-                    }
+                    el.textContent = `${data.players.online}/${data.players.max}`;
+                    el.className = "font-semibold text-white";
                 } else {
                     el.textContent = "0/100";
-                    elHero.textContent = "0";
-                    el.className = "font-semibold text-white/40 game-font";
-                    elHero.className = "text-white/40 font-bold text-xl game-font";
-                    renderPlayerAvatars([]);
+                    el.className = "font-semibold text-white/40";
                 }
             } catch {
                 el.textContent = "—";
-                elHero.textContent = "—";
-                el.className = "font-semibold text-white/40 game-font";
-                elHero.className = "text-white/40 font-bold text-xl game-font";
-                renderPlayerAvatars([]);
+                el.className = "font-semibold text-white/40";
             }
         }
 
-        function renderPlayerAvatars(names) {
-            const container = document.getElementById('playerList');
+        // ===== АНИМАЦИЯ ЦИФР =====
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number');
+            numbers.forEach(num => {
+                const target = parseFloat(num.dataset.target);
+                const isFloat = target % 1 !== 0;
+                let current = 0;
+                const duration = 1200;
+                const startTime = performance.now();
+                
+                num.classList.add('count-up');
+                
+                function updateNumber(time) {
+                    const elapsed = time - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const value = eased * target;
+                    
+                    if (isFloat) {
+                        num.textContent = value.toFixed(1);
+                    } else {
+                        num.textContent = Math.round(value);
+                    }
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateNumber);
+                    } else {
+                        if (isFloat) {
+                            num.textContent = target.toFixed(1);
+                        } else {
+                            num.textContent = target;
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(updateNumber);
+            });
+        }
+
+        function initObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        if (entry.target.id === 'about') {
+                            animateNumbers();
+                        }
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
             
-            if (!names || names.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-players game-font">
-                        <i class="fa-regular fa-users"></i> Нет игроков онлайн
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = names.map(name => `
-                <div class="player-item">
-                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/48" 
-                         alt="${name}" 
-                         class="player-avatar"
-                         loading="lazy"
-                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22%3E%3Crect width=%2248%22 height=%2248%22 fill=%22%23222%22/%3E%3Ctext x=%2224%22 y=%2232%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2220%22 font-family=%22sans-serif%22%3E${name.charAt(0).toUpperCase()}%3C/text%3E%3C/svg%3E'">
-                    <span class="player-name">${name}</span>
-                </div>
-            `).join('');
+            document.querySelectorAll('.section').forEach(s => observer.observe(s));
+            
+            setTimeout(() => {
+                document.querySelectorAll('.section').forEach(s => {
+                    const rect = s.getBoundingClientRect();
+                    if (rect.top < window.innerHeight * 0.85) {
+                        s.classList.add('visible');
+                    }
+                });
+            }, 100);
         }
 
-        // ============================================================
-        // ====== СКРИНШОТЫ ======
-        // ============================================================
+        function checkHeroImage() {
+            const hero = document.getElementById('heroSection');
+            const img = new Image();
+            const style = getComputedStyle(hero);
+            const bgImage = style.backgroundImage;
+            const match = bgImage.match(/url\(["']?(.*?)["']?\)/);
+            if (match && match[1]) {
+                img.src = match[1];
+                img.onload = () => {
+                    hero.classList.add('has-image');
+                };
+                img.onerror = () => {
+                    hero.classList.remove('has-image');
+                };
+            }
+        }
 
+        // ===== СКРИНШОТЫ =====
         function loadScreenshotsFromStorage() {
             const trackLeft = document.getElementById('trackLeft');
             const trackRight = document.getElementById('trackRight');
@@ -1553,48 +1429,87 @@
             `).join('');
         }
 
-        // ============================================================
-        // ====== ИНИЦИАЛИЗАЦИЯ ======
-        // ============================================================
+        // ===== ОНЛАЙН И АВАТАРКИ =====
+        let lastOnlineCount = 0;
 
-        function initObserver() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+        async function updateOnlineFull() {
+            const el = document.getElementById('online-count');
+            const elHero = document.getElementById('online-count-hero');
+            const playerList = document.getElementById('playerList');
             
-            document.querySelectorAll('.section').forEach(s => observer.observe(s));
-            
-            setTimeout(() => {
-                document.querySelectorAll('.section').forEach(s => {
-                    const rect = s.getBoundingClientRect();
-                    if (rect.top < window.innerHeight * 0.85) {
-                        s.classList.add('visible');
-                    }
+            try {
+                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
+                    signal: AbortSignal.timeout(4000)
                 });
-            }, 100);
-        }
-
-        function checkHeroImage() {
-            const hero = document.getElementById('heroSection');
-            const img = new Image();
-            const style = getComputedStyle(hero);
-            const bgImage = style.backgroundImage;
-            const match = bgImage.match(/url\(["']?(.*?)["']?\)/);
-            if (match && match[1]) {
-                img.src = match[1];
-                img.onload = () => {
-                    hero.classList.add('has-image');
-                };
-                img.onerror = () => {
-                    hero.classList.remove('has-image');
-                };
+                const data = await resp.json();
+                
+                if (data.online) {
+                    const count = data.players.online;
+                    
+                    if (count !== lastOnlineCount) {
+                        el.classList.add('pulse');
+                        elHero.classList.add('pulse');
+                        setTimeout(() => {
+                            el.classList.remove('pulse');
+                            elHero.classList.remove('pulse');
+                        }, 400);
+                        lastOnlineCount = count;
+                    }
+                    
+                    el.textContent = `${count}/${data.players.max}`;
+                    elHero.textContent = count;
+                    el.className = "font-semibold text-white";
+                    elHero.className = "text-white font-bold text-xl";
+                    
+                    if (data.players.sample && data.players.sample.length > 0) {
+                        const names = data.players.sample.map(p => p.name);
+                        renderPlayerAvatars(names);
+                    } else {
+                        renderPlayerAvatars([]);
+                    }
+                } else {
+                    el.textContent = "0/100";
+                    elHero.textContent = "0";
+                    el.className = "font-semibold text-white/40";
+                    elHero.className = "text-white/40 font-bold text-xl";
+                    renderPlayerAvatars([]);
+                }
+            } catch {
+                el.textContent = "—";
+                elHero.textContent = "—";
+                el.className = "font-semibold text-white/40";
+                elHero.className = "text-white/40 font-bold text-xl";
+                renderPlayerAvatars([]);
             }
         }
 
+        function renderPlayerAvatars(names) {
+            const container = document.getElementById('playerList');
+            
+            if (!names || names.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-players">
+                        <i class="fa-regular fa-users"></i> Нет игроков онлайн
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = names.map(name => `
+                <div class="player-item">
+                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/48" 
+                         alt="${name}" 
+                         class="player-avatar"
+                         loading="lazy"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22%3E%3Crect width=%2248%22 height=%2248%22 fill=%22%23222%22/%3E%3Ctext x=%2224%22 y=%2232%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2220%22 font-family=%22sans-serif%22%3E${name.charAt(0).toUpperCase()}%3C/text%3E%3C/svg%3E'">
+                    <span class="player-name">${name}</span>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // ====== ИНИЦИАЛИЗАЦИЯ ======
+        // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const icon = document.querySelector('#themeToggle i');
@@ -1610,8 +1525,8 @@
 
             loadScreenshotsFromStorage();
 
-            setTimeout(updateOnline, 300);
-            setInterval(updateOnline, 10000);
+            setTimeout(updateOnlineFull, 300);
+            setInterval(updateOnlineFull, 10000);
             
             initObserver();
             setTimeout(checkHeroImage, 500);
