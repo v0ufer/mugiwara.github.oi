@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Все стили из предыдущей версии... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -273,7 +272,7 @@
         .sync-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .taberna-status {
+        .whitelistapi-status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -282,20 +281,20 @@
             border-radius: 20px;
             font-family: 'Inter', system-ui, sans-serif;
         }
-        .taberna-status .dot {
+        .whitelistapi-status .dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
             animation: pulse-dot 2s infinite;
         }
-        .taberna-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
-        .taberna-status.online .dot { background: #4ecdc4; }
-        .taberna-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
-        .taberna-status.offline .dot { background: #ff6b6b; }
-        .taberna-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .taberna-status.unknown .dot { background: #ffaa44; }
-        .taberna-status.checking { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .taberna-status.checking .dot { background: #ffaa44; animation: spin 1s linear infinite; }
+        .whitelistapi-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .whitelistapi-status.online .dot { background: #4ecdc4; }
+        .whitelistapi-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        .whitelistapi-status.offline .dot { background: #ff6b6b; }
+        .whitelistapi-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .whitelistapi-status.unknown .dot { background: #ffaa44; }
+        .whitelistapi-status.checking { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .whitelistapi-status.checking .dot { background: #ffaa44; animation: spin 1s linear infinite; }
 
         .toast {
             position: fixed;
@@ -558,7 +557,6 @@
             vertical-align: middle;
         }
 
-        /* ===== WIKI ===== */
         .wiki-layout { display: flex; gap: 24px; min-height: 500px; }
         .wiki-sidebar-editor {
             width: 280px;
@@ -1057,9 +1055,9 @@
                     <span class="dot"></span>
                     <span id="syncStatusText">☁️ Синхронизировано</span>
                 </span>
-                <span class="taberna-status unknown" id="tabernaStatus">
+                <span class="whitelistapi-status unknown" id="whitelistApiStatus">
                     <span class="dot unknown"></span>
-                    <span id="tabernaStatusText">TabernaConnector ⚠️</span>
+                    <span id="whitelistApiStatusText">WhitelistAPI ⚠️</span>
                 </span>
                 <button onclick="syncAllToCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-up"></i> Сохранить
@@ -1067,7 +1065,7 @@
                 <button onclick="syncAllFromCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-down"></i> Загрузить
                 </button>
-                <button onclick="checkTabernaNow()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                <button onclick="checkWhitelistApi()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-plug"></i> Проверить API
                 </button>
                 <button class="admin-logout" onclick="logout()">
@@ -1116,7 +1114,7 @@
             <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
                 Заявки автоматически синхронизируются с облаком каждые 30 секунд.
                 <span style="color:#4ecdc4;">✅</span> При отправке заявка сразу попадает в облако.
-                <span style="color:#ffaa44;display:block;margin-top:4px;">🔌 TabernaConnector: <span id="tabernaStatusInline">⏳ Проверка...</span></span>
+                <span style="color:#ffaa44;display:block;margin-top:4px;">🔌 WhitelistAPI: <span id="whitelistApiStatusInline">⏳ Проверка...</span></span>
             </p>
             <div class="applications-stats" id="statsContainer">
                 <div class="stat-card pending"><div class="number" id="pendingCount">0</div><div class="label">Ожидают</div></div>
@@ -1174,9 +1172,9 @@
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
         
-        // ====== TABERNA CONNECTOR НАСТРОЙКИ ======
-        const TABERNA_URL = 'http://play.mugivaracraft.ru:25880';
-        const TABERNA_KEY = 'qweasdzxc1000-7//';
+        // ====== WHITELISTAPI НАСТРОЙКИ ======
+        const WHITELISTAPI_URL = 'http://play.mugivaracraft.ru:25566';
+        const WHITELISTAPI_TOKEN = 'qweasdzxc1000-7//';
 
         // ============================================================
         // ====== ОСНОВНАЯ ЛОГИКА ======
@@ -1187,7 +1185,7 @@
         let autoSyncInterval = null;
         let isSyncing = false;
         let isRefreshing = false;
-        let isTabernaChecked = false;
+        let isApiChecked = false;
 
         // ====== LOGIN ======
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -1340,92 +1338,79 @@
         }
 
         // ============================================================
-        // ====== TABERNA CONNECTOR ======
+        // ====== WHITELISTAPI ======
         // ============================================================
-        function updateTabernaStatus(status, text) {
-            const el = document.getElementById('tabernaStatus');
-            const textEl = document.getElementById('tabernaStatusText');
-            const inlineEl = document.getElementById('tabernaStatusInline');
+        function updateApiStatus(status, text) {
+            const el = document.getElementById('whitelistApiStatus');
+            const textEl = document.getElementById('whitelistApiStatusText');
+            const inlineEl = document.getElementById('whitelistApiStatusInline');
             if (el) {
-                el.className = `taberna-status ${status}`;
-                const dot = document.querySelector('#tabernaStatus .dot');
+                el.className = `whitelistapi-status ${status}`;
+                const dot = document.querySelector('#whitelistApiStatus .dot');
                 if (dot) dot.className = `dot ${status}`;
             }
             if (textEl) textEl.textContent = text;
             if (inlineEl) inlineEl.textContent = text;
         }
 
-        async function checkTabernaConnection() {
-            if (isTabernaChecked) return;
-            isTabernaChecked = true;
+        async function checkWhitelistApi() {
+            if (isApiChecked) return;
+            isApiChecked = true;
             
-            updateTabernaStatus('checking', '⏳ Проверка...');
+            updateApiStatus('checking', '⏳ Проверка...');
             
             try {
-                const response = await fetch(`${TABERNA_URL}/execute`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Connector-Key': TABERNA_KEY
-                    },
-                    body: JSON.stringify({ command: 'list' }),
+                const url = `${WHITELISTAPI_URL}/whitelist?name=test&token=${WHITELISTAPI_TOKEN}`;
+                const response = await fetch(url, {
                     signal: AbortSignal.timeout(5000)
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    updateTabernaStatus('online', '✅ Подключен');
-                    showToast('✅ TabernaConnector подключен!', 'success');
+                    updateApiStatus('online', '✅ Подключен');
+                    showToast('✅ WhitelistAPI подключен!', 'success');
                 } else {
                     let errorMsg = `❌ Ошибка ${response.status}`;
-                    if (response.status === 403) errorMsg = '❌ Неверный ключ';
-                    else if (response.status === 404) errorMsg = '❌ URL не найден';
+                    if (response.status === 403) errorMsg = '❌ Неверный токен';
+                    else if (response.status === 404) errorMsg = '❌ URL не найден (проверьте порт)';
                     else if (response.status === 500) errorMsg = '❌ Ошибка сервера';
-                    updateTabernaStatus('offline', errorMsg);
+                    updateApiStatus('offline', errorMsg);
                     showToast(`⚠️ ${errorMsg}`, 'error');
                 }
             } catch (error) {
-                console.error('Ошибка проверки TabernaConnector:', error);
+                console.error('Ошибка проверки WhitelistAPI:', error);
                 let errorMsg = '❌ Сервер недоступен';
                 if (error.message.includes('Failed to fetch')) {
                     errorMsg = '❌ Сервер недоступен (проверьте IP/порт)';
                 } else if (error.message.includes('timeout')) {
                     errorMsg = '❌ Таймаут соединения';
-                } else if (error.message.includes('AbortError')) {
-                    errorMsg = '❌ Запрос прерван';
                 }
-                updateTabernaStatus('offline', errorMsg);
+                updateApiStatus('offline', errorMsg);
                 showToast(`⚠️ ${errorMsg}`, 'error');
             }
         }
 
-        async function checkTabernaNow() {
-            isTabernaChecked = false;
-            await checkTabernaConnection();
+        async function checkApiNow() {
+            isApiChecked = false;
+            await checkWhitelistApi();
         }
 
-        async function sendToTaberna(nick) {
+        async function sendToWhitelistApi(nick) {
             try {
-                const response = await fetch(`${TABERNA_URL}/execute`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Connector-Key': TABERNA_KEY
-                    },
-                    body: JSON.stringify({ command: `whitelist add ${nick}` }),
+                const url = `${WHITELISTAPI_URL}/whitelist?name=${encodeURIComponent(nick)}&token=${WHITELISTAPI_TOKEN}`;
+                const response = await fetch(url, {
                     signal: AbortSignal.timeout(5000)
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log('✅ TabernaConnector ответ:', data);
+                    const data = await response.text();
+                    console.log('✅ WhitelistAPI ответ:', data);
                     return true;
                 } else {
-                    console.error('❌ Ошибка TabernaConnector:', response.status);
+                    console.error('❌ Ошибка WhitelistAPI:', response.status);
                     return false;
                 }
             } catch (error) {
-                console.error('❌ Ошибка отправки в TabernaConnector:', error);
+                console.error('❌ Ошибка отправки в WhitelistAPI:', error);
                 return false;
             }
         }
@@ -1662,8 +1647,8 @@
             saveApplications();
             showToast(`✅ Заявка одобрена!`, 'success');
             
-            // Пытаемся добавить в вайтлист через TabernaConnector
-            const whitelistSuccess = await sendToTaberna(app.minecraft_nick);
+            // Пытаемся добавить в вайтлист через WhitelistAPI
+            const whitelistSuccess = await sendToWhitelistApi(app.minecraft_nick);
             if (whitelistSuccess) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
@@ -1695,7 +1680,7 @@
             const app = applications.find(a => a.id === id);
             if (!app) return;
             
-            const success = await sendToTaberna(app.minecraft_nick);
+            const success = await sendToWhitelistApi(app.minecraft_nick);
             if (success) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
@@ -1704,7 +1689,7 @@
             }
         }
 
-        // ====== ОЧЕРЕДЬ КОМАНД ДЛЯ ВАЙТЛИСТА ======
+        // ====== ОЧЕРЕДЬ КОМАНД ======
         function saveCommandToQueue(command) {
             try {
                 let queue = localStorage.getItem('whitelist_commands_queue') || '';
@@ -1734,7 +1719,6 @@
                 showToast('📭 Очередь пуста', 'info');
                 return;
             }
-            // Показываем в модальном окне
             document.getElementById('modalTitle').textContent = '📋 Очередь команд вайтлиста';
             document.getElementById('modalBody').innerHTML = `
                 <div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;font-family:monospace;font-size:12px;color:#aaa;white-space:pre-wrap;max-height:300px;overflow-y:auto;">${queue}</div>
@@ -1759,7 +1743,6 @@
             navigator.clipboard.writeText(queue).then(() => {
                 showToast('✅ Команды скопированы в буфер обмена!', 'success');
             }).catch(() => {
-                // Если copy не работает, выделяем текст
                 const textArea = document.createElement('textarea');
                 textArea.value = queue;
                 document.body.appendChild(textArea);
@@ -1770,8 +1753,6 @@
             });
         }
 
-        // ====== ДОБАВЛЯЕМ КНОПКУ ОЧЕРЕДИ В ИНТЕРФЕЙС ======
-        // Добавляем после кнопок фильтров
         function addQueueButton() {
             const filters = document.querySelector('.app-filters');
             if (filters) {
@@ -2499,8 +2480,8 @@
             renderRulesEditor();
             addQueueButton();
             
-            // Проверяем TabernaConnector при старте
-            setTimeout(checkTabernaConnection, 2000);
+            // Проверяем WhitelistAPI при старте
+            setTimeout(checkWhitelistApi, 2000);
             
             if (applicationsRefreshInterval) {
                 clearInterval(applicationsRefreshInterval);
