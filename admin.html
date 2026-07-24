@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Все стили из предыдущей версии... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -30,7 +31,6 @@
         body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
         body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
 
-        /* ===== LOGIN ===== */
         .login-container {
             min-height: 100vh;
             display: flex;
@@ -78,7 +78,6 @@
         .login-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
         .login-error { color: #ff6b6b; font-size: 14px; margin-top: 12px; text-align: center; display: none; }
 
-        /* ===== ADMIN ===== */
         .admin-container { display: none; max-width: 1400px; margin: 0 auto; padding: 20px; }
         .admin-container.active { display: block; }
 
@@ -126,7 +125,6 @@
         }
         .admin-logout:hover { background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
 
-        /* ===== БУРГЕР ===== */
         .burger-toggle {
             display: none;
             background: transparent;
@@ -275,7 +273,6 @@
         .sync-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ===== СТАТУС TABERNA CONNECTOR ===== */
         .taberna-status {
             display: inline-flex;
             align-items: center;
@@ -322,7 +319,6 @@
         .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
         .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
 
-        /* ===== ЗАЯВКИ ===== */
         .refresh-apps-btn {
             display: inline-flex;
             align-items: center;
@@ -753,7 +749,6 @@
         body.light .sec-title-edit { color: #1a1a1a; border-bottom-color: rgba(0,0,0,0.2); }
         body.light .sec-title-edit:focus { border-bottom-color: #4ecdc4; }
 
-        /* ===== ПРАВИЛА ===== */
         .rules-layout { display: flex; gap: 24px; min-height: 500px; }
         .rules-sidebar-editor {
             width: 280px;
@@ -1072,6 +1067,9 @@
                 <button onclick="syncAllFromCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-down"></i> Загрузить
                 </button>
+                <button onclick="checkTabernaNow()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                    <i class="fa-regular fa-plug"></i> Проверить API
+                </button>
                 <button class="admin-logout" onclick="logout()">
                     <i class="fa-regular fa-right-from-bracket"></i> Выйти
                 </button>
@@ -1118,7 +1116,7 @@
             <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
                 Заявки автоматически синхронизируются с облаком каждые 30 секунд.
                 <span style="color:#4ecdc4;">✅</span> При отправке заявка сразу попадает в облако.
-                <span style="color:#4ecdc4;display:block;margin-top:4px;">🔌 TabernaConnector: <span id="tabernaStatusInline">⏳ Проверка...</span></span>
+                <span style="color:#ffaa44;display:block;margin-top:4px;">🔌 TabernaConnector: <span id="tabernaStatusInline">⏳ Проверка...</span></span>
             </p>
             <div class="applications-stats" id="statsContainer">
                 <div class="stat-card pending"><div class="number" id="pendingCount">0</div><div class="label">Ожидают</div></div>
@@ -1176,7 +1174,7 @@
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
         
-        // ====== TABERNA CONNECTOR НАСТРОЙКИ (ВСТАВЛЕНЫ В КОД) ======
+        // ====== TABERNA CONNECTOR НАСТРОЙКИ ======
         const TABERNA_URL = 'http://play.mugivaracraft.ru:8081';
         const TABERNA_KEY = 'qweasdzxc1000-7//';
 
@@ -1375,25 +1373,35 @@
                 });
 
                 if (response.ok) {
+                    const data = await response.json();
                     updateTabernaStatus('online', '✅ Подключен');
                     showToast('✅ TabernaConnector подключен!', 'success');
-                } else if (response.status === 403) {
-                    updateTabernaStatus('offline', '❌ Неверный ключ');
-                } else if (response.status === 404) {
-                    updateTabernaStatus('offline', '❌ URL не найден');
                 } else {
-                    updateTabernaStatus('offline', `❌ Ошибка ${response.status}`);
+                    let errorMsg = `❌ Ошибка ${response.status}`;
+                    if (response.status === 403) errorMsg = '❌ Неверный ключ';
+                    else if (response.status === 404) errorMsg = '❌ URL не найден';
+                    else if (response.status === 500) errorMsg = '❌ Ошибка сервера';
+                    updateTabernaStatus('offline', errorMsg);
+                    showToast(`⚠️ ${errorMsg}`, 'error');
                 }
             } catch (error) {
                 console.error('Ошибка проверки TabernaConnector:', error);
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    updateTabernaStatus('offline', '❌ Сервер недоступен');
+                let errorMsg = '❌ Сервер недоступен';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMsg = '❌ Сервер недоступен (проверьте IP/порт)';
                 } else if (error.message.includes('timeout')) {
-                    updateTabernaStatus('offline', '❌ Таймаут');
-                } else {
-                    updateTabernaStatus('offline', '❌ Ошибка подключения');
+                    errorMsg = '❌ Таймаут соединения';
+                } else if (error.message.includes('AbortError')) {
+                    errorMsg = '❌ Запрос прерван';
                 }
+                updateTabernaStatus('offline', errorMsg);
+                showToast(`⚠️ ${errorMsg}`, 'error');
             }
+        }
+
+        async function checkTabernaNow() {
+            isTabernaChecked = false;
+            await checkTabernaConnection();
         }
 
         async function sendToTaberna(nick) {
@@ -1654,11 +1662,14 @@
             saveApplications();
             showToast(`✅ Заявка одобрена!`, 'success');
             
+            // Пытаемся добавить в вайтлист через TabernaConnector
             const whitelistSuccess = await sendToTaberna(app.minecraft_nick);
             if (whitelistSuccess) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
-                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте подключение TabernaConnector.`, 'error');
+                // Сохраняем команду в локальную очередь
+                saveCommandToQueue(`whitelist add ${app.minecraft_nick}`);
+                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Команда сохранена в очередь.`, 'error');
             }
             
             setTimeout(autoSync, 500);
@@ -1688,7 +1699,89 @@
             if (success) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
-                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте подключение TabernaConnector.`, 'error');
+                saveCommandToQueue(`whitelist add ${app.minecraft_nick}`);
+                showToast(`⚠️ Команда сохранена в очередь. Выполните её вручную в консоли сервера.`, 'info');
+            }
+        }
+
+        // ====== ОЧЕРЕДЬ КОМАНД ДЛЯ ВАЙТЛИСТА ======
+        function saveCommandToQueue(command) {
+            try {
+                let queue = localStorage.getItem('whitelist_commands_queue') || '';
+                const timestamp = new Date().toLocaleString('ru-RU');
+                queue += `[${timestamp}] ${command}\n`;
+                localStorage.setItem('whitelist_commands_queue', queue);
+                console.log(`📝 Команда сохранена в очередь: ${command}`);
+                return true;
+            } catch (e) {
+                console.error('Ошибка сохранения команды в очередь:', e);
+                return false;
+            }
+        }
+
+        function getCommandQueue() {
+            return localStorage.getItem('whitelist_commands_queue') || '';
+        }
+
+        function clearCommandQueue() {
+            localStorage.setItem('whitelist_commands_queue', '');
+            showToast('🗑️ Очередь команд очищена', 'info');
+        }
+
+        function viewCommandQueue() {
+            const queue = getCommandQueue();
+            if (!queue) {
+                showToast('📭 Очередь пуста', 'info');
+                return;
+            }
+            // Показываем в модальном окне
+            document.getElementById('modalTitle').textContent = '📋 Очередь команд вайтлиста';
+            document.getElementById('modalBody').innerHTML = `
+                <div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;font-family:monospace;font-size:12px;color:#aaa;white-space:pre-wrap;max-height:300px;overflow-y:auto;">${queue}</div>
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <button onclick="clearCommandQueue(); closeModal();" class="save-setting-btn" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,107,107,0.2);background:rgba(255,107,107,0.1);color:#ff6b6b;cursor:pointer;font-size:12px;">
+                        <i class="fa-regular fa-trash-can"></i> Очистить
+                    </button>
+                    <button onclick="copyCommandQueue()" class="save-setting-btn" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.1);color:#4ecdc4;cursor:pointer;font-size:12px;">
+                        <i class="fa-regular fa-copy"></i> Скопировать
+                    </button>
+                </div>
+            `;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function copyCommandQueue() {
+            const queue = getCommandQueue();
+            if (!queue) {
+                showToast('📭 Очередь пуста', 'info');
+                return;
+            }
+            navigator.clipboard.writeText(queue).then(() => {
+                showToast('✅ Команды скопированы в буфер обмена!', 'success');
+            }).catch(() => {
+                // Если copy не работает, выделяем текст
+                const textArea = document.createElement('textarea');
+                textArea.value = queue;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('✅ Команды скопированы!', 'success');
+            });
+        }
+
+        // ====== ДОБАВЛЯЕМ КНОПКУ ОЧЕРЕДИ В ИНТЕРФЕЙС ======
+        // Добавляем после кнопок фильтров
+        function addQueueButton() {
+            const filters = document.querySelector('.app-filters');
+            if (filters) {
+                const queueBtn = document.createElement('button');
+                queueBtn.innerHTML = '<i class="fa-regular fa-clock"></i> Очередь';
+                queueBtn.style.cssText = 'padding:6px 18px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.1);color:#ffaa44;cursor:pointer;font-size:13px;font-family:"Inter",system-ui,sans-serif;transition:all 0.3s ease;';
+                queueBtn.onclick = viewCommandQueue;
+                queueBtn.onmouseover = function() { this.style.background = 'rgba(255,170,68,0.2)'; };
+                queueBtn.onmouseout = function() { this.style.background = 'rgba(255,170,68,0.1)'; };
+                filters.appendChild(queueBtn);
             }
         }
 
@@ -2404,6 +2497,7 @@
             
             renderWikiEditor();
             renderRulesEditor();
+            addQueueButton();
             
             // Проверяем TabernaConnector при старте
             setTimeout(checkTabernaConnection, 2000);
