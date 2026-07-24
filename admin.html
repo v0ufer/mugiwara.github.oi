@@ -275,7 +275,8 @@
         .sync-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .whitelist-status {
+        /* ===== СТАТУС TABERNA CONNECTOR ===== */
+        .taberna-status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -284,18 +285,18 @@
             border-radius: 20px;
             font-family: 'Inter', system-ui, sans-serif;
         }
-        .whitelist-status .dot {
+        .taberna-status .dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
             animation: pulse-dot 2s infinite;
         }
-        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
-        .whitelist-status.online .dot { background: #4ecdc4; }
-        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
-        .whitelist-status.offline .dot { background: #ff6b6b; }
-        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .whitelist-status.unknown .dot { background: #ffaa44; }
+        .taberna-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .taberna-status.online .dot { background: #4ecdc4; }
+        .taberna-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        .taberna-status.offline .dot { background: #ff6b6b; }
+        .taberna-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .taberna-status.unknown .dot { background: #ffaa44; }
 
         .toast {
             position: fixed;
@@ -439,6 +440,12 @@
         }
         .application-card .app-actions .reject-btn:hover { background: rgba(255,107,107,0.25); transform: scale(1.02); }
         .application-card .app-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
+        .application-card .app-actions .whitelist-btn {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+        }
+        .application-card .app-actions .whitelist-btn:hover { background: rgba(78, 205, 196, 0.25); transform: scale(1.02); }
 
         .app-filters {
             display: flex;
@@ -494,7 +501,7 @@
         body.light .app-filters button { border-color: rgba(0,0,0,0.06); color: #666; }
         body.light .app-filters button.active { background: rgba(0,0,0,0.08); color: #1a1a1a; border-color: rgba(0,0,0,0.15); }
 
-        /* ===== НАСТРОЙКИ WHITELISTER ===== */
+        /* ===== НАСТРОЙКИ TABERNA CONNECTOR ===== */
         .settings-section {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.06);
@@ -521,7 +528,7 @@
         .settings-section .setting-row label {
             color: #aaa;
             font-size: 13px;
-            min-width: 120px;
+            min-width: 140px;
             font-family: 'Inter', system-ui, sans-serif;
         }
         .settings-section .setting-row input {
@@ -1131,9 +1138,9 @@
                     <span class="dot"></span>
                     <span id="syncStatusText">☁️ Синхронизировано</span>
                 </span>
-                <span class="whitelist-status unknown" id="whitelistStatus">
+                <span class="taberna-status unknown" id="tabernaStatus">
                     <span class="dot unknown"></span>
-                    <span id="whitelistStatusText">Whitelister ⚠️</span>
+                    <span id="tabernaStatusText">TabernaConnector ⚠️</span>
                 </span>
                 <button onclick="syncAllToCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-up"></i> Сохранить
@@ -1141,7 +1148,7 @@
                 <button onclick="syncAllFromCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-down"></i> Загрузить
                 </button>
-                <button onclick="checkWhitelisterConnection()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                <button onclick="checkTabernaConnection()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-plug"></i> Проверить
                 </button>
                 <button class="admin-logout" onclick="logout()">
@@ -1234,33 +1241,43 @@
 
         <!-- SETTINGS -->
         <div id="tab-settings" class="admin-panel" style="display:none;">
-            <h2><i class="fa-regular fa-gear"></i> Настройки Whitelister</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Настройте подключение к Whitelister для автоматического добавления в вайтлист.</p>
+            <h2><i class="fa-regular fa-gear"></i> Настройки TabernaConnector</h2>
+            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
+                Настройте подключение к <strong>TabernaConnector</strong> для автоматического добавления игроков в вайтлист.
+            </p>
             
             <div class="settings-section">
-                <h3><i class="fa-solid fa-server"></i> Whitelister API</h3>
+                <h3><i class="fa-solid fa-server"></i> TabernaConnector API</h3>
                 <div class="setting-row">
                     <label>URL API:</label>
-                    <input type="text" id="whitelisterUrl" placeholder="http://ваш-ip-сервера:8080">
-                    <button class="save-setting-btn" onclick="saveWhitelisterSetting()">Сохранить</button>
+                    <input type="text" id="tabernaUrl" placeholder="http://ip-сервера:8081" value="http://">
+                    <button class="save-setting-btn" onclick="saveTabernaSetting()">Сохранить</button>
                 </div>
                 <div class="setting-row">
                     <label>Секретный ключ:</label>
-                    <input type="password" id="whitelisterKey" placeholder="Ваш секретный ключ">
-                    <button class="save-setting-btn" onclick="saveWhitelisterSetting()">Сохранить</button>
+                    <input type="password" id="tabernaKey" placeholder="Ваш секретный ключ">
+                    <button class="save-setting-btn" onclick="saveTabernaSetting()">Сохранить</button>
                 </div>
                 <div class="setting-row" style="margin-top:8px;font-size:13px;color:#666;font-family:'Inter',system-ui,sans-serif;">
-                    <span id="whitelisterStatusText">⏳ Статус: не проверено</span>
-                    <button class="save-setting-btn" onclick="checkWhitelisterConnection()" style="margin-left:12px;">Проверить соединение</button>
+                    <span id="tabernaStatusText">⏳ Статус: не проверено</span>
+                    <button class="save-setting-btn" onclick="checkTabernaConnection()" style="margin-left:12px;">Проверить соединение</button>
                 </div>
             </div>
             <div class="settings-section" style="border-color:rgba(78,205,196,0.2);">
-                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке Whitelister</h3>
+                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке TabernaConnector</h3>
                 <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
-                    <p>1. Установите плагин <strong>Whitelister</strong> на сервер Minecraft.</p>
-                    <p>2. В файле <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/Whitelister/config.yml</code> включите API.</p>
-                    <p>3. Введите URL и ключ в поля выше.</p>
-                    <p>4. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
+                    <p>1. Скачайте плагин <strong>TabernaConnector</strong> и поместите в папку <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins</code> сервера.</p>
+                    <p>2. Перезапустите сервер для генерации конфига.</p>
+                    <p>3. Откройте <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/TabernaConnector/config.yml</code> и настройте:</p>
+                    <pre style="background:rgba(0,0,0,0.3);padding:12px;border-radius:8px;margin:8px 0;color:#aaa;font-size:12px;font-family:'Inter',monospace;overflow-x:auto;">
+port: 8081
+secret-key: "ваш_секретный_ключ_здесь"
+allowed-commands:
+  - "whitelist add %player%"
+  - "list"
+  - "say Hello from web"</pre>
+                    <p>4. Введите URL (<code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">http://ip-сервера:8081</code>) и ключ в поля выше.</p>
+                    <p>5. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
                     <p style="margin-top:8px;color:#4ecdc4;">✅ После настройки при принятии заявки игрок будет автоматически добавлен в вайтлист!</p>
                 </div>
             </div>
@@ -1446,19 +1463,151 @@
             }
         }
 
+        // ============================================================
+        // ====== TABERNA CONNECTOR ======
+        // ============================================================
+        function updateTabernaStatus(status, text) {
+            const el = document.getElementById('tabernaStatus');
+            const textEl = document.getElementById('tabernaStatusText');
+            el.className = `taberna-status ${status}`;
+            document.querySelector('#tabernaStatus .dot').className = `dot ${status}`;
+            textEl.textContent = text;
+        }
+
+        function loadSettings() {
+            document.getElementById('tabernaUrl').value = localStorage.getItem('taberna_url') || 'http://';
+            document.getElementById('tabernaKey').value = localStorage.getItem('taberna_key') || '';
+            updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
+            checkTabernaConnection();
+        }
+
+        function saveTabernaSetting() {
+            const url = document.getElementById('tabernaUrl').value.trim();
+            const key = document.getElementById('tabernaKey').value.trim();
+            if (url) localStorage.setItem('taberna_url', url);
+            else localStorage.removeItem('taberna_url');
+            if (key) localStorage.setItem('taberna_key', key);
+            else localStorage.removeItem('taberna_key');
+            showToast('✅ Настройки TabernaConnector сохранены', 'success');
+            updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
+            checkTabernaConnection();
+        }
+
+        function getTabernaConfig() {
+            return {
+                url: localStorage.getItem('taberna_url') || '',
+                key: localStorage.getItem('taberna_key') || ''
+            };
+        }
+
+        async function checkTabernaConnection() {
+            const btn = event?.target;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<span class="spinner"></span>';
+                btn.disabled = true;
+            }
+
+            const { url, key } = getTabernaConfig();
+            const statusEl = document.getElementById('tabernaStatusText');
+
+            if (!url || url === 'http://') {
+                statusEl.innerHTML = '⚠️ URL не указан';
+                statusEl.style.color = '#ffaa44';
+                updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
+                if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
+                return;
+            }
+            if (!key) {
+                statusEl.innerHTML = '⚠️ Ключ не указан';
+                statusEl.style.color = '#ffaa44';
+                updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
+                if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
+                return;
+            }
+
+            statusEl.innerHTML = '⏳ Проверка соединения...';
+            statusEl.style.color = '#ffaa44';
+
+            try {
+                // Пробуем выполнить простую команду для проверки
+                const response = await fetch(`${url}/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Connector-Key': key
+                    },
+                    body: JSON.stringify({ command: 'list' }),
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.innerHTML = `✅ Соединение установлено! Игроков онлайн: ${data.output || 'неизвестно'}`;
+                    statusEl.style.color = '#4ecdc4';
+                    updateTabernaStatus('online', 'TabernaConnector ✅');
+                    showToast('✅ TabernaConnector подключен!', 'success');
+                } else if (response.status === 403) {
+                    statusEl.innerHTML = '❌ Неверный секретный ключ (403)';
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                } else {
+                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                }
+            } catch (error) {
+                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
+                statusEl.style.color = '#ff6b6b';
+                updateTabernaStatus('offline', 'TabernaConnector ❌');
+            }
+
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function sendToTaberna(nick) {
+            const { url, key } = getTabernaConfig();
+
+            if (!url || url === 'http://' || !key) {
+                showToast('⚠️ TabernaConnector не настроен. Перейдите в Настройки.', 'error');
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${url}/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Connector-Key': key
+                    },
+                    body: JSON.stringify({ command: `whitelist add ${nick}` }),
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ TabernaConnector ответ:', data);
+                    return true;
+                } else {
+                    console.error('❌ Ошибка TabernaConnector:', response.status, await response.text());
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Ошибка отправки в TabernaConnector:', error);
+                return false;
+            }
+        }
+
+        // ============================================================
         // ====== СИНХРОНИЗАЦИЯ ======
+        // ============================================================
         function updateSyncStatus(status, text) {
             const el = document.getElementById('syncStatus');
             const textEl = document.getElementById('syncStatusText');
             el.className = `sync-status ${status}`;
-            textEl.textContent = text;
-        }
-
-        function updateWhitelistStatus(status, text) {
-            const el = document.getElementById('whitelistStatus');
-            const textEl = document.getElementById('whitelistStatusText');
-            el.className = `whitelist-status ${status}`;
-            document.querySelector('#whitelistStatus .dot').className = `dot ${status}`;
             textEl.textContent = text;
         }
 
@@ -1475,7 +1624,6 @@
                     return;
                 }
                 
-                // Собираем все данные
                 currentData.applications = getData('mugivara_applications', []);
                 currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
                 currentData.rulesCategories = getData('rules_categories', getDefaultRules());
@@ -1653,6 +1801,7 @@
                         ${app.status === 'pending' ? `
                             <button class="approve-btn" onclick="approveApplication('${app.id}')"><i class="fa-regular fa-check"></i> Принять</button>
                             <button class="reject-btn" onclick="rejectApplication('${app.id}')"><i class="fa-regular fa-xmark"></i> Отклонить</button>
+                            <button class="whitelist-btn" onclick="addToWhitelist('${app.id}')"><i class="fa-regular fa-user-plus"></i> Добавить в вайтлист</button>
                         ` : ''}
                         <button onclick="viewApplicationDetails('${app.id}')"><i class="fa-regular fa-eye"></i> Детали</button>
                         <button class="delete-btn" onclick="deleteApplication('${app.id}')"><i class="fa-regular fa-trash-can"></i> Удалить</button>
@@ -1661,12 +1810,22 @@
             `).join('');
         }
 
-        function approveApplication(id) {
+        async function approveApplication(id) {
             const app = applications.find(a => a.id === id);
             if (!app) return;
+            
             app.status = 'approved';
             saveApplications();
             showToast(`✅ Заявка одобрена!`, 'success');
+            
+            // Автоматически добавляем в вайтлист через TabernaConnector
+            const whitelistSuccess = await addToWhitelistInternal(app.minecraft_nick);
+            if (whitelistSuccess) {
+                showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
+            } else {
+                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте настройки TabernaConnector.`, 'error');
+            }
+            
             setTimeout(autoSync, 500);
         }
 
@@ -1684,6 +1843,22 @@
             saveApplications();
             showToast(`🗑️ Заявка удалена`, 'info');
             setTimeout(autoSync, 500);
+        }
+
+        async function addToWhitelist(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+            
+            const success = await addToWhitelistInternal(app.minecraft_nick);
+            if (success) {
+                showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
+            } else {
+                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте настройки TabernaConnector.`, 'error');
+            }
+        }
+
+        async function addToWhitelistInternal(nick) {
+            return await sendToTaberna(nick);
         }
 
         function viewApplicationDetails(id) {
@@ -1717,124 +1892,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
-
-        // ============================================================
-        // ====== WHITELISTER ======
-        // ============================================================
-        function loadSettings() {
-            document.getElementById('whitelisterUrl').value = localStorage.getItem('whitelister_url') || '';
-            document.getElementById('whitelisterKey').value = localStorage.getItem('whitelister_key') || '';
-            updateWhitelistStatus('unknown', 'Whitelister ⚠️');
-            checkWhitelisterConnection();
-        }
-
-        function saveWhitelisterSetting() {
-            const url = document.getElementById('whitelisterUrl').value.trim();
-            const key = document.getElementById('whitelisterKey').value.trim();
-            if (url) localStorage.setItem('whitelister_url', url);
-            else localStorage.removeItem('whitelister_url');
-            if (key) localStorage.setItem('whitelister_key', key);
-            else localStorage.removeItem('whitelister_key');
-            showToast('✅ Настройки Whitelister сохранены', 'success');
-            updateWhitelistStatus('unknown', 'Whitelister ⚠️');
-            checkWhitelisterConnection();
-        }
-
-        async function checkWhitelisterConnection() {
-            const url = localStorage.getItem('whitelister_url') || '';
-            const key = localStorage.getItem('whitelister_key') || '';
-            const statusEl = document.getElementById('whitelisterStatusText');
-            
-            if (!url) { 
-                statusEl.innerHTML = '⚠️ URL не указан';
-                updateWhitelistStatus('unknown', 'Whitelister ⚠️');
-                return; 
-            }
-            if (!key) { 
-                statusEl.innerHTML = '⚠️ Ключ не указан';
-                updateWhitelistStatus('unknown', 'Whitelister ⚠️');
-                return; 
-            }
-            
-            statusEl.innerHTML = '⏳ Проверка соединения...';
-            
-            try {
-                const response = await fetch(`${url}/health`, { 
-                    signal: AbortSignal.timeout(5000) 
-                });
-                
-                if (response.ok) {
-                    statusEl.innerHTML = '✅ Соединение с Whitelister установлено!';
-                    statusEl.style.color = '#4ecdc4';
-                    updateWhitelistStatus('online', 'Whitelister ✅');
-                    showToast('✅ Whitelister подключен!', 'success');
-                } else {
-                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
-                    statusEl.style.color = '#ff6b6b';
-                    updateWhitelistStatus('offline', 'Whitelister ❌');
-                }
-            } catch (error) {
-                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
-                statusEl.style.color = '#ff6b6b';
-                updateWhitelistStatus('offline', 'Whitelister ❌');
-            }
-        }
-
-        function getWhitelisterConfig() {
-            return { 
-                url: localStorage.getItem('whitelister_url') || '', 
-                key: localStorage.getItem('whitelister_key') || '' 
-            };
-        }
-
-        async function sendToWhitelister(nick) {
-            const { url, key } = getWhitelisterConfig();
-            if (!url || !key) {
-                showToast('⚠️ Whitelister не настроен. Перейдите в Настройки.', 'error');
-                return false;
-            }
-            try {
-                const endpoints = [
-                    `${url}/api/whitelist/add`, 
-                    `${url}/api/add`, 
-                    `${url}/whitelist/add`, 
-                    `${url}/command`
-                ];
-                for (const endpoint of endpoints) {
-                    try {
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: { 
-                                'Content-Type': 'application/json', 
-                                'X-API-Key': key, 
-                                'Authorization': `Bearer ${key}` 
-                            },
-                            body: JSON.stringify({ 
-                                player: nick, 
-                                nick: nick, 
-                                username: nick, 
-                                command: `whitelist add ${nick}` 
-                            })
-                        });
-                        if (response.ok) return true;
-                    } catch (e) { continue; }
-                }
-                return fallbackWhitelistMethod(nick);
-            } catch { return fallbackWhitelistMethod(nick); }
-        }
-
-        function fallbackWhitelistMethod(nick) {
-            try {
-                let commands = localStorage.getItem('mc_commands_queue') || '';
-                const cmd = `whitelist add ${nick}\n`;
-                if (!commands.includes(cmd)) { 
-                    commands += cmd; 
-                    localStorage.setItem('mc_commands_queue', commands); 
-                }
-                showToast(`📝 Команда сохранена в очередь (файловый метод)`, 'info');
-                return true;
-            } catch { return false; }
-        }
 
         // ============================================================
         // ====== WIKI ======
@@ -2535,6 +2592,9 @@
             autoSyncInterval = setInterval(() => {
                 autoSync();
             }, 30000);
+            
+            // Проверка TabernaConnector при старте
+            setTimeout(checkTabernaConnection, 1000);
             
             // Первая синхронизация через 5 секунд
             setTimeout(autoSync, 5000);
