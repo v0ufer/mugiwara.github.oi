@@ -503,78 +503,6 @@
         body.light .app-filters button { border-color: rgba(0,0,0,0.06); color: #666; }
         body.light .app-filters button.active { background: rgba(0,0,0,0.08); color: #1a1a1a; border-color: rgba(0,0,0,0.15); }
 
-        /* ===== НАСТРОЙКИ TABERNA CONNECTOR ===== */
-        .settings-section {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .settings-section h3 {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        .settings-section .setting-row label {
-            color: #aaa;
-            font-size: 13px;
-            min-width: 140px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row input {
-            flex: 1;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 8px 14px;
-            color: #e5e5e5;
-            font-size: 13px;
-            min-width: 200px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row input:focus {
-            outline: none;
-            border-color: rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.06);
-        }
-        .settings-section .setting-row input::placeholder { color: #555; }
-        .settings-section .setting-row .save-setting-btn {
-            padding: 6px 18px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
-            color: #ccc;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row .save-setting-btn:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-
-        body.light .settings-section { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
-        body.light .settings-section h3 { color: #1a1a1a; }
-        body.light .settings-section .setting-row label { color: #666; }
-        body.light .settings-section .setting-row input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); color: #1a1a1a; }
-        body.light .settings-section .setting-row input:focus { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.06); }
-        body.light .settings-section .setting-row .save-setting-btn { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .settings-section .setting-row .save-setting-btn:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1057,9 +985,6 @@
             .admin-panel { padding: 16px; }
             .application-card .app-details { grid-template-columns: 1fr; }
             .modal-content { padding: 20px; margin: 10px; }
-            .settings-section .setting-row { flex-direction: column; align-items: stretch; }
-            .settings-section .setting-row label { min-width: auto; }
-            .settings-section .setting-row input { min-width: auto; }
         }
         @media (max-width: 640px) {
             .login-box { padding: 32px 24px; }
@@ -1128,9 +1053,6 @@
                 <button class="admin-tab" data-tab="rules" onclick="switchTab('rules')">
                     <i class="fa-regular fa-scroll"></i> Правила
                 </button>
-                <button class="admin-tab" data-tab="settings" onclick="switchTab('settings')">
-                    <i class="fa-regular fa-gear"></i> Настройки
-                </button>
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                 <button class="burger-toggle" id="burgerToggle" onclick="toggleMobileSidebar()" aria-label="Меню">
@@ -1149,9 +1071,6 @@
                 </button>
                 <button onclick="syncAllFromCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-down"></i> Загрузить
-                </button>
-                <button onclick="checkTabernaConnection()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
-                    <i class="fa-regular fa-plug"></i> Проверить
                 </button>
                 <button class="admin-logout" onclick="logout()">
                     <i class="fa-regular fa-right-from-bracket"></i> Выйти
@@ -1179,9 +1098,6 @@
             <div class="sidebar-item" data-tab="rules" onclick="switchTabMobile('rules')">
                 <i class="fa-regular fa-scroll"></i> Правила
             </div>
-            <div class="sidebar-item" data-tab="settings" onclick="switchTabMobile('settings')">
-                <i class="fa-regular fa-gear"></i> Настройки
-            </div>
         </div>
 
         <!-- APPLICATIONS -->
@@ -1202,6 +1118,7 @@
             <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
                 Заявки автоматически синхронизируются с облаком каждые 30 секунд.
                 <span style="color:#4ecdc4;">✅</span> При отправке заявка сразу попадает в облако.
+                <span style="color:#4ecdc4;display:block;margin-top:4px;">🔌 TabernaConnector: <span id="tabernaStatusInline">⏳ Проверка...</span></span>
             </p>
             <div class="applications-stats" id="statsContainer">
                 <div class="stat-card pending"><div class="number" id="pendingCount">0</div><div class="label">Ожидают</div></div>
@@ -1240,49 +1157,6 @@
             </div>
             <div id="rulesStatus" class="section-status"></div>
         </div>
-
-        <!-- SETTINGS -->
-        <div id="tab-settings" class="admin-panel" style="display:none;">
-            <h2><i class="fa-regular fa-gear"></i> Настройки TabernaConnector</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
-                Настройте подключение к <strong>TabernaConnector</strong> для автоматического добавления игроков в вайтлист.
-            </p>
-            
-            <div class="settings-section">
-                <h3><i class="fa-solid fa-server"></i> TabernaConnector API</h3>
-                <div class="setting-row">
-                    <label>URL API:</label>
-                    <input type="text" id="tabernaUrl" placeholder="http://ip-сервера:8081" value="http://">
-                    <button class="save-setting-btn" onclick="saveTabernaSetting()">Сохранить</button>
-                </div>
-                <div class="setting-row">
-                    <label>Секретный ключ:</label>
-                    <input type="password" id="tabernaKey" placeholder="Ваш секретный ключ">
-                    <button class="save-setting-btn" onclick="saveTabernaSetting()">Сохранить</button>
-                </div>
-                <div class="setting-row" style="margin-top:8px;font-size:13px;color:#666;font-family:'Inter',system-ui,sans-serif;">
-                    <span id="tabernaStatusText">⏳ Статус: не проверено</span>
-                    <button class="save-setting-btn" onclick="checkTabernaConnection()" style="margin-left:12px;">Проверить соединение</button>
-                </div>
-            </div>
-            <div class="settings-section" style="border-color:rgba(78,205,196,0.2);">
-                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке TabernaConnector</h3>
-                <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
-                    <p>1. Скачайте плагин <strong>TabernaConnector</strong> и поместите в папку <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins</code> сервера.</p>
-                    <p>2. Перезапустите сервер для генерации конфига.</p>
-                    <p>3. Откройте <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/TabernaConnector/config.yml</code> и настройте:</p>
-                    <pre style="background:rgba(0,0,0,0.3);padding:12px;border-radius:8px;margin:8px 0;color:#aaa;font-size:12px;font-family:'Inter',monospace;overflow-x:auto;">
-port: 8081
-secret-key: "ваш_секретный_ключ_здесь"
-allowed-commands:
-  - "whitelist add %player%"
-  - "list"</pre>
-                    <p>4. Введите URL (<code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">http://ip-сервера:8081</code>) и ключ в поля выше.</p>
-                    <p>5. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
-                    <p style="margin-top:8px;color:#4ecdc4;">✅ После настройки при принятии заявки игрок будет автоматически добавлен в вайтлист!</p>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- MODAL -->
@@ -1301,6 +1175,10 @@ allowed-commands:
         const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
+        
+        // ====== TABERNA CONNECTOR НАСТРОЙКИ (ВСТАВЛЕНЫ В КОД) ======
+        const TABERNA_URL = 'http://play.mugivaracraft.ru:8081';
+        const TABERNA_KEY = 'qweasdzxc1000-7//';
 
         // ============================================================
         // ====== ОСНОВНАЯ ЛОГИКА ======
@@ -1311,6 +1189,7 @@ allowed-commands:
         let autoSyncInterval = null;
         let isSyncing = false;
         let isRefreshing = false;
+        let isTabernaChecked = false;
 
         // ====== LOGIN ======
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -1411,11 +1290,9 @@ allowed-commands:
             document.getElementById('tab-applications').style.display = tab === 'applications' ? 'block' : 'none';
             document.getElementById('tab-wiki').style.display = tab === 'wiki' ? 'block' : 'none';
             document.getElementById('tab-rules').style.display = tab === 'rules' ? 'block' : 'none';
-            document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none';
             if (tab === 'applications') loadApplications();
             if (tab === 'wiki') renderWikiEditor();
             if (tab === 'rules') renderRulesEditor();
-            if (tab === 'settings') loadSettings();
         }
 
         function getData(key, defaultVal) {
@@ -1437,7 +1314,7 @@ allowed-commands:
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                     headers: { 'X-Master-Key': JSONBIN_API_KEY }
                 });
-                if (!response.ok) throw new Error('Ошибка загрузки');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 return data.record || {};
             } catch (error) {
@@ -1456,7 +1333,7 @@ allowed-commands:
                     },
                     body: JSON.stringify(data)
                 });
-                if (!response.ok) throw new Error('Ошибка сохранения');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return true;
             } catch (error) {
                 console.error('❌ Ошибка сохранения в JSONBin:', error);
@@ -1470,193 +1347,62 @@ allowed-commands:
         function updateTabernaStatus(status, text) {
             const el = document.getElementById('tabernaStatus');
             const textEl = document.getElementById('tabernaStatusText');
-            el.className = `taberna-status ${status}`;
-            const dot = document.querySelector('#tabernaStatus .dot');
-            if (dot) dot.className = `dot ${status}`;
-            textEl.textContent = text;
-        }
-
-        function loadSettings() {
-            const savedUrl = localStorage.getItem('taberna_url');
-            const savedKey = localStorage.getItem('taberna_key');
-            
-            document.getElementById('tabernaUrl').value = savedUrl || 'http://';
-            document.getElementById('tabernaKey').value = savedKey || '';
-            
-            updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
-            
-            // Автоматически проверяем соединение, если есть URL и ключ
-            if (savedUrl && savedUrl !== 'http://' && savedKey) {
-                setTimeout(() => {
-                    checkTabernaConnection();
-                }, 500);
-            } else {
-                const statusEl = document.getElementById('tabernaStatusText');
-                if (!savedUrl || savedUrl === 'http://') {
-                    statusEl.innerHTML = '⚠️ URL не указан';
-                } else if (!savedKey) {
-                    statusEl.innerHTML = '⚠️ Ключ не указан';
-                }
-                statusEl.style.color = '#ffaa44';
+            const inlineEl = document.getElementById('tabernaStatusInline');
+            if (el) {
+                el.className = `taberna-status ${status}`;
+                const dot = document.querySelector('#tabernaStatus .dot');
+                if (dot) dot.className = `dot ${status}`;
             }
-        }
-
-        function saveTabernaSetting() {
-            const url = document.getElementById('tabernaUrl').value.trim();
-            const key = document.getElementById('tabernaKey').value.trim();
-            
-            if (url && url !== 'http://') localStorage.setItem('taberna_url', url);
-            else localStorage.removeItem('taberna_url');
-            
-            if (key) localStorage.setItem('taberna_key', key);
-            else localStorage.removeItem('taberna_key');
-            
-            showToast('✅ Настройки TabernaConnector сохранены', 'success');
-            updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
-            
-            // Автоматически проверяем после сохранения
-            setTimeout(() => {
-                checkTabernaConnection();
-            }, 300);
-        }
-
-        function getTabernaConfig() {
-            return {
-                url: localStorage.getItem('taberna_url') || '',
-                key: localStorage.getItem('taberna_key') || ''
-            };
+            if (textEl) textEl.textContent = text;
+            if (inlineEl) inlineEl.textContent = text;
         }
 
         async function checkTabernaConnection() {
-            const btn = event?.target;
-            const originalText = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.innerHTML = '<span class="spinner"></span>';
-                btn.disabled = true;
-            }
-
-            const { url, key } = getTabernaConfig();
-            const statusEl = document.getElementById('tabernaStatusText');
-
-            // Проверяем URL
-            if (!url || url === 'http://' || url === '') {
-                statusEl.innerHTML = '⚠️ URL не указан';
-                statusEl.style.color = '#ffaa44';
-                updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
-                if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
-                return;
-            }
-
-            // Проверяем ключ
-            if (!key || key === '') {
-                statusEl.innerHTML = '⚠️ Ключ не указан';
-                statusEl.style.color = '#ffaa44';
-                updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
-                if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
-                return;
-            }
-
-            statusEl.innerHTML = '⏳ Проверка соединения...';
-            statusEl.style.color = '#ffaa44';
-            updateTabernaStatus('checking', 'TabernaConnector ⏳');
-
+            if (isTabernaChecked) return;
+            isTabernaChecked = true;
+            
+            updateTabernaStatus('checking', '⏳ Проверка...');
+            
             try {
-                // Пробуем выполнить простую команду для проверки
-                const response = await fetch(`${url}/execute`, {
+                const response = await fetch(`${TABERNA_URL}/execute`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Connector-Key': key
+                        'X-Connector-Key': TABERNA_KEY
                     },
                     body: JSON.stringify({ command: 'list' }),
                     signal: AbortSignal.timeout(5000)
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    // Проверяем, что пришёл ответ с output
-                    if (data && data.output !== undefined) {
-                        // Очищаем вывод от лишних символов
-                        let output = data.output;
-                        if (output && output.length > 50) {
-                            output = output.substring(0, 50) + '...';
-                        }
-                        statusEl.innerHTML = `✅ Соединение установлено! Игроков онлайн: ${output || 'неизвестно'}`;
-                        statusEl.style.color = '#4ecdc4';
-                        updateTabernaStatus('online', 'TabernaConnector ✅');
-                        showToast('✅ TabernaConnector подключен!', 'success');
-                    } else {
-                        statusEl.innerHTML = '✅ Соединение установлено, но формат ответа неожиданный';
-                        statusEl.style.color = '#4ecdc4';
-                        updateTabernaStatus('online', 'TabernaConnector ✅');
-                    }
+                    updateTabernaStatus('online', '✅ Подключен');
+                    showToast('✅ TabernaConnector подключен!', 'success');
                 } else if (response.status === 403) {
-                    statusEl.innerHTML = '❌ Неверный секретный ключ (403)';
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
-                    showToast('❌ Неверный секретный ключ', 'error');
+                    updateTabernaStatus('offline', '❌ Неверный ключ');
                 } else if (response.status === 404) {
-                    statusEl.innerHTML = '❌ URL не найден (404). Проверьте порт и адрес.';
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
-                    showToast('❌ URL не найден. Проверьте порт.', 'error');
-                } else if (response.status === 401) {
-                    statusEl.innerHTML = '❌ Требуется авторизация (401)';
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    updateTabernaStatus('offline', '❌ URL не найден');
                 } else {
-                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    updateTabernaStatus('offline', `❌ Ошибка ${response.status}`);
                 }
             } catch (error) {
                 console.error('Ошибка проверки TabernaConnector:', error);
-                
-                // Детальная диагностика ошибки
-                let errorMsg = error.message || 'Неизвестная ошибка';
-                
-                if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
-                    statusEl.innerHTML = '❌ Сервер недоступен. Проверьте: IP/порт, запущен ли плагин, открыт ли порт на сервере.';
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
-                    showToast('❌ Сервер недоступен. Проверьте IP и порт.', 'error');
-                } else if (errorMsg.includes('timeout')) {
-                    statusEl.innerHTML = '❌ Таймаут соединения. Сервер не отвечает.';
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
-                    showToast('❌ Таймаут. Сервер не отвечает.', 'error');
-                } else if (errorMsg.includes('AbortError')) {
-                    statusEl.innerHTML = '❌ Запрос прерван по таймауту. Сервер слишком долго отвечает.';
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    updateTabernaStatus('offline', '❌ Сервер недоступен');
+                } else if (error.message.includes('timeout')) {
+                    updateTabernaStatus('offline', '❌ Таймаут');
                 } else {
-                    statusEl.innerHTML = `❌ Ошибка: ${errorMsg}`;
-                    statusEl.style.color = '#ff6b6b';
-                    updateTabernaStatus('offline', 'TabernaConnector ❌');
-                    showToast(`❌ Ошибка: ${errorMsg}`, 'error');
+                    updateTabernaStatus('offline', '❌ Ошибка подключения');
                 }
-            }
-
-            if (btn) {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
             }
         }
 
         async function sendToTaberna(nick) {
-            const { url, key } = getTabernaConfig();
-
-            if (!url || url === 'http://' || url === '' || !key) {
-                showToast('⚠️ TabernaConnector не настроен. Перейдите в Настройки.', 'error');
-                return false;
-            }
-
             try {
-                const response = await fetch(`${url}/execute`, {
+                const response = await fetch(`${TABERNA_URL}/execute`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Connector-Key': key
+                        'X-Connector-Key': TABERNA_KEY
                     },
                     body: JSON.stringify({ command: `whitelist add ${nick}` }),
                     signal: AbortSignal.timeout(5000)
@@ -1668,15 +1414,10 @@ allowed-commands:
                     return true;
                 } else {
                     console.error('❌ Ошибка TabernaConnector:', response.status);
-                    try {
-                        const errorText = await response.text();
-                        console.error('Текст ошибки:', errorText);
-                    } catch (e) {}
                     return false;
                 }
             } catch (error) {
                 console.error('❌ Ошибка отправки в TabernaConnector:', error);
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
                 return false;
             }
         }
@@ -1687,8 +1428,10 @@ allowed-commands:
         function updateSyncStatus(status, text) {
             const el = document.getElementById('syncStatus');
             const textEl = document.getElementById('syncStatusText');
-            el.className = `sync-status ${status}`;
-            textEl.textContent = text;
+            if (el) {
+                el.className = `sync-status ${status}`;
+                textEl.textContent = text;
+            }
         }
 
         async function autoSync() {
@@ -1697,23 +1440,33 @@ allowed-commands:
             updateSyncStatus('syncing', '🔄 Синхронизация...');
             
             try {
-                const currentData = await loadFromJSONBin();
-                if (!currentData) {
-                    updateSyncStatus('local', '📦 Локально');
+                const applications = getData('mugivara_applications', []);
+                const wikiCategories = getData('wiki_categories', getDefaultWiki());
+                const rulesCategories = getData('rules_categories', getDefaultRules());
+                
+                if (applications.length === 0 && wikiCategories.length === 0 && rulesCategories.length === 0) {
+                    updateSyncStatus('local', '📦 Нет данных');
                     isSyncing = false;
                     return;
                 }
                 
-                currentData.applications = getData('mugivara_applications', []);
-                currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
-                currentData.rulesCategories = getData('rules_categories', getDefaultRules());
-                currentData.updated = new Date().toISOString();
+                const currentData = await loadFromJSONBin();
                 
-                const success = await saveToJSONBin(currentData);
-                
-                if (success) {
-                    updateSyncStatus('synced', '☁️ Синхронизировано');
-                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                if (currentData) {
+                    currentData.applications = applications;
+                    currentData.wikiCategories = wikiCategories;
+                    currentData.rulesCategories = rulesCategories;
+                    currentData.updated = new Date().toISOString();
+                    currentData.applications_count = applications.length;
+                    
+                    const success = await saveToJSONBin(currentData);
+                    
+                    if (success) {
+                        updateSyncStatus('synced', `☁️ Синхронизировано (${applications.length} заявок)`);
+                        localStorage.setItem('mugivara_last_update', Date.now().toString());
+                    } else {
+                        updateSyncStatus('local', '📦 Локально (ошибка облака)');
+                    }
                 } else {
                     updateSyncStatus('local', '📦 Локально');
                 }
@@ -1734,31 +1487,32 @@ allowed-commands:
             }
             
             try {
+                const applications = getData('mugivara_applications', []);
+                const wikiCategories = getData('wiki_categories', getDefaultWiki());
+                const rulesCategories = getData('rules_categories', getDefaultRules());
+                
                 const currentData = await loadFromJSONBin();
-                if (!currentData) {
-                    showToast('⚠️ Ошибка загрузки данных из облака', 'error');
-                    if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
-                    return;
-                }
+                const newData = currentData || {};
                 
-                currentData.applications = getData('mugivara_applications', []);
-                currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
-                currentData.rulesCategories = getData('rules_categories', getDefaultRules());
-                currentData.updated = new Date().toISOString();
+                newData.applications = applications;
+                newData.wikiCategories = wikiCategories;
+                newData.rulesCategories = rulesCategories;
+                newData.updated = new Date().toISOString();
+                newData.applications_count = applications.length;
                 
-                const success = await saveToJSONBin(currentData);
+                const success = await saveToJSONBin(newData);
                 
                 if (success) {
-                    showToast('✅ Все данные сохранены в облако!', 'success');
-                    updateSyncStatus('synced', '☁️ Синхронизировано');
+                    showToast(`✅ Все данные сохранены в облако! (${applications.length} заявок)`, 'success');
+                    updateSyncStatus('synced', `☁️ Синхронизировано (${applications.length} заявок)`);
                     localStorage.setItem('mugivara_last_update', Date.now().toString());
                 } else {
-                    showToast('⚠️ Ошибка сохранения в облако', 'error');
+                    showToast('⚠️ Не удалось сохранить в облако. Данные сохранены локально.', 'error');
                     updateSyncStatus('local', '📦 Локально');
                 }
             } catch (error) {
-                console.error('❌ Ошибка:', error);
-                showToast('⚠️ Ошибка синхронизации', 'error');
+                console.error('❌ Ошибка синхронизации:', error);
+                showToast(`⚠️ Ошибка: ${error.message}. Данные сохранены локально.`, 'error');
                 updateSyncStatus('local', '📦 Локально');
             }
             
@@ -1778,7 +1532,8 @@ allowed-commands:
             
             try {
                 const data = await loadFromJSONBin();
-                if (data) {
+                
+                if (data && data.applications) {
                     if (data.applications) {
                         localStorage.setItem('mugivara_applications', JSON.stringify(data.applications));
                         loadApplications();
@@ -1791,16 +1546,17 @@ allowed-commands:
                         localStorage.setItem('rules_categories', JSON.stringify(data.rulesCategories));
                         renderRulesEditor();
                     }
+                    
                     localStorage.setItem('mugivara_last_update', Date.now().toString());
-                    updateSyncStatus('synced', '☁️ Синхронизировано');
-                    showToast('✅ Все данные загружены из облака!', 'success');
+                    updateSyncStatus('synced', `☁️ Загружено (${data.applications?.length || 0} заявок)`);
+                    showToast(`✅ Все данные загружены из облака! (${data.applications?.length || 0} заявок)`, 'success');
                 } else {
-                    showToast('⚠️ Ошибка загрузки данных из облака', 'error');
+                    showToast('⚠️ В облаке нет данных или ошибка загрузки', 'error');
                     updateSyncStatus('local', '📦 Локально');
                 }
             } catch (error) {
-                console.error('❌ Ошибка:', error);
-                showToast('⚠️ Ошибка загрузки из облака', 'error');
+                console.error('❌ Ошибка загрузки из облака:', error);
+                showToast(`⚠️ Ошибка загрузки: ${error.message}`, 'error');
                 updateSyncStatus('local', '📦 Локально');
             }
             
@@ -1898,12 +1654,11 @@ allowed-commands:
             saveApplications();
             showToast(`✅ Заявка одобрена!`, 'success');
             
-            // Автоматически добавляем в вайтлист через TabernaConnector
-            const whitelistSuccess = await addToWhitelistInternal(app.minecraft_nick);
+            const whitelistSuccess = await sendToTaberna(app.minecraft_nick);
             if (whitelistSuccess) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
-                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте настройки TabernaConnector.`, 'error');
+                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте подключение TabernaConnector.`, 'error');
             }
             
             setTimeout(autoSync, 500);
@@ -1929,16 +1684,12 @@ allowed-commands:
             const app = applications.find(a => a.id === id);
             if (!app) return;
             
-            const success = await addToWhitelistInternal(app.minecraft_nick);
+            const success = await sendToTaberna(app.minecraft_nick);
             if (success) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
-                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте настройки TabernaConnector.`, 'error');
+                showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Проверьте подключение TabernaConnector.`, 'error');
             }
-        }
-
-        async function addToWhitelistInternal(nick) {
-            return await sendToTaberna(nick);
         }
 
         function viewApplicationDetails(id) {
@@ -2653,9 +2404,10 @@ allowed-commands:
             
             renderWikiEditor();
             renderRulesEditor();
-            loadSettings();
             
-            // Авто-обновление заявок
+            // Проверяем TabernaConnector при старте
+            setTimeout(checkTabernaConnection, 2000);
+            
             if (applicationsRefreshInterval) {
                 clearInterval(applicationsRefreshInterval);
             }
@@ -2665,7 +2417,6 @@ allowed-commands:
                 }
             }, 15000);
             
-            // Авто-синхронизация с облаком каждые 30 секунд
             if (autoSyncInterval) {
                 clearInterval(autoSyncInterval);
             }
@@ -2673,7 +2424,6 @@ allowed-commands:
                 autoSync();
             }, 30000);
             
-            // Первая синхронизация через 5 секунд
             setTimeout(autoSync, 5000);
         }
 
