@@ -126,7 +126,7 @@
         }
         .admin-logout:hover { background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
 
-        /* ===== БУРГЕР ДЛЯ АДМИНКИ ===== */
+        /* ===== БУРГЕР ===== */
         .burger-toggle {
             display: none;
             background: transparent;
@@ -266,10 +266,12 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
-        .sync-status.online .dot { background: #4ecdc4; }
-        .sync-status.offline .dot { background: #ff6b6b; }
+        .sync-status.synced { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .sync-status.synced .dot { background: #4ecdc4; }
+        .sync-status.syncing { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .sync-status.syncing .dot { background: #ffaa44; animation: spin 1s linear infinite; }
         .sync-status.local { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .sync-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .sync-status.local .dot { background: #ffaa44; }
         .sync-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
 
         .toast {
@@ -309,6 +311,7 @@
             font-weight: 500;
             transition: all 0.3s ease;
             font-family: 'Inter', system-ui, sans-serif;
+            margin-right: 8px;
         }
         .refresh-apps-btn:hover { background: rgba(78, 205, 196, 0.2); border-color: rgba(78, 205, 196, 0.4); transform: scale(1.02); }
         .refresh-apps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -620,27 +623,6 @@
             background: rgba(255,255,255,0.08);
             color: #fff;
         }
-        .whitelist-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .whitelist-status .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: pulse-dot 2s infinite;
-        }
-        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
-        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
-        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .whitelist-status .dot.online { background: #4ecdc4; }
-        .whitelist-status .dot.offline { background: #ff6b6b; }
-        .whitelist-status .dot.unknown { background: #ffaa44; }
 
         body.light .settings-section { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
         body.light .settings-section h3 { color: #1a1a1a; }
@@ -1216,18 +1198,15 @@
                 <button class="burger-toggle" id="burgerToggle" onclick="toggleMobileSidebar()" aria-label="Меню">
                     <i class="fa-solid fa-bars" id="burgerIcon"></i>
                 </button>
-                <span class="sync-status local" id="syncStatus">
+                <span class="sync-status synced" id="syncStatus">
                     <span class="dot"></span>
-                    <span id="syncStatusText">📦 Локальный режим</span>
+                    <span id="syncStatusText">☁️ Синхронизировано</span>
                 </span>
-                <button onclick="manualSync()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
-                    <i class="fa-regular fa-cloud-arrow-up"></i> Синхр.
+                <button onclick="syncAllToCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                    <i class="fa-regular fa-cloud-arrow-up"></i> Сохранить
                 </button>
-                <button onclick="checkAPIStatus()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
-                    <i class="fa-regular fa-plug"></i> Проверить API
-                </button>
-                <button onclick="forceLocalMode()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
-                    <i class="fa-regular fa-database"></i> Локальный режим
+                <button onclick="syncAllFromCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                    <i class="fa-regular fa-cloud-arrow-down"></i> Загрузить
                 </button>
                 <button class="admin-logout" onclick="logout()">
                     <i class="fa-regular fa-right-from-bracket"></i> Выйти
@@ -1272,16 +1251,16 @@
                         <i class="fa-regular fa-rotate"></i>
                         <span>Обновить</span>
                     </button>
-                    <button onclick="forceCloudSync()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
-                        <i class="fa-regular fa-cloud-arrow-up"></i> Принудительная синхр.
-                    </button>
                     <span class="auto-refresh-badge">
                         <span class="dot"></span>
-                        Авто-обновление
+                        Авто-синхронизация
                     </span>
                 </div>
             </div>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Принятие заявки автоматически добавляет игрока в вайтлист. Заявки обновляются автоматически каждые 15 секунд.</p>
+            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
+                Заявки автоматически синхронизируются с облаком каждые 30 секунд.
+                <span style="color:#4ecdc4;">✅</span> При отправке заявка сразу попадает в облако.
+            </p>
             <div class="applications-stats" id="statsContainer">
                 <div class="stat-card pending"><div class="number" id="pendingCount">0</div><div class="label">Ожидают</div></div>
                 <div class="stat-card approved"><div class="number" id="approvedCount">0</div><div class="label">Принято</div></div>
@@ -1347,31 +1326,23 @@
 
         <!-- SETTINGS -->
         <div id="tab-settings" class="admin-panel" style="display:none;">
-            <h2><i class="fa-regular fa-gear"></i> Настройки интеграции</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Настройте подключение к Whitelister.</p>
+            <h2><i class="fa-regular fa-gear"></i> Настройки</h2>
+            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Настройте синхронизацию с JSONBin.</p>
+            
             <div class="settings-section">
-                <h3><i class="fa-solid fa-server"></i> Whitelister API</h3>
-                <div class="setting-row">
-                    <label>URL API:</label>
-                    <input type="text" id="whitelisterUrl" placeholder="http://ваш-ip-сервера:8080">
-                    <button class="save-setting-btn" onclick="saveWhitelisterSetting()">Сохранить</button>
-                </div>
-                <div class="setting-row">
-                    <label>Секретный ключ:</label>
-                    <input type="password" id="whitelisterKey" placeholder="Ваш секретный ключ">
-                    <button class="save-setting-btn" onclick="saveWhitelisterSetting()">Сохранить</button>
-                </div>
-                <div class="setting-row" style="margin-top:8px;font-size:13px;color:#666;font-family:'Inter',system-ui,sans-serif;">
-                    <span id="whitelisterStatusText">⏳ Статус: не проверено</span>
-                    <button class="save-setting-btn" onclick="checkWhitelisterConnection()" style="margin-left:12px;">Проверить соединение</button>
+                <h3><i class="fa-solid fa-cloud"></i> Синхронизация с JSONBin</h3>
+                <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
+                    <p>Все данные хранятся локально и автоматически синхронизируются с облаком.</p>
+                    <p>🔄 <strong>Авто-синхронизация:</strong> каждые 30 секунд</p>
+                    <p style="margin-top:8px;color:#4ecdc4;">✅ Заявки сразу попадают в облако при отправке!</p>
                 </div>
             </div>
-            <div class="settings-section" style="border-color:rgba(78,205,196,0.2);">
-                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке</h3>
+            
+            <div class="settings-section" style="border-color:rgba(255,170,68,0.2);">
+                <h3 style="color:#ffaa44;"><i class="fa-regular fa-circle-info"></i> Информация</h3>
                 <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
-                    <p>1. Установите плагин <strong>Whitelister</strong> на сервер.</p>
-                    <p>2. Введите URL и ключ в поля выше.</p>
-                    <p>3. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
+                    <p><strong>JSONBin</strong> — бесплатное облачное хранилище для JSON.</p>
+                    <p>Все данные: заявки, вики, правила и скриншоты.</p>
                 </div>
             </div>
         </div>
@@ -1390,13 +1361,9 @@
         // ============================================================
         // ====== КОНФИГУРАЦИЯ ======
         // ============================================================
-        const API_URL = 'https://v0ufer.pythonanywhere.com';
         const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
-        
-        let isAPIAvailable = false;
-        let isLocalModeForced = false;
 
         // ============================================================
         // ====== ОСНОВНАЯ ЛОГИКА ======
@@ -1404,6 +1371,8 @@
         let unsavedWiki = false;
         let unsavedRules = false;
         let applicationsRefreshInterval = null;
+        let autoSyncInterval = null;
+        let isSyncing = false;
         let isRefreshing = false;
 
         // ====== LOGIN ======
@@ -1428,6 +1397,10 @@
             if (applicationsRefreshInterval) {
                 clearInterval(applicationsRefreshInterval);
                 applicationsRefreshInterval = null;
+            }
+            if (autoSyncInterval) {
+                clearInterval(autoSyncInterval);
+                autoSyncInterval = null;
             }
             document.getElementById('adminPage').classList.remove('active');
             document.getElementById('loginPage').style.display = 'flex';
@@ -1507,7 +1480,6 @@
             if (tab === 'screenshots') loadScreenshots();
             if (tab === 'wiki') renderWikiEditor();
             if (tab === 'rules') renderRulesEditor();
-            if (tab === 'settings') loadSettings();
         }
 
         function getData(key, defaultVal) {
@@ -1522,7 +1494,7 @@
         }
 
         // ============================================================
-        // ====== JSONBin — ДЛЯ ВИКИ, ПРАВИЛ, СКРИНШОТОВ ======
+        // ====== JSONBin ======
         // ============================================================
         async function loadFromJSONBin() {
             try {
@@ -1556,92 +1528,86 @@
             }
         }
 
-        // ============================================================
-        // ====== PYTHONANYWHERE — ДЛЯ ЗАЯВОК ======
-        // ============================================================
-        async function loadApplicationsFromCloud() {
+        // ====== СИНХРОНИЗАЦИЯ ======
+        function updateSyncStatus(status, text) {
+            const el = document.getElementById('syncStatus');
+            const textEl = document.getElementById('syncStatusText');
+            el.className = `sync-status ${status}`;
+            textEl.textContent = text;
+        }
+
+        async function autoSync() {
+            if (isSyncing) return;
+            isSyncing = true;
+            updateSyncStatus('syncing', '🔄 Синхронизация...');
+            
             try {
-                const response = await fetch(`${API_URL}/applications`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                return data;
+                const currentData = await loadFromJSONBin();
+                if (!currentData) {
+                    updateSyncStatus('local', '📦 Локально');
+                    isSyncing = false;
+                    return;
+                }
+                
+                // Собираем все данные
+                currentData.applications = getData('mugivara_applications', []);
+                currentData.screenshots = getData('admin_screenshots', []);
+                currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
+                currentData.rulesCategories = getData('rules_categories', getDefaultRules());
+                currentData.updated = new Date().toISOString();
+                
+                const success = await saveToJSONBin(currentData);
+                
+                if (success) {
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
+                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                } else {
+                    updateSyncStatus('local', '📦 Локально');
+                }
             } catch (error) {
-                console.error('Ошибка загрузки из облака:', error);
-                return null;
+                console.error('❌ Ошибка авто-синхронизации:', error);
+                updateSyncStatus('local', '📦 Локально');
             }
+            
+            isSyncing = false;
         }
 
-        async function saveApplicationToCloud(appId, status) {
-            try {
-                const response = await fetch(`${API_URL}/applications/${appId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status })
-                });
-                return response.ok;
-            } catch (error) {
-                console.error('Ошибка сохранения в облако:', error);
-                return false;
-            }
-        }
-
-        async function deleteApplicationFromCloud(appId) {
-            try {
-                const response = await fetch(`${API_URL}/applications/${appId}`, {
-                    method: 'DELETE'
-                });
-                return response.ok;
-            } catch (error) {
-                console.error('Ошибка удаления из облака:', error);
-                return false;
-            }
-        }
-
-        // ============================================================
-        // ====== СИНХРОНИЗАЦИЯ ЗАЯВОК ======
-        // ============================================================
-        function forceLocalMode() {
-            isLocalModeForced = true;
-            isAPIAvailable = false;
-            updateSyncStatus(false);
-            showToast('🔒 Принудительно включен локальный режим', 'info');
-            loadApplications();
-        }
-
-        async function checkAPIStatus() {
+        async function syncAllToCloud() {
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
             if (btn) {
-                btn.innerHTML = '<span class="spinner"></span>';
+                btn.innerHTML = '<span class="spinner"></span> Сохранение...';
                 btn.disabled = true;
             }
             
             try {
-                // Проверяем API через простой запрос
-                const response = await fetch(`${API_URL}/applications`, { 
-                    signal: AbortSignal.timeout(5000) 
-                });
+                const currentData = await loadFromJSONBin();
+                if (!currentData) {
+                    showToast('⚠️ Ошибка загрузки данных из облака', 'error');
+                    if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
+                    return;
+                }
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (Array.isArray(data)) {
-                        isAPIAvailable = true;
-                        isLocalModeForced = false;
-                        updateSyncStatus(true);
-                        showToast('✅ API работает! Заявки синхронизированы.', 'success');
-                        // Принудительно загружаем заявки
-                        await forceCloudSync();
-                    } else {
-                        throw new Error('Неверный формат ответа');
-                    }
+                currentData.applications = getData('mugivara_applications', []);
+                currentData.screenshots = getData('admin_screenshots', []);
+                currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
+                currentData.rulesCategories = getData('rules_categories', getDefaultRules());
+                currentData.updated = new Date().toISOString();
+                
+                const success = await saveToJSONBin(currentData);
+                
+                if (success) {
+                    showToast('✅ Все данные сохранены в облако!', 'success');
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
+                    localStorage.setItem('mugivara_last_update', Date.now().toString());
                 } else {
-                    throw new Error(`HTTP ${response.status}`);
+                    showToast('⚠️ Ошибка сохранения в облако', 'error');
+                    updateSyncStatus('local', '📦 Локально');
                 }
             } catch (error) {
-                console.error('Ошибка проверки API:', error);
-                isAPIAvailable = false;
-                updateSyncStatus(false);
-                showToast(`⚠️ API недоступен: ${error.message}. Используется локальный режим.`, 'error');
+                console.error('❌ Ошибка:', error);
+                showToast('⚠️ Ошибка синхронизации', 'error');
+                updateSyncStatus('local', '📦 Локально');
             }
             
             if (btn) {
@@ -1650,45 +1616,44 @@
             }
         }
 
-        async function forceCloudSync() {
+        async function syncAllFromCloud() {
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
             if (btn) {
-                btn.innerHTML = '<span class="spinner"></span> Синхр...';
+                btn.innerHTML = '<span class="spinner"></span> Загрузка...';
                 btn.disabled = true;
             }
             
             try {
-                if (!isAPIAvailable) {
-                    // Пробуем проверить API
-                    await checkAPIStatus();
-                    if (!isAPIAvailable) {
-                        showToast('⚠️ API недоступен. Работаем в локальном режиме.', 'error');
-                        if (btn) {
-                            btn.innerHTML = originalText;
-                            btn.disabled = false;
-                        }
-                        return;
+                const data = await loadFromJSONBin();
+                if (data) {
+                    if (data.applications) {
+                        localStorage.setItem('mugivara_applications', JSON.stringify(data.applications));
+                        loadApplications();
                     }
-                }
-                
-                const cloudApps = await loadApplicationsFromCloud();
-                if (cloudApps && cloudApps.length > 0) {
-                    applications = cloudApps;
-                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-                    lastApplicationsHash = getApplicationsHash(applications);
-                    updateStats();
-                    renderApplications(currentFilter);
-                    updateSyncStatus(true);
-                    showToast('✅ Заявки принудительно синхронизированы!', 'success');
+                    if (data.screenshots) {
+                        localStorage.setItem('admin_screenshots', JSON.stringify(data.screenshots));
+                        loadScreenshots();
+                    }
+                    if (data.wikiCategories) {
+                        localStorage.setItem('wiki_categories', JSON.stringify(data.wikiCategories));
+                        renderWikiEditor();
+                    }
+                    if (data.rulesCategories) {
+                        localStorage.setItem('rules_categories', JSON.stringify(data.rulesCategories));
+                        renderRulesEditor();
+                    }
+                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
+                    showToast('✅ Все данные загружены из облака!', 'success');
                 } else {
-                    showToast('⚠️ Не удалось загрузить заявки из облака', 'error');
-                    updateSyncStatus(false);
+                    showToast('⚠️ Ошибка загрузки данных из облака', 'error');
+                    updateSyncStatus('local', '📦 Локально');
                 }
             } catch (error) {
-                console.error('Ошибка:', error);
-                showToast('⚠️ Ошибка синхронизации', 'error');
-                updateSyncStatus(false);
+                console.error('❌ Ошибка:', error);
+                showToast('⚠️ Ошибка загрузки из облака', 'error');
+                updateSyncStatus('local', '📦 Локально');
             }
             
             if (btn) {
@@ -1702,101 +1667,11 @@
         // ============================================================
         let applications = [];
         let currentFilter = 'all';
-        let lastApplicationsHash = '';
-
-        function getApplicationsHash(apps) {
-            return JSON.stringify(apps.map(a => a.id + a.status));
-        }
 
         function loadApplications() {
-            if (isLocalModeForced || !isAPIAvailable) {
-                // Локальный режим
-                applications = getData('mugivara_applications', []);
-                lastApplicationsHash = getApplicationsHash(applications);
-                updateStats();
-                renderApplications(currentFilter);
-                updateSyncStatus(false);
-                return;
-            }
-
-            loadApplicationsFromCloud().then(cloudApps => {
-                if (cloudApps && cloudApps.length > 0) {
-                    applications = cloudApps;
-                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-                    isAPIAvailable = true;
-                    updateSyncStatus(true);
-                } else {
-                    applications = getData('mugivara_applications', []);
-                    updateSyncStatus(false);
-                }
-                lastApplicationsHash = getApplicationsHash(applications);
-                updateStats();
-                renderApplications(currentFilter);
-            }).catch(() => {
-                applications = getData('mugivara_applications', []);
-                lastApplicationsHash = getApplicationsHash(applications);
-                updateStats();
-                renderApplications(currentFilter);
-                updateSyncStatus(false);
-            });
-        }
-
-        function updateSyncStatus(online) {
-            const statusEl = document.getElementById('syncStatus');
-            const textEl = document.getElementById('syncStatusText');
-            if (statusEl) {
-                if (isLocalModeForced) {
-                    statusEl.className = 'sync-status local';
-                    textEl.textContent = '🔒 Локальный (принудительно)';
-                } else if (online) {
-                    statusEl.className = 'sync-status online';
-                    textEl.textContent = '🟢 Облако Онлайн';
-                } else {
-                    statusEl.className = 'sync-status offline';
-                    textEl.textContent = '🔴 Локальный режим';
-                }
-            }
-        }
-
-        async function refreshApplications() {
-            const btn = document.getElementById('refreshAppsBtn');
-            if (isRefreshing) return;
-            
-            isRefreshing = true;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Обновление...';
-            
-            try {
-                if (isLocalModeForced || !isAPIAvailable) {
-                    // Локальный режим
-                    applications = getData('mugivara_applications', []);
-                    lastApplicationsHash = getApplicationsHash(applications);
-                    updateStats();
-                    renderApplications(currentFilter);
-                    showToast('📦 Данные загружены из локального хранилища', 'info');
-                } else {
-                    const cloudApps = await loadApplicationsFromCloud();
-                    if (cloudApps && cloudApps.length > 0) {
-                        applications = cloudApps;
-                        localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-                        lastApplicationsHash = getApplicationsHash(applications);
-                        updateStats();
-                        renderApplications(currentFilter);
-                        updateSyncStatus(true);
-                        showToast('✅ Заявки обновлены из облака', 'success');
-                    } else {
-                        showToast('⚠️ Не удалось загрузить из облака', 'error');
-                        updateSyncStatus(false);
-                    }
-                }
-            } catch (error) {
-                console.error('Ошибка обновления:', error);
-                showToast('⚠️ Ошибка обновления заявок', 'error');
-            }
-            
-            btn.innerHTML = '<i class="fa-regular fa-rotate"></i> Обновить';
-            btn.disabled = false;
-            isRefreshing = false;
+            applications = getData('mugivara_applications', []);
+            updateStats();
+            renderApplications(currentFilter);
         }
 
         function saveApplications() {
@@ -1807,17 +1682,19 @@
                 main.applications = applications;
                 localStorage.setItem('mugivara_main_data', JSON.stringify(main));
             } catch (e) {}
-            
-            lastApplicationsHash = getApplicationsHash(applications);
             updateStats();
             renderApplications(currentFilter);
+        }
+
+        function refreshApplications() {
+            loadApplications();
+            showToast('📦 Заявки обновлены из локального хранилища', 'info');
         }
 
         function updateStats() {
             const pending = applications.filter(a => a.status === 'pending').length;
             const approved = applications.filter(a => a.status === 'approved').length;
             const rejected = applications.filter(a => a.status === 'rejected').length;
-            
             document.getElementById('pendingCount').textContent = pending;
             document.getElementById('approvedCount').textContent = approved;
             document.getElementById('rejectedCount').textContent = rejected;
@@ -1864,84 +1741,30 @@
             `).join('');
         }
 
-        async function approveApplication(id) {
+        function approveApplication(id) {
             const app = applications.find(a => a.id === id);
             if (!app) return;
-            
-            try {
-                if (!isLocalModeForced && isAPIAvailable) {
-                    const cloudSuccess = await saveApplicationToCloud(id, 'approved');
-                    if (cloudSuccess) {
-                        app.status = 'approved';
-                        saveApplications();
-                        showToast(`✅ Заявка одобрена!`, 'success');
-                    } else {
-                        showToast(`⚠️ Ошибка сохранения в облаке. Заявка сохранена локально.`, 'error');
-                        app.status = 'approved';
-                        saveApplications();
-                    }
-                } else {
-                    // Локальный режим
-                    app.status = 'approved';
-                    saveApplications();
-                    showToast(`✅ Заявка одобрена (локально)!`, 'success');
-                }
-            } catch (error) {
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
-                app.status = 'approved';
-                saveApplications();
-            }
+            app.status = 'approved';
+            saveApplications();
+            showToast(`✅ Заявка одобрена!`, 'success');
+            // Авто-синхронизация после изменения
+            setTimeout(autoSync, 500);
         }
 
-        async function rejectApplication(id) {
+        function rejectApplication(id) {
             const app = applications.find(a => a.id === id);
             if (!app) return;
-            
-            try {
-                if (!isLocalModeForced && isAPIAvailable) {
-                    const cloudSuccess = await saveApplicationToCloud(id, 'rejected');
-                    if (cloudSuccess) {
-                        app.status = 'rejected';
-                        saveApplications();
-                        showToast(`❌ Заявка отклонена`, 'error');
-                    } else {
-                        showToast(`⚠️ Ошибка сохранения в облаке. Заявка сохранена локально.`, 'error');
-                        app.status = 'rejected';
-                        saveApplications();
-                    }
-                } else {
-                    app.status = 'rejected';
-                    saveApplications();
-                    showToast(`❌ Заявка отклонена (локально)!`, 'error');
-                }
-            } catch (error) {
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
-                app.status = 'rejected';
-                saveApplications();
-            }
+            app.status = 'rejected';
+            saveApplications();
+            showToast(`❌ Заявка отклонена`, 'error');
+            setTimeout(autoSync, 500);
         }
 
-        async function deleteApplication(id) {
-            try {
-                if (!isLocalModeForced && isAPIAvailable) {
-                    const cloudSuccess = await deleteApplicationFromCloud(id);
-                    if (cloudSuccess) {
-                        applications = applications.filter(a => a.id !== id);
-                        saveApplications();
-                        showToast(`🗑️ Заявка удалена`, 'info');
-                    } else {
-                        showToast(`⚠️ Ошибка удаления из облака. Удалена локально.`, 'error');
-                        applications = applications.filter(a => a.id !== id);
-                        saveApplications();
-                    }
-                } else {
-                    applications = applications.filter(a => a.id !== id);
-                    saveApplications();
-                    showToast(`🗑️ Заявка удалена (локально)`, 'info');
-                }
-            } catch (error) {
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
-            }
+        function deleteApplication(id) {
+            applications = applications.filter(a => a.id !== id);
+            saveApplications();
+            showToast(`🗑️ Заявка удалена`, 'info');
+            setTimeout(autoSync, 500);
         }
 
         function viewApplicationDetails(id) {
@@ -2012,13 +1835,16 @@
                 
                 if (success) {
                     showToast('✅ Скриншоты сохранены в облако!', 'success');
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
                     localStorage.setItem('mugivara_last_update', Date.now().toString());
                 } else {
                     showToast('⚠️ Ошибка сохранения в облако', 'error');
+                    updateSyncStatus('local', '📦 Локально');
                 }
             } catch (error) {
                 console.error('❌ Ошибка:', error);
                 showToast('⚠️ Ошибка сохранения', 'error');
+                updateSyncStatus('local', '📦 Локально');
             }
             
             btn.innerHTML = originalText;
@@ -2039,13 +1865,16 @@
                     screenshots = data.screenshots;
                     setData('admin_screenshots', screenshots);
                     renderScreenshots();
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
                     showToast('✅ Скриншоты загружены из облака', 'success');
                 } else {
                     showToast('ℹ️ В облаке нет скриншотов', 'info');
+                    updateSyncStatus('local', '📦 Локально');
                 }
             } catch (error) {
                 console.error('❌ Ошибка:', error);
                 showToast('⚠️ Ошибка загрузки', 'error');
+                updateSyncStatus('local', '📦 Локально');
             }
             
             if (btn) {
@@ -2147,7 +1976,7 @@
         }
 
         // ============================================================
-        // ====== WIKI (СОКРАЩЕННАЯ ВЕРСИЯ ДЛЯ ЭКОНОМИИ МЕСТА) ======
+        // ====== WIKI ======
         // ============================================================
         let wikiCategories = [];
         let wikiSelectedCat = null;
@@ -2159,45 +1988,26 @@
                     id: 'cat1', 
                     title: 'Основное', 
                     sections: [
-                        { id: 'home', title: 'Главная', items: ['Добро пожаловать в вику Mugivara!'] }
+                        { id: 'home', title: 'Главная', items: ['Добро пожаловать в вику Mugivara!', 'Здесь собрана вся полезная информация.'] }
+                    ] 
+                },
+                { 
+                    id: 'cat2', 
+                    title: 'Рекомендации по визуалу', 
+                    sections: [
+                        { id: 'resourcepacks', title: 'Ресурс-паки', items: ['Vanilla Tweaks — лучший выбор', 'Faithful 32x — классические текстуры'] },
+                        { id: 'mods', title: 'Рекомендуемые моды', items: ['Sodium — прирост FPS', 'Xaero\'s Minimap — мини-карта', 'AppleSkin — информация о еде'] }
+                    ] 
+                },
+                { 
+                    id: 'cat3', 
+                    title: 'Геймплей', 
+                    sections: [
+                        { id: 'commands', title: 'Полезные команды', items: ['/skin ник — поставить скин', '/ping — узнать пинг'] },
+                        { id: 'tips', title: 'Советы новичкам', items: ['Начните с базы рядом со спавном', 'Общайтесь с соседями!'] }
                     ] 
                 }
             ];
-        }
-
-        async function loadWikiFromCloud() {
-            try {
-                const data = await loadFromJSONBin();
-                if (data && data.wikiCategories && data.wikiCategories.length > 0) {
-                    wikiCategories = data.wikiCategories;
-                    localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error('Ошибка загрузки вики из облака:', error);
-                return false;
-            }
-        }
-
-        async function saveWikiToCloud() {
-            try {
-                const currentData = await loadFromJSONBin();
-                if (!currentData) return false;
-                
-                currentData.wikiCategories = wikiCategories;
-                currentData.updated = new Date().toISOString();
-                
-                const success = await saveToJSONBin(currentData);
-                if (success) {
-                    showToast('✅ Вики сохранена в облако!', 'success');
-                }
-                return success;
-            } catch (error) {
-                console.error('Ошибка сохранения вики в облако:', error);
-                showToast('⚠️ Ошибка сохранения вики', 'error');
-                return false;
-            }
         }
 
         function renderWikiEditor() {
@@ -2222,6 +2032,7 @@
             const container = document.getElementById('wikiEditor');
             let html = `<div class="wiki-layout">`;
             html += `<div class="wiki-sidebar-editor">`;
+            
             html += `<div style="margin-bottom:12px;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.05em;font-family:'Inter',system-ui,sans-serif;">Категории</div>`;
             wikiCategories.forEach((cat) => {
                 const isActive = wikiSelectedCat === cat.id;
@@ -2247,9 +2058,14 @@
                     html += `<button class="wiki-add-btn" onclick="addWikiSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
                 }
             });
+            
+            html += `<button class="wiki-add-btn" style="margin-top:12px;border-style:solid;" onclick="addWikiCategory()"><i class="fa-regular fa-plus"></i> Добавить категорию</button>`;
             html += `</div>`;
-            html += `<div class="wiki-main-editor" id="wikiMainEditor"></div>`;
+            
+            html += `<div class="wiki-main-editor" id="wikiMainEditor">`;
             html += `</div>`;
+            html += `</div>`;
+            
             container.innerHTML = html;
             renderWikiMain();
         }
@@ -2262,24 +2078,24 @@
             const section = cat ? cat.sections.find(s => s.id === wikiSelectedSec) : null;
             
             if (!cat) {
-                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите категорию</div>`;
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;font-family:'Inter',system-ui,sans-serif;">Выберите категорию</div>`;
                 return;
             }
             
             if (!section) {
-                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите раздел или создайте новый</div>`;
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;font-family:'Inter',system-ui,sans-serif;">Выберите раздел или создайте новый</div>`;
                 return;
             }
             
             let html = `
                 <div style="margin-bottom:16px;">
-                    <div style="font-size:12px;color:#666;">${cat.title} / ${section.title}</div>
+                    <div style="font-size:12px;color:#666;font-family:'Inter',system-ui,sans-serif;">${cat.title} / ${section.title}</div>
                     <input type="text" value="${section.title}" placeholder="Название раздела" 
                            style="width:100%;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,0.06);padding:8px 0;font-size:20px;font-weight:600;color:#fff;font-family:'Inter',system-ui,sans-serif;"
                            onchange="updateWikiSectionTitle('${section.id}', this.value)">
                 </div>
                 <div style="margin-bottom:12px;">
-                    <div style="font-size:13px;color:#888;margin-bottom:8px;">Пункты (${section.items ? section.items.length : 0})</div>
+                    <div style="font-size:13px;color:#888;margin-bottom:8px;font-family:'Inter',system-ui,sans-serif;">Пункты (${section.items ? section.items.length : 0})</div>
                     ${(section.items || []).map((item, idx) => `
                         <div class="wiki-item-row">
                             <input value="${item.replace(/"/g, '&quot;')}" placeholder="Введите пункт..." 
@@ -2312,6 +2128,33 @@
             renderWikiSidebar();
         }
 
+        function addWikiCategory() {
+            const newId = 'cat_' + Date.now();
+            wikiCategories.push({ id: newId, title: 'Новая категория', sections: [] });
+            setData('wiki_categories', wikiCategories);
+            unsavedWiki = true;
+            wikiSelectedCat = newId;
+            wikiSelectedSec = null;
+            renderWikiSidebar();
+            showToast('✅ Добавлена категория', 'success');
+        }
+
+        function deleteWikiCategory(catId) {
+            if (wikiCategories.length <= 1) {
+                showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
+                return;
+            }
+            wikiCategories = wikiCategories.filter(c => c.id !== catId);
+            setData('wiki_categories', wikiCategories);
+            unsavedWiki = true;
+            if (wikiSelectedCat === catId) {
+                wikiSelectedCat = wikiCategories[0]?.id || null;
+                wikiSelectedSec = wikiCategories[0]?.sections?.[0]?.id || null;
+            }
+            renderWikiSidebar();
+            showToast('🗑️ Категория удалена', 'info');
+        }
+
         function addWikiSection(catId) {
             const cat = wikiCategories.find(c => c.id === catId);
             if (!cat) return;
@@ -2341,22 +2184,6 @@
             }
             renderWikiSidebar();
             showToast('🗑️ Раздел удален', 'info');
-        }
-
-        function deleteWikiCategory(catId) {
-            if (wikiCategories.length <= 1) {
-                showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
-                return;
-            }
-            wikiCategories = wikiCategories.filter(c => c.id !== catId);
-            setData('wiki_categories', wikiCategories);
-            unsavedWiki = true;
-            if (wikiSelectedCat === catId) {
-                wikiSelectedCat = wikiCategories[0]?.id || null;
-                wikiSelectedSec = wikiCategories[0]?.sections?.[0]?.id || null;
-            }
-            renderWikiSidebar();
-            showToast('🗑️ Категория удалена', 'info');
         }
 
         function updateWikiSectionTitle(secId, value) {
@@ -2418,15 +2245,26 @@
             status.textContent = '⏳ Сохранение в облако...';
             status.className = 'section-status';
             
-            const success = await saveWikiToCloud();
-            
-            if (success) {
-                status.textContent = '✅ Вики сохранена в облако!';
-                status.className = 'section-status';
-                showToast('✅ Вики сохранена!', 'success');
+            const currentData = await loadFromJSONBin();
+            if (currentData) {
+                currentData.wikiCategories = wikiCategories;
+                currentData.updated = new Date().toISOString();
+                const success = await saveToJSONBin(currentData);
+                if (success) {
+                    status.textContent = '✅ Вики сохранена в облако!';
+                    status.className = 'section-status';
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
+                    showToast('✅ Вики сохранена!', 'success');
+                } else {
+                    status.textContent = '⚠️ Вики сохранена локально. Ошибка облака.';
+                    status.className = 'section-status error';
+                    updateSyncStatus('local', '📦 Локально');
+                    showToast('⚠️ Ошибка сохранения в облако', 'error');
+                }
             } else {
                 status.textContent = '⚠️ Вики сохранена локально. Ошибка облака.';
                 status.className = 'section-status error';
+                updateSyncStatus('local', '📦 Локально');
                 showToast('⚠️ Ошибка сохранения в облако', 'error');
             }
             
@@ -2443,7 +2281,7 @@
                 .section{margin-bottom:20px;padding:16px 20px;border:1px solid rgba(255,255,255,0.06);border-radius:12px;}
                 .section h3{color:#fff;font-size:20px;margin-bottom:10px;}
                 .section ul{list-style:none;padding:0;}
-                .section ul li{padding:8px 12px;margin:4px 0;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);}
+                .section ul li{padding:8px 12px;margin:4px 0;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);font-family:'Inter',system-ui,sans-serif;}
                 .section ul li:before{content:"•";color:#888;margin-right:10px;}
                 h1{font-size:32px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:16px;margin-bottom:30px;}
             </style></head><body><h1>📖 Вики Mugivara</h1>`;
@@ -2462,7 +2300,7 @@
         }
 
         // ============================================================
-        // ====== RULES (СОКРАЩЕННАЯ ВЕРСИЯ) ======
+        // ====== RULES ======
         // ============================================================
         let rulesCategories = [];
         let rulesSelectedCat = null;
@@ -2474,45 +2312,18 @@
                     id: 'rules_cat1', 
                     title: 'Общие правила', 
                     sections: [
-                        { id: 'rules_sec1_1', title: 'Нарушения имущества', items: ['Использование чужих ферм без разрешения', 'Гриферство в любом виде'] }
+                        { id: 'rules_sec1_1', title: 'Нарушения имущества', items: ['Использование чужих ферм без разрешения', 'Гриферство в любом виде'] },
+                        { id: 'rules_sec1_2', title: 'Общение', items: ['Оскорбления и переход на личности', 'Флуд и спам'] }
+                    ] 
+                },
+                { 
+                    id: 'rules_cat2', 
+                    title: 'Наказания', 
+                    sections: [
+                        { id: 'rules_sec2_1', title: 'Виды наказаний', items: ['Предупреждение', 'Мут от 10 минут до 7 дней', 'Бан за гриферство'] }
                     ] 
                 }
             ];
-        }
-
-        async function loadRulesFromCloud() {
-            try {
-                const data = await loadFromJSONBin();
-                if (data && data.rulesCategories && data.rulesCategories.length > 0) {
-                    rulesCategories = data.rulesCategories;
-                    localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error('Ошибка загрузки правил из облака:', error);
-                return false;
-            }
-        }
-
-        async function saveRulesToCloud() {
-            try {
-                const currentData = await loadFromJSONBin();
-                if (!currentData) return false;
-                
-                currentData.rulesCategories = rulesCategories;
-                currentData.updated = new Date().toISOString();
-                
-                const success = await saveToJSONBin(currentData);
-                if (success) {
-                    showToast('✅ Правила сохранены в облако!', 'success');
-                }
-                return success;
-            } catch (error) {
-                console.error('Ошибка сохранения правил в облако:', error);
-                showToast('⚠️ Ошибка сохранения правил', 'error');
-                return false;
-            }
         }
 
         function renderRulesEditor() {
@@ -2537,6 +2348,7 @@
             const container = document.getElementById('rulesEditor');
             let html = `<div class="rules-layout">`;
             html += `<div class="rules-sidebar-editor">`;
+            
             html += `<div style="margin-bottom:12px;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.05em;font-family:'Inter',system-ui,sans-serif;">Категории</div>`;
             rulesCategories.forEach((cat) => {
                 const isActive = rulesSelectedCat === cat.id;
@@ -2562,9 +2374,14 @@
                     html += `<button class="rules-add-btn" onclick="addRulesSection('${cat.id}')"><i class="fa-regular fa-plus"></i> Добавить раздел</button>`;
                 }
             });
+            
+            html += `<button class="rules-add-btn" style="margin-top:12px;border-style:solid;" onclick="addRulesCategory()"><i class="fa-regular fa-plus"></i> Добавить категорию</button>`;
             html += `</div>`;
-            html += `<div class="rules-main-editor" id="rulesMainEditor"></div>`;
+            
+            html += `<div class="rules-main-editor" id="rulesMainEditor">`;
             html += `</div>`;
+            html += `</div>`;
+            
             container.innerHTML = html;
             renderRulesMain();
         }
@@ -2577,24 +2394,24 @@
             const section = cat ? cat.sections.find(s => s.id === rulesSelectedSec) : null;
             
             if (!cat) {
-                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите категорию</div>`;
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;font-family:'Inter',system-ui,sans-serif;">Выберите категорию</div>`;
                 return;
             }
             
             if (!section) {
-                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;">Выберите раздел или создайте новый</div>`;
+                container.innerHTML = `<div style="color:#666;text-align:center;padding:40px 0;font-family:'Inter',system-ui,sans-serif;">Выберите раздел или создайте новый</div>`;
                 return;
             }
             
             let html = `
                 <div style="margin-bottom:16px;">
-                    <div style="font-size:12px;color:#666;">${cat.title} / ${section.title}</div>
+                    <div style="font-size:12px;color:#666;font-family:'Inter',system-ui,sans-serif;">${cat.title} / ${section.title}</div>
                     <input type="text" value="${section.title}" placeholder="Название раздела" 
                            style="width:100%;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,0.06);padding:8px 0;font-size:20px;font-weight:600;color:#fff;font-family:'Inter',system-ui,sans-serif;"
                            onchange="updateRulesSectionTitle('${section.id}', this.value)">
                 </div>
                 <div style="margin-bottom:12px;">
-                    <div style="font-size:13px;color:#888;margin-bottom:8px;">Пункты (${section.items ? section.items.length : 0})</div>
+                    <div style="font-size:13px;color:#888;margin-bottom:8px;font-family:'Inter',system-ui,sans-serif;">Пункты (${section.items ? section.items.length : 0})</div>
                     ${(section.items || []).map((item, idx) => `
                         <div class="rules-item-row">
                             <input value="${item.replace(/"/g, '&quot;')}" placeholder="Введите пункт..." 
@@ -2625,6 +2442,33 @@
         function selectRulesSection(secId) {
             rulesSelectedSec = secId;
             renderRulesSidebar();
+        }
+
+        function addRulesCategory() {
+            const newId = 'rules_cat_' + Date.now();
+            rulesCategories.push({ id: newId, title: 'Новая категория', sections: [] });
+            setData('rules_categories', rulesCategories);
+            unsavedRules = true;
+            rulesSelectedCat = newId;
+            rulesSelectedSec = null;
+            renderRulesSidebar();
+            showToast('✅ Добавлена категория', 'success');
+        }
+
+        function deleteRulesCategory(catId) {
+            if (rulesCategories.length <= 1) {
+                showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
+                return;
+            }
+            rulesCategories = rulesCategories.filter(c => c.id !== catId);
+            setData('rules_categories', rulesCategories);
+            unsavedRules = true;
+            if (rulesSelectedCat === catId) {
+                rulesSelectedCat = rulesCategories[0]?.id || null;
+                rulesSelectedSec = rulesCategories[0]?.sections?.[0]?.id || null;
+            }
+            renderRulesSidebar();
+            showToast('🗑️ Категория удалена', 'info');
         }
 
         function addRulesSection(catId) {
@@ -2659,22 +2503,6 @@
             }
             renderRulesSidebar();
             showToast('🗑️ Раздел удален', 'info');
-        }
-
-        function deleteRulesCategory(catId) {
-            if (rulesCategories.length <= 1) {
-                showToast('⚠️ Нельзя удалить последнюю категорию', 'error');
-                return;
-            }
-            rulesCategories = rulesCategories.filter(c => c.id !== catId);
-            setData('rules_categories', rulesCategories);
-            unsavedRules = true;
-            if (rulesSelectedCat === catId) {
-                rulesSelectedCat = rulesCategories[0]?.id || null;
-                rulesSelectedSec = rulesCategories[0]?.sections?.[0]?.id || null;
-            }
-            renderRulesSidebar();
-            showToast('🗑️ Категория удалена', 'info');
         }
 
         function updateRulesSectionTitle(secId, value) {
@@ -2736,15 +2564,26 @@
             status.textContent = '⏳ Сохранение в облако...';
             status.className = 'section-status';
             
-            const success = await saveRulesToCloud();
-            
-            if (success) {
-                status.textContent = '✅ Правила сохранены в облако!';
-                status.className = 'section-status';
-                showToast('✅ Правила сохранены!', 'success');
+            const currentData = await loadFromJSONBin();
+            if (currentData) {
+                currentData.rulesCategories = rulesCategories;
+                currentData.updated = new Date().toISOString();
+                const success = await saveToJSONBin(currentData);
+                if (success) {
+                    status.textContent = '✅ Правила сохранены в облако!';
+                    status.className = 'section-status';
+                    updateSyncStatus('synced', '☁️ Синхронизировано');
+                    showToast('✅ Правила сохранены!', 'success');
+                } else {
+                    status.textContent = '⚠️ Правила сохранены локально. Ошибка облака.';
+                    status.className = 'section-status error';
+                    updateSyncStatus('local', '📦 Локально');
+                    showToast('⚠️ Ошибка сохранения в облако', 'error');
+                }
             } else {
                 status.textContent = '⚠️ Правила сохранены локально. Ошибка облака.';
                 status.className = 'section-status error';
+                updateSyncStatus('local', '📦 Локально');
                 showToast('⚠️ Ошибка сохранения в облако', 'error');
             }
             
@@ -2761,7 +2600,7 @@
                 .section{margin-bottom:20px;padding:16px 20px;border:1px solid rgba(255,255,255,0.06);border-radius:12px;}
                 .section h3{color:#fff;font-size:20px;margin-bottom:10px;}
                 .section ul{list-style:none;padding:0;}
-                .section ul li{padding:8px 12px;margin:4px 0;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);}
+                .section ul li{padding:8px 12px;margin:4px 0;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);font-family:'Inter',system-ui,sans-serif;}
                 .section ul li:before{content:"•";color:#888;margin-right:10px;}
                 h1{font-size:32px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:16px;margin-bottom:30px;}
             </style></head><body><h1>📜 Правила Mugivara</h1>`;
@@ -2780,68 +2619,6 @@
         }
 
         // ============================================================
-        // ====== НАСТРОЙКИ WHITELISTER ======
-        // ============================================================
-        function loadSettings() {
-            document.getElementById('whitelisterUrl').value = localStorage.getItem('whitelister_url') || '';
-            document.getElementById('whitelisterKey').value = localStorage.getItem('whitelister_key') || '';
-            updateWhitelistStatus();
-        }
-
-        function saveWhitelisterSetting() {
-            const url = document.getElementById('whitelisterUrl').value.trim();
-            const key = document.getElementById('whitelisterKey').value.trim();
-            if (url) localStorage.setItem('whitelister_url', url);
-            else localStorage.removeItem('whitelister_url');
-            if (key) localStorage.setItem('whitelister_key', key);
-            else localStorage.removeItem('whitelister_key');
-            showToast('✅ Настройки Whitelister сохранены', 'success');
-            updateWhitelistStatus();
-        }
-
-        function updateWhitelistStatus(online = null) {
-            const statusEl = document.getElementById('whitelistStatus');
-            const textEl = document.getElementById('whitelistStatusText');
-            const url = localStorage.getItem('whitelister_url') || '';
-            const key = localStorage.getItem('whitelister_key') || '';
-            if (url && key) {
-                statusEl.className = 'whitelist-status online';
-                textEl.textContent = 'Whitelister ✅';
-                document.querySelector('#whitelistStatus .dot').className = 'dot online';
-            } else {
-                statusEl.className = 'whitelist-status unknown';
-                textEl.textContent = 'Whitelister ⚠️';
-                document.querySelector('#whitelistStatus .dot').className = 'dot unknown';
-            }
-        }
-
-        async function checkWhitelisterConnection() {
-            const url = localStorage.getItem('whitelister_url') || '';
-            const key = localStorage.getItem('whitelister_key') || '';
-            const statusEl = document.getElementById('whitelisterStatusText');
-            if (!url) { statusEl.innerHTML = '⚠️ URL не указан'; return; }
-            if (!key) { statusEl.innerHTML = '⚠️ Ключ не указан'; return; }
-            statusEl.innerHTML = '⏳ Проверка соединения...';
-            try {
-                const response = await fetch(`${url}/health`, { signal: AbortSignal.timeout(5000) });
-                if (response.ok) {
-                    statusEl.innerHTML = '✅ Соединение с Whitelister установлено!';
-                    statusEl.style.color = '#4ecdc4';
-                    updateWhitelistStatus(true);
-                    showToast('✅ Whitelister подключен!', 'success');
-                } else {
-                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
-                    statusEl.style.color = '#ff6b6b';
-                    updateWhitelistStatus(false);
-                }
-            } catch (error) {
-                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
-                statusEl.style.color = '#ff6b6b';
-                updateWhitelistStatus(false);
-            }
-        }
-
-        // ============================================================
         // ====== INIT ======
         // ============================================================
         async function initAdmin() {
@@ -2850,9 +2627,6 @@
                 document.body.classList.add('light');
                 document.querySelector('#themeToggle i').className = 'fa-regular fa-sun';
             }
-            
-            // Проверяем API при старте
-            await checkAPIStatus();
             
             loadApplications();
             
@@ -2875,16 +2649,18 @@
                     rulesCategories = getDefaultRules();
                     localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
                 }
+                updateSyncStatus('synced', '☁️ Синхронизировано');
             } else {
                 wikiCategories = getData('wiki_categories', getDefaultWiki());
                 rulesCategories = getData('rules_categories', getDefaultRules());
+                updateSyncStatus('local', '📦 Локально');
             }
             
             loadScreenshots();
             renderWikiEditor();
             renderRulesEditor();
-            loadSettings();
             
+            // Авто-обновление заявок
             if (applicationsRefreshInterval) {
                 clearInterval(applicationsRefreshInterval);
             }
@@ -2893,44 +2669,17 @@
                     refreshApplications();
                 }
             }, 15000);
-        }
-
-        async function manualSync() {
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="spinner"></span> Синхр.';
-            btn.disabled = true;
             
-            try {
-                const jsonData = await loadFromJSONBin();
-                if (jsonData) {
-                    if (jsonData.wikiCategories) {
-                        wikiCategories = jsonData.wikiCategories;
-                        localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                        renderWikiEditor();
-                    }
-                    
-                    if (jsonData.rulesCategories) {
-                        rulesCategories = jsonData.rulesCategories;
-                        localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
-                        renderRulesEditor();
-                    }
-                    
-                    if (jsonData.screenshots) {
-                        localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
-                        loadScreenshots();
-                    }
-                    
-                    showToast('✅ Все данные синхронизированы!', 'success');
-                } else {
-                    showToast('⚠️ Ошибка загрузки данных', 'error');
-                }
-            } catch (e) {
-                showToast('⚠️ Ошибка синхронизации', 'error');
+            // Авто-синхронизация с облаком каждые 30 секунд
+            if (autoSyncInterval) {
+                clearInterval(autoSyncInterval);
             }
+            autoSyncInterval = setInterval(() => {
+                autoSync();
+            }, 30000);
             
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            // Первая синхронизация через 5 секунд
+            setTimeout(autoSync, 5000);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
