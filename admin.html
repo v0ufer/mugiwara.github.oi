@@ -297,6 +297,8 @@
         .taberna-status.offline .dot { background: #ff6b6b; }
         .taberna-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
         .taberna-status.unknown .dot { background: #ffaa44; }
+        .taberna-status.checking { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .taberna-status.checking .dot { background: #ffaa44; animation: spin 1s linear infinite; }
 
         .toast {
             position: fixed;
@@ -1274,8 +1276,7 @@ port: 8081
 secret-key: "ваш_секретный_ключ_здесь"
 allowed-commands:
   - "whitelist add %player%"
-  - "list"
-  - "say Hello from web"</pre>
+  - "list"</pre>
                     <p>4. Введите URL (<code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">http://ip-сервера:8081</code>) и ключ в поля выше.</p>
                     <p>5. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
                     <p style="margin-top:8px;color:#4ecdc4;">✅ После настройки при принятии заявки игрок будет автоматически добавлен в вайтлист!</p>
@@ -1470,27 +1471,53 @@ allowed-commands:
             const el = document.getElementById('tabernaStatus');
             const textEl = document.getElementById('tabernaStatusText');
             el.className = `taberna-status ${status}`;
-            document.querySelector('#tabernaStatus .dot').className = `dot ${status}`;
+            const dot = document.querySelector('#tabernaStatus .dot');
+            if (dot) dot.className = `dot ${status}`;
             textEl.textContent = text;
         }
 
         function loadSettings() {
-            document.getElementById('tabernaUrl').value = localStorage.getItem('taberna_url') || 'http://';
-            document.getElementById('tabernaKey').value = localStorage.getItem('taberna_key') || '';
+            const savedUrl = localStorage.getItem('taberna_url');
+            const savedKey = localStorage.getItem('taberna_key');
+            
+            document.getElementById('tabernaUrl').value = savedUrl || 'http://';
+            document.getElementById('tabernaKey').value = savedKey || '';
+            
             updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
-            checkTabernaConnection();
+            
+            // Автоматически проверяем соединение, если есть URL и ключ
+            if (savedUrl && savedUrl !== 'http://' && savedKey) {
+                setTimeout(() => {
+                    checkTabernaConnection();
+                }, 500);
+            } else {
+                const statusEl = document.getElementById('tabernaStatusText');
+                if (!savedUrl || savedUrl === 'http://') {
+                    statusEl.innerHTML = '⚠️ URL не указан';
+                } else if (!savedKey) {
+                    statusEl.innerHTML = '⚠️ Ключ не указан';
+                }
+                statusEl.style.color = '#ffaa44';
+            }
         }
 
         function saveTabernaSetting() {
             const url = document.getElementById('tabernaUrl').value.trim();
             const key = document.getElementById('tabernaKey').value.trim();
-            if (url) localStorage.setItem('taberna_url', url);
+            
+            if (url && url !== 'http://') localStorage.setItem('taberna_url', url);
             else localStorage.removeItem('taberna_url');
+            
             if (key) localStorage.setItem('taberna_key', key);
             else localStorage.removeItem('taberna_key');
+            
             showToast('✅ Настройки TabernaConnector сохранены', 'success');
             updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
-            checkTabernaConnection();
+            
+            // Автоматически проверяем после сохранения
+            setTimeout(() => {
+                checkTabernaConnection();
+            }, 300);
         }
 
         function getTabernaConfig() {
@@ -1511,14 +1538,17 @@ allowed-commands:
             const { url, key } = getTabernaConfig();
             const statusEl = document.getElementById('tabernaStatusText');
 
-            if (!url || url === 'http://') {
+            // Проверяем URL
+            if (!url || url === 'http://' || url === '') {
                 statusEl.innerHTML = '⚠️ URL не указан';
                 statusEl.style.color = '#ffaa44';
                 updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
                 if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
                 return;
             }
-            if (!key) {
+
+            // Проверяем ключ
+            if (!key || key === '') {
                 statusEl.innerHTML = '⚠️ Ключ не указан';
                 statusEl.style.color = '#ffaa44';
                 updateTabernaStatus('unknown', 'TabernaConnector ⚠️');
@@ -1528,6 +1558,7 @@ allowed-commands:
 
             statusEl.innerHTML = '⏳ Проверка соединения...';
             statusEl.style.color = '#ffaa44';
+            updateTabernaStatus('checking', 'TabernaConnector ⏳');
 
             try {
                 // Пробуем выполнить простую команду для проверки
@@ -1543,12 +1574,34 @@ allowed-commands:
 
                 if (response.ok) {
                     const data = await response.json();
-                    statusEl.innerHTML = `✅ Соединение установлено! Игроков онлайн: ${data.output || 'неизвестно'}`;
-                    statusEl.style.color = '#4ecdc4';
-                    updateTabernaStatus('online', 'TabernaConnector ✅');
-                    showToast('✅ TabernaConnector подключен!', 'success');
+                    // Проверяем, что пришёл ответ с output
+                    if (data && data.output !== undefined) {
+                        // Очищаем вывод от лишних символов
+                        let output = data.output;
+                        if (output && output.length > 50) {
+                            output = output.substring(0, 50) + '...';
+                        }
+                        statusEl.innerHTML = `✅ Соединение установлено! Игроков онлайн: ${output || 'неизвестно'}`;
+                        statusEl.style.color = '#4ecdc4';
+                        updateTabernaStatus('online', 'TabernaConnector ✅');
+                        showToast('✅ TabernaConnector подключен!', 'success');
+                    } else {
+                        statusEl.innerHTML = '✅ Соединение установлено, но формат ответа неожиданный';
+                        statusEl.style.color = '#4ecdc4';
+                        updateTabernaStatus('online', 'TabernaConnector ✅');
+                    }
                 } else if (response.status === 403) {
                     statusEl.innerHTML = '❌ Неверный секретный ключ (403)';
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    showToast('❌ Неверный секретный ключ', 'error');
+                } else if (response.status === 404) {
+                    statusEl.innerHTML = '❌ URL не найден (404). Проверьте порт и адрес.';
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    showToast('❌ URL не найден. Проверьте порт.', 'error');
+                } else if (response.status === 401) {
+                    statusEl.innerHTML = '❌ Требуется авторизация (401)';
                     statusEl.style.color = '#ff6b6b';
                     updateTabernaStatus('offline', 'TabernaConnector ❌');
                 } else {
@@ -1557,9 +1610,31 @@ allowed-commands:
                     updateTabernaStatus('offline', 'TabernaConnector ❌');
                 }
             } catch (error) {
-                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
-                statusEl.style.color = '#ff6b6b';
-                updateTabernaStatus('offline', 'TabernaConnector ❌');
+                console.error('Ошибка проверки TabernaConnector:', error);
+                
+                // Детальная диагностика ошибки
+                let errorMsg = error.message || 'Неизвестная ошибка';
+                
+                if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
+                    statusEl.innerHTML = '❌ Сервер недоступен. Проверьте: IP/порт, запущен ли плагин, открыт ли порт на сервере.';
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    showToast('❌ Сервер недоступен. Проверьте IP и порт.', 'error');
+                } else if (errorMsg.includes('timeout')) {
+                    statusEl.innerHTML = '❌ Таймаут соединения. Сервер не отвечает.';
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    showToast('❌ Таймаут. Сервер не отвечает.', 'error');
+                } else if (errorMsg.includes('AbortError')) {
+                    statusEl.innerHTML = '❌ Запрос прерван по таймауту. Сервер слишком долго отвечает.';
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                } else {
+                    statusEl.innerHTML = `❌ Ошибка: ${errorMsg}`;
+                    statusEl.style.color = '#ff6b6b';
+                    updateTabernaStatus('offline', 'TabernaConnector ❌');
+                    showToast(`❌ Ошибка: ${errorMsg}`, 'error');
+                }
             }
 
             if (btn) {
@@ -1571,7 +1646,7 @@ allowed-commands:
         async function sendToTaberna(nick) {
             const { url, key } = getTabernaConfig();
 
-            if (!url || url === 'http://' || !key) {
+            if (!url || url === 'http://' || url === '' || !key) {
                 showToast('⚠️ TabernaConnector не настроен. Перейдите в Настройки.', 'error');
                 return false;
             }
@@ -1592,11 +1667,16 @@ allowed-commands:
                     console.log('✅ TabernaConnector ответ:', data);
                     return true;
                 } else {
-                    console.error('❌ Ошибка TabernaConnector:', response.status, await response.text());
+                    console.error('❌ Ошибка TabernaConnector:', response.status);
+                    try {
+                        const errorText = await response.text();
+                        console.error('Текст ошибки:', errorText);
+                    } catch (e) {}
                     return false;
                 }
             } catch (error) {
                 console.error('❌ Ошибка отправки в TabernaConnector:', error);
+                showToast(`❌ Ошибка: ${error.message}`, 'error');
                 return false;
             }
         }
@@ -2592,9 +2672,6 @@ allowed-commands:
             autoSyncInterval = setInterval(() => {
                 autoSync();
             }, 30000);
-            
-            // Проверка TabernaConnector при старте
-            setTimeout(checkTabernaConnection, 1000);
             
             // Первая синхронизация через 5 секунд
             setTimeout(autoSync, 5000);
