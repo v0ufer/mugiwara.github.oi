@@ -139,6 +139,13 @@
         }
         .burger-toggle i {
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+        }
+        .burger-toggle i.fa-times {
+            transform: rotate(90deg) scale(1.1);
+        }
+        .burger-toggle i.fa-bars {
+            transform: rotate(0deg) scale(1);
         }
         .burger-toggle:hover { color: #fff; }
 
@@ -229,7 +236,6 @@
             .admin-nav { padding: 12px 16px; }
             .admin-tabs { display: none; }
             .burger-toggle { display: block; }
-            .admin-nav .admin-actions { margin-left: auto; }
         }
 
         .admin-panel {
@@ -288,12 +294,455 @@
         .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
         .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
 
-        body.light .sync-status.local { background: rgba(200,150,50,0.1); border-color: rgba(200,150,50,0.2); color: #995522; }
-        body.light .toast.success { background: rgba(78, 205, 196, 0.1); border-color: rgba(78, 205, 196, 0.2); color: #2a7a6a; }
-        body.light .toast.error { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.2); color: #cc3333; }
-        body.light .toast.info { background: rgba(255,170,68,0.1); border-color: rgba(255,170,68,0.2); color: #995522; }
+        /* ===== ЗАЯВКИ ===== */
+        .refresh-apps-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 10px;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .refresh-apps-btn:hover { background: rgba(78, 205, 196, 0.2); border-color: rgba(78, 205, 196, 0.4); transform: scale(1.02); }
+        .refresh-apps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .refresh-apps-btn .fa-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ===== ВИКИ ===== */
+        .app-header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .auto-refresh-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.08);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .auto-refresh-badge .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: pulse-dot 2s infinite;
+        }
+
+        body.light .refresh-apps-btn { background: rgba(78, 205, 196, 0.08); border-color: rgba(78, 205, 196, 0.15); }
+        body.light .refresh-apps-btn:hover { background: rgba(78, 205, 196, 0.15); }
+
+        .application-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .application-card:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); transform: translateX(4px); }
+        .application-card .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .application-card .app-nick { font-size: 18px; font-weight: 600; color: #fff; font-family: 'Inter', system-ui, sans-serif; }
+        .application-card .app-status {
+            font-size: 12px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .app-status.pending { background: rgba(255,170,68,0.15); color: #ffaa44; border: 1px solid rgba(255,170,68,0.2); }
+        .app-status.approved { background: rgba(78, 205, 196, 0.15); color: #4ecdc4; border: 1px solid rgba(78, 205, 196,0.2); }
+        .app-status.rejected { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.2); }
+        .application-card .app-date { font-size: 12px; color: #666; margin-top: 2px; font-family: 'Inter', system-ui, sans-serif; }
+        .application-card .app-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 16px;
+            margin: 8px 0 12px 0;
+            font-size: 14px;
+            color: #aaa;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .application-card .app-details .label { color: #666; }
+        .application-card .app-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .application-card .app-actions button {
+            padding: 6px 18px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: #888;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .application-card .app-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .application-card .app-actions .approve-btn {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+        }
+        .application-card .app-actions .approve-btn:hover { background: rgba(78, 205, 196, 0.25); transform: scale(1.02); }
+        .application-card .app-actions .reject-btn {
+            background: rgba(255,107,107,0.1);
+            border-color: rgba(255,107,107,0.2);
+            color: #ff6b6b;
+        }
+        .application-card .app-actions .reject-btn:hover { background: rgba(255,107,107,0.25); transform: scale(1.02); }
+        .application-card .app-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
+
+        .app-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .app-filters button {
+            padding: 6px 18px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: transparent;
+            color: #888;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .app-filters button:hover { background: rgba(255,255,255,0.04); color: #fff; }
+        .app-filters button.active { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.15); }
+
+        .applications-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .stat-card .number { font-size: 32px; font-weight: 700; color: #fff; transition: all 0.3s ease; font-family: 'Inter', system-ui, sans-serif; }
+        .stat-card .label { font-size: 12px; color: #888; margin-top: 4px; font-family: 'Inter', system-ui, sans-serif; }
+        .stat-card.pending .number { color: #ffaa44; }
+        .stat-card.approved .number { color: #4ecdc4; }
+        .stat-card.rejected .number { color: #ff6b6b; }
+        .stat-card .number.pulse { animation: numberPulse 0.4s ease; }
+        @keyframes numberPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        body.light .stat-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light .stat-card .number { color: #1a1a1a; }
+        body.light .application-card { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .application-card .app-nick { color: #1a1a1a; }
+        body.light .application-card .app-details { color: #555; }
+        body.light .app-filters button { border-color: rgba(0,0,0,0.06); color: #666; }
+        body.light .app-filters button.active { background: rgba(0,0,0,0.08); color: #1a1a1a; border-color: rgba(0,0,0,0.15); }
+
+        /* ===== СКРИНШОТЫ ===== */
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .screenshot-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .screenshot-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-4px); }
+        .screenshot-card .preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .screenshot-card .preview img { width: 100%; height: 100%; object-fit: cover; }
+        .screenshot-card .preview .placeholder { color: #555; font-size: 12px; text-align: center; font-family: 'Inter', system-ui, sans-serif; }
+        .screenshot-card .preview .placeholder i { font-size: 28px; display: block; margin-bottom: 6px; }
+        .screenshot-card .screenshot-name { font-size: 13px; color: #aaa; margin-bottom: 8px; font-family: 'Inter', system-ui, sans-serif; }
+        .screenshot-card .screenshot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .screenshot-card .screenshot-actions button {
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: #888;
+            cursor: pointer;
+            font-size: 12px;
+            flex: 1;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .screenshot-card .screenshot-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .screenshot-card .screenshot-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.02); }
+        .upload-area i { font-size: 40px; color: #555; margin-bottom: 12px; }
+        .upload-area p { color: #888; font-size: 14px; font-family: 'Inter', system-ui, sans-serif; }
+        .upload-area input[type="file"] { display: none; }
+        .screenshot-save-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 10px;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+            margin-bottom: 16px;
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+        .screenshot-save-btn:hover { background: rgba(78, 205, 196, 0.2); border-color: rgba(78, 205, 196, 0.4); transform: scale(1.02); }
+        .screenshot-save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        body.light .screenshot-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light .screenshot-card .screenshot-name { color: #555; }
+        body.light .screenshot-card .screenshot-actions button { border-color: rgba(0,0,0,0.08); color: #666; }
+        body.light .upload-area { border-color: rgba(0,0,0,0.08); }
+        body.light .upload-area i { color: #888; }
+        body.light .upload-area p { color: #666; }
+        body.light .screenshot-save-btn { background: rgba(78, 205, 196, 0.08); border-color: rgba(78, 205, 196, 0.15); }
+        body.light .screenshot-save-btn:hover { background: rgba(78, 205, 196, 0.15); }
+
+        /* ===== НАСТРОЙКИ ===== */
+        .settings-section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .settings-section h3 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .settings-section .setting-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .settings-section .setting-row label {
+            color: #aaa;
+            font-size: 13px;
+            min-width: 120px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .settings-section .setting-row input {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: #e5e5e5;
+            font-size: 13px;
+            min-width: 200px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .settings-section .setting-row input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+        }
+        .settings-section .setting-row input::placeholder { color: #555; }
+        .settings-section .setting-row .save-setting-btn {
+            padding: 6px 18px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: #ccc;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .settings-section .setting-row .save-setting-btn:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+        .whitelist-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .whitelist-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .whitelist-status .dot.online { background: #4ecdc4; }
+        .whitelist-status .dot.offline { background: #ff6b6b; }
+        .whitelist-status .dot.unknown { background: #ffaa44; }
+
+        body.light .settings-section { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .settings-section h3 { color: #1a1a1a; }
+        body.light .settings-section .setting-row label { color: #666; }
+        body.light .settings-section .setting-row input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); color: #1a1a1a; }
+        body.light .settings-section .setting-row input:focus { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.06); }
+        body.light .settings-section .setting-row .save-setting-btn { border-color: rgba(0,0,0,0.08); color: #666; }
+        body.light .settings-section .setting-row .save-setting-btn:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: rgba(20,20,30,0.95);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 { font-size: 20px; color: #fff; margin-bottom: 16px; font-family: 'Inter', system-ui, sans-serif; }
+        .modal-content .close-modal {
+            float: right;
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .modal-content .close-modal:hover { color: #fff; }
+        .modal-content .detail-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .modal-content .detail-row .label { color: #666; width: 120px; flex-shrink: 0; }
+        .modal-content .detail-row .value { color: #e5e5e5; flex: 1; }
+        body.light .modal-content { background: rgba(240,240,245,0.95); border-color: rgba(0,0,0,0.06); }
+        body.light .modal-content h3 { color: #1a1a1a; }
+        body.light .modal-content .close-modal { color: #666; }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .section-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .section-controls button {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: #ccc;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .section-controls button:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .section-controls .save-btn { background: #fff; color: #0a0a0a; border-color: #fff; }
+        .section-controls .save-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
+        .section-controls .preview-btn { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+        .section-status { margin-top: 12px; font-size: 14px; color: #4ecdc4; font-family: 'Inter', system-ui, sans-serif; }
+        .section-status.error { color: #ff6b6b; }
+
+        body.light .section-controls { border-color: rgba(0,0,0,0.06); }
+        body.light .section-controls button { border-color: rgba(0,0,0,0.08); color: #666; }
+        body.light .section-controls button:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
+        body.light .section-controls .save-btn:hover { background: #444; }
+
+        /* ===== WIKI ===== */
         .wiki-layout { display: flex; gap: 24px; min-height: 500px; }
         .wiki-sidebar-editor {
             width: 280px;
@@ -675,439 +1124,11 @@
         body.light .rules-sec-title-edit { color: #1a1a1a; border-bottom-color: rgba(0,0,0,0.2); }
         body.light .rules-sec-title-edit:focus { border-bottom-color: #4ecdc4; }
 
-        .section-controls {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .section-controls button {
-            padding: 10px 24px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: transparent;
-            color: #ccc;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .section-controls button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .section-controls .save-btn { background: #fff; color: #0a0a0a; border-color: #fff; }
-        .section-controls .save-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
-        .section-controls .preview-btn { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
-        .section-status { margin-top: 12px; font-size: 14px; color: #4ecdc4; font-family: 'Inter', system-ui, sans-serif; }
-        .section-status.error { color: #ff6b6b; }
-
-        body.light .section-controls { border-color: rgba(0,0,0,0.06); }
-        body.light .section-controls button { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .section-controls button:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-        body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
-        body.light .section-controls .save-btn:hover { background: #444; }
-
-        /* ===== ЗАЯВКИ ===== */
-        .refresh-apps-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            border-radius: 10px;
-            background: rgba(78, 205, 196, 0.1);
-            border: 1px solid rgba(78, 205, 196, 0.2);
-            color: #4ecdc4;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-            margin-left: 12px;
-        }
-        .refresh-apps-btn:hover { background: rgba(78, 205, 196, 0.2); border-color: rgba(78, 205, 196, 0.4); transform: scale(1.02); }
-        .refresh-apps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .refresh-apps-btn .fa-spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .app-header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .auto-refresh-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: #4ecdc4;
-            background: rgba(78, 205, 196, 0.08);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .auto-refresh-badge .dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #4ecdc4;
-            animation: pulse-dot 2s infinite;
-        }
-
-        body.light .refresh-apps-btn { background: rgba(78, 205, 196, 0.08); border-color: rgba(78, 205, 196, 0.15); }
-        body.light .refresh-apps-btn:hover { background: rgba(78, 205, 196, 0.15); }
-
-        .application-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .application-card:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); transform: translateX(4px); }
-        .application-card .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .application-card .app-nick { font-size: 18px; font-weight: 600; color: #fff; font-family: 'Inter', system-ui, sans-serif; }
-        .application-card .app-status {
-            font-size: 12px;
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .app-status.pending { background: rgba(255,170,68,0.15); color: #ffaa44; border: 1px solid rgba(255,170,68,0.2); }
-        .app-status.approved { background: rgba(78, 205, 196, 0.15); color: #4ecdc4; border: 1px solid rgba(78, 205, 196,0.2); }
-        .app-status.rejected { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.2); }
-        .application-card .app-date { font-size: 12px; color: #666; margin-top: 2px; font-family: 'Inter', system-ui, sans-serif; }
-        .application-card .app-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px 16px;
-            margin: 8px 0 12px 0;
-            font-size: 14px;
-            color: #aaa;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .application-card .app-details .label { color: #666; }
-        .application-card .app-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-        .application-card .app-actions button {
-            padding: 6px 18px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .application-card .app-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .application-card .app-actions .approve-btn {
-            background: rgba(78, 205, 196, 0.1);
-            border-color: rgba(78, 205, 196, 0.2);
-            color: #4ecdc4;
-        }
-        .application-card .app-actions .approve-btn:hover { background: rgba(78, 205, 196, 0.25); transform: scale(1.02); }
-        .application-card .app-actions .reject-btn {
-            background: rgba(255,107,107,0.1);
-            border-color: rgba(255,107,107,0.2);
-            color: #ff6b6b;
-        }
-        .application-card .app-actions .reject-btn:hover { background: rgba(255,107,107,0.25); transform: scale(1.02); }
-        .application-card .app-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-
-        .app-filters {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .app-filters button {
-            padding: 6px 18px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .app-filters button:hover { background: rgba(255,255,255,0.04); color: #fff; }
-        .app-filters button.active { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.15); }
-
-        .applications-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px;
-            padding: 16px 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        .stat-card .number { font-size: 32px; font-weight: 700; color: #fff; transition: all 0.3s ease; font-family: 'Inter', system-ui, sans-serif; }
-        .stat-card .label { font-size: 12px; color: #888; margin-top: 4px; font-family: 'Inter', system-ui, sans-serif; }
-        .stat-card.pending .number { color: #ffaa44; }
-        .stat-card.approved .number { color: #4ecdc4; }
-        .stat-card.rejected .number { color: #ff6b6b; }
-        .stat-card .number.pulse { animation: numberPulse 0.4s ease; }
-        @keyframes numberPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
-
-        body.light .stat-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .stat-card .number { color: #1a1a1a; }
-        body.light .application-card { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
-        body.light .application-card .app-nick { color: #1a1a1a; }
-        body.light .application-card .app-details { color: #555; }
-        body.light .app-filters button { border-color: rgba(0,0,0,0.06); color: #666; }
-        body.light .app-filters button.active { background: rgba(0,0,0,0.08); color: #1a1a1a; border-color: rgba(0,0,0,0.15); }
-
-        /* ===== СКРИНШОТЫ ===== */
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .screenshot-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 12px;
-            transition: all 0.3s ease;
-        }
-        .screenshot-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-4px); }
-        .screenshot-card .preview {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border-radius: 8px;
-            background: #1a1a2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .screenshot-card .preview img { width: 100%; height: 100%; object-fit: cover; }
-        .screenshot-card .preview .placeholder { color: #555; font-size: 12px; text-align: center; font-family: 'Inter', system-ui, sans-serif; }
-        .screenshot-card .preview .placeholder i { font-size: 28px; display: block; margin-bottom: 6px; }
-        .screenshot-card .screenshot-name { font-size: 13px; color: #aaa; margin-bottom: 8px; font-family: 'Inter', system-ui, sans-serif; }
-        .screenshot-card .screenshot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .screenshot-card .screenshot-actions button {
-            padding: 4px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 12px;
-            flex: 1;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .screenshot-card .screenshot-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .screenshot-card .screenshot-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-        .upload-area {
-            border: 2px dashed rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .upload-area:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.02); }
-        .upload-area i { font-size: 40px; color: #555; margin-bottom: 12px; }
-        .upload-area p { color: #888; font-size: 14px; font-family: 'Inter', system-ui, sans-serif; }
-        .upload-area input[type="file"] { display: none; }
-        body.light .screenshot-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .screenshot-card .screenshot-name { color: #555; }
-        body.light .screenshot-card .screenshot-actions button { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .upload-area { border-color: rgba(0,0,0,0.08); }
-        body.light .upload-area i { color: #888; }
-        body.light .upload-area p { color: #666; }
-
-        /* ===== НАСТРОЙКИ ===== */
-        .settings-section {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .settings-section h3 {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        .settings-section .setting-row label {
-            color: #aaa;
-            font-size: 13px;
-            min-width: 120px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row input {
-            flex: 1;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 8px 14px;
-            color: #e5e5e5;
-            font-size: 13px;
-            min-width: 200px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row input:focus {
-            outline: none;
-            border-color: rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.06);
-        }
-        .settings-section .setting-row input::placeholder { color: #555; }
-        .settings-section .setting-row .save-setting-btn {
-            padding: 6px 18px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
-            color: #ccc;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .settings-section .setting-row .save-setting-btn:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        .whitelist-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .whitelist-status .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: pulse-dot 2s infinite;
-        }
-        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
-        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
-        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
-        .whitelist-status .dot.online { background: #4ecdc4; }
-        .whitelist-status .dot.offline { background: #ff6b6b; }
-        .whitelist-status .dot.unknown { background: #ffaa44; }
-
-        body.light .settings-section { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
-        body.light .settings-section h3 { color: #1a1a1a; }
-        body.light .settings-section .setting-row label { color: #666; }
-        body.light .settings-section .setting-row input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); color: #1a1a1a; }
-        body.light .settings-section .setting-row input:focus { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.06); }
-        body.light .settings-section .setting-row .save-setting-btn { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .settings-section .setting-row .save-setting-btn:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: rgba(20,20,30,0.95);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal-content h3 { font-size: 20px; color: #fff; margin-bottom: 16px; font-family: 'Inter', system-ui, sans-serif; }
-        .modal-content .close-modal {
-            float: right;
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .modal-content .close-modal:hover { color: #fff; }
-        .modal-content .detail-row {
-            display: flex;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .modal-content .detail-row .label { color: #666; width: 120px; flex-shrink: 0; }
-        .modal-content .detail-row .value { color: #e5e5e5; flex: 1; }
-        body.light .modal-content { background: rgba(240,240,245,0.95); border-color: rgba(0,0,0,0.06); }
-        body.light .modal-content h3 { color: #1a1a1a; }
-        body.light .modal-content .close-modal { color: #666; }
-
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 6px;
-            vertical-align: middle;
-        }
-
         @media (max-width: 768px) {
             .wiki-layout { flex-direction: column; }
             .wiki-sidebar-editor { width: 100%; max-height: 300px; }
             .rules-layout { flex-direction: column; }
             .rules-sidebar-editor { width: 100%; max-height: 300px; }
-            .admin-nav { flex-direction: row; flex-wrap: wrap; }
-            .admin-tabs { display: none; }
-            .burger-toggle { display: block; }
             .admin-panel { padding: 16px; }
             .application-card .app-details { grid-template-columns: 1fr; }
             .modal-content { padding: 20px; margin: 10px; }
@@ -1115,6 +1136,7 @@
             .settings-section .setting-row label { min-width: auto; }
             .settings-section .setting-row input { min-width: auto; }
             .screenshot-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .screenshot-save-btn { max-width: 100%; }
         }
         @media (max-width: 640px) {
             .login-box { padding: 32px 24px; }
@@ -1198,15 +1220,11 @@
                     <span class="dot"></span>
                     <span id="syncStatusText">📦 Локальный режим</span>
                 </span>
-                <span class="whitelist-status unknown" id="whitelistStatus">
-                    <span class="dot unknown"></span>
-                    <span id="whitelistStatusText">Whitelister ⚠️</span>
-                </span>
                 <button onclick="manualSync()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-up"></i> Синхр.
                 </button>
-                <button onclick="checkWhitelisterConnection()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
-                    <i class="fa-regular fa-plug"></i> Проверить
+                <button onclick="checkAPIStatus()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                    <i class="fa-regular fa-plug"></i> Проверить API
                 </button>
                 <button class="admin-logout" onclick="logout()">
                     <i class="fa-regular fa-right-from-bracket"></i> Выйти
@@ -1251,6 +1269,9 @@
                         <i class="fa-regular fa-rotate"></i>
                         <span>Обновить</span>
                     </button>
+                    <button onclick="forceCloudSync()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                        <i class="fa-regular fa-cloud-arrow-up"></i> Принудительная синхр.
+                    </button>
                     <span class="auto-refresh-badge">
                         <span class="dot"></span>
                         Авто-обновление
@@ -1275,8 +1296,22 @@
         <!-- SCREENSHOTS -->
         <div id="tab-screenshots" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-image"></i> Управление скриншотами</h2>
+            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Загружайте и управляйте скриншотами для главной страницы.</p>
+            
+            <!-- ===== НОВАЯ КНОПКА СОХРАНЕНИЯ ===== -->
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                <button class="screenshot-save-btn" id="screenshotSaveBtn" onclick="saveScreenshotsToCloud()">
+                    <i class="fa-regular fa-cloud-arrow-up"></i>
+                    <span>Сохранить скриншоты в облако</span>
+                </button>
+                <button class="screenshot-save-btn" style="background:rgba(255,170,68,0.1);border-color:rgba(255,170,68,0.2);color:#ffaa44;" onclick="loadScreenshotsFromCloud()">
+                    <i class="fa-regular fa-cloud-arrow-down"></i>
+                    <span>Загрузить из облака</span>
+                </button>
+            </div>
+            
             <div class="screenshot-grid" id="screenshotGrid"></div>
-            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                 <i class="fa-regular fa-cloud-arrow-up"></i>
                 <p><strong>Нажмите или перетащите</strong> файлы</p>
                 <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFileUpload(event)">
@@ -1287,9 +1322,7 @@
         <!-- WIKI -->
         <div id="tab-wiki" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-book"></i> Редактор вики</h2>
-            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
-                Управляйте категориями и разделами вики. Нажмите на категорию или раздел, чтобы редактировать.
-            </p>
+            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Управляйте категориями и разделами вики.</p>
             <div id="wikiEditor"></div>
             <div class="section-controls">
                 <button class="preview-btn" onclick="previewWikiFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
@@ -1301,9 +1334,7 @@
         <!-- RULES -->
         <div id="tab-rules" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-scroll"></i> Редактор правил</h2>
-            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
-                Управляйте категориями и разделами правил. Нажмите на категорию или раздел, чтобы редактировать.
-            </p>
+            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Управляйте категориями и разделами правил.</p>
             <div id="rulesEditor"></div>
             <div class="section-controls">
                 <button class="preview-btn" onclick="previewRulesFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
@@ -1315,9 +1346,7 @@
         <!-- SETTINGS -->
         <div id="tab-settings" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-gear"></i> Настройки интеграции</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
-                Настройте подключение к Whitelister для автоматического добавления игроков в вайтлист.
-            </p>
+            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Настройте подключение к Whitelister.</p>
             <div class="settings-section">
                 <h3><i class="fa-solid fa-server"></i> Whitelister API</h3>
                 <div class="setting-row">
@@ -1336,13 +1365,11 @@
                 </div>
             </div>
             <div class="settings-section" style="border-color:rgba(78,205,196,0.2);">
-                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке Whitelister</h3>
+                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке</h3>
                 <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
-                    <p>1. Установите плагин <strong>Whitelister</strong> на сервер Minecraft.</p>
-                    <p>2. В файле <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/Whitelister/config.yml</code> включите API.</p>
-                    <p>3. Введите URL и ключ в поля выше.</p>
-                    <p>4. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
-                    <p style="margin-top:8px;color:#4ecdc4;">✅ После настройки при принятии заявки игрок будет автоматически добавлен в вайтлист!</p>
+                    <p>1. Установите плагин <strong>Whitelister</strong> на сервер.</p>
+                    <p>2. Введите URL и ключ в поля выше.</p>
+                    <p>3. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
                 </div>
             </div>
         </div>
@@ -1438,7 +1465,6 @@
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
             document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
-            // Плавная анимация иконки
             if (sidebar.classList.contains('open')) {
                 icon.className = 'fa-regular fa-xmark';
             } else {
@@ -1567,372 +1593,7 @@
         }
 
         // ============================================================
-        // ====== WHITELISTER ======
-        // ============================================================
-        function loadSettings() {
-            document.getElementById('whitelisterUrl').value = localStorage.getItem('whitelister_url') || '';
-            document.getElementById('whitelisterKey').value = localStorage.getItem('whitelister_key') || '';
-            updateWhitelistStatus();
-            checkWhitelisterConnection();
-        }
-
-        function saveWhitelisterSetting() {
-            const url = document.getElementById('whitelisterUrl').value.trim();
-            const key = document.getElementById('whitelisterKey').value.trim();
-            if (url) localStorage.setItem('whitelister_url', url);
-            else localStorage.removeItem('whitelister_url');
-            if (key) localStorage.setItem('whitelister_key', key);
-            else localStorage.removeItem('whitelister_key');
-            showToast('✅ Настройки Whitelister сохранены', 'success');
-            updateWhitelistStatus();
-            checkWhitelisterConnection();
-        }
-
-        function updateWhitelistStatus(online = null) {
-            const statusEl = document.getElementById('whitelistStatus');
-            const textEl = document.getElementById('whitelistStatusText');
-            const url = localStorage.getItem('whitelister_url') || '';
-            const key = localStorage.getItem('whitelister_key') || '';
-            if (url && key) {
-                if (online === true) {
-                    statusEl.className = 'whitelist-status online';
-                    textEl.textContent = 'Whitelister ✅';
-                    document.querySelector('#whitelistStatus .dot').className = 'dot online';
-                } else if (online === false) {
-                    statusEl.className = 'whitelist-status offline';
-                    textEl.textContent = 'Whitelister ❌';
-                    document.querySelector('#whitelistStatus .dot').className = 'dot offline';
-                } else {
-                    statusEl.className = 'whitelist-status unknown';
-                    textEl.textContent = 'Whitelister ⚠️';
-                    document.querySelector('#whitelistStatus .dot').className = 'dot unknown';
-                }
-            } else {
-                statusEl.className = 'whitelist-status unknown';
-                textEl.textContent = 'Whitelister ⚠️';
-                document.querySelector('#whitelistStatus .dot').className = 'dot unknown';
-            }
-        }
-
-        async function checkWhitelisterConnection() {
-            const url = localStorage.getItem('whitelister_url') || '';
-            const key = localStorage.getItem('whitelister_key') || '';
-            const statusEl = document.getElementById('whitelisterStatusText');
-            if (!url) { statusEl.innerHTML = '⚠️ URL не указан'; updateWhitelistStatus(null); return; }
-            if (!key) { statusEl.innerHTML = '⚠️ Ключ не указан'; updateWhitelistStatus(null); return; }
-            statusEl.innerHTML = '⏳ Проверка соединения...';
-            try {
-                const response = await fetch(`${url}/health`, { signal: AbortSignal.timeout(5000) });
-                if (response.ok) {
-                    statusEl.innerHTML = '✅ Соединение с Whitelister установлено!';
-                    statusEl.style.color = '#4ecdc4';
-                    updateWhitelistStatus(true);
-                    showToast('✅ Whitelister подключен!', 'success');
-                } else {
-                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
-                    statusEl.style.color = '#ff6b6b';
-                    updateWhitelistStatus(false);
-                }
-            } catch (error) {
-                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
-                statusEl.style.color = '#ff6b6b';
-                updateWhitelistStatus(false);
-            }
-        }
-
-        function getWhitelisterConfig() {
-            return { url: localStorage.getItem('whitelister_url') || '', key: localStorage.getItem('whitelister_key') || '' };
-        }
-
-        async function sendToWhitelister(nick) {
-            const { url, key } = getWhitelisterConfig();
-            if (!url || !key) {
-                showToast('⚠️ Whitelister не настроен. Перейдите в Настройки.', 'error');
-                return false;
-            }
-            try {
-                const endpoints = [`${url}/api/whitelist/add`, `${url}/api/add`, `${url}/whitelist/add`, `${url}/command`];
-                for (const endpoint of endpoints) {
-                    try {
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-API-Key': key, 'Authorization': `Bearer ${key}` },
-                            body: JSON.stringify({ player: nick, nick: nick, username: nick, command: `whitelist add ${nick}` })
-                        });
-                        if (response.ok) return true;
-                    } catch (e) { continue; }
-                }
-                return fallbackWhitelistMethod(nick);
-            } catch { return fallbackWhitelistMethod(nick); }
-        }
-
-        function fallbackWhitelistMethod(nick) {
-            try {
-                let commands = localStorage.getItem('mc_commands_queue') || '';
-                const cmd = `whitelist add ${nick}\n`;
-                if (!commands.includes(cmd)) { commands += cmd; localStorage.setItem('mc_commands_queue', commands); }
-                showToast(`📝 Команда сохранена в очередь (файловый метод)`, 'info');
-                return true;
-            } catch { return false; }
-        }
-
-        // ============================================================
-        // ====== APPLICATIONS — PYTHONANYWHERE ======
-        // ============================================================
-        let applications = [];
-        let currentFilter = 'all';
-        let lastApplicationsHash = '';
-
-        function getApplicationsHash(apps) {
-            return JSON.stringify(apps.map(a => a.id + a.status));
-        }
-
-        function loadApplications() {
-            loadApplicationsFromCloud().then(cloudApps => {
-                if (cloudApps && cloudApps.length > 0) {
-                    applications = cloudApps;
-                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-                    updateSyncStatus(true);
-                } else {
-                    applications = getData('mugivara_applications', []);
-                    updateSyncStatus(false);
-                }
-                lastApplicationsHash = getApplicationsHash(applications);
-                updateStats();
-                renderApplications(currentFilter);
-            }).catch(() => {
-                applications = getData('mugivara_applications', []);
-                lastApplicationsHash = getApplicationsHash(applications);
-                updateStats();
-                renderApplications(currentFilter);
-                updateSyncStatus(false);
-            });
-        }
-
-        function updateSyncStatus(online) {
-            const statusEl = document.getElementById('syncStatus');
-            const textEl = document.getElementById('syncStatusText');
-            if (statusEl) {
-                if (online) {
-                    statusEl.className = 'sync-status online';
-                    textEl.textContent = '🟢 Облако Онлайн';
-                } else {
-                    statusEl.className = 'sync-status offline';
-                    textEl.textContent = '🔴 Локальный режим';
-                }
-            }
-        }
-
-        async function refreshApplications() {
-            const btn = document.getElementById('refreshAppsBtn');
-            if (isRefreshing) return;
-            
-            isRefreshing = true;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Обновление...';
-            
-            try {
-                const cloudApps = await loadApplicationsFromCloud();
-                if (cloudApps && cloudApps.length > 0) {
-                    applications = cloudApps;
-                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-                    lastApplicationsHash = getApplicationsHash(applications);
-                    updateStats();
-                    renderApplications(currentFilter);
-                    updateSyncStatus(true);
-                    showToast('✅ Заявки обновлены из облака', 'success');
-                } else {
-                    showToast('⚠️ Не удалось загрузить из облака', 'error');
-                    updateSyncStatus(false);
-                }
-            } catch (error) {
-                console.error('Ошибка обновления:', error);
-                showToast('⚠️ Ошибка обновления заявок', 'error');
-            }
-            
-            btn.innerHTML = '<i class="fa-regular fa-rotate"></i> Обновить';
-            btn.disabled = false;
-            isRefreshing = false;
-        }
-
-        function saveApplications() {
-            localStorage.setItem('mugivara_applications', JSON.stringify(applications));
-            try {
-                const mainData = localStorage.getItem('mugivara_main_data');
-                let main = mainData ? JSON.parse(mainData) : {};
-                main.applications = applications;
-                localStorage.setItem('mugivara_main_data', JSON.stringify(main));
-            } catch (e) {}
-            
-            lastApplicationsHash = getApplicationsHash(applications);
-            updateStats();
-            renderApplications(currentFilter);
-        }
-
-        function updateStats() {
-            const pending = applications.filter(a => a.status === 'pending').length;
-            const approved = applications.filter(a => a.status === 'approved').length;
-            const rejected = applications.filter(a => a.status === 'rejected').length;
-            
-            const pendingEl = document.getElementById('pendingCount');
-            const approvedEl = document.getElementById('approvedCount');
-            const rejectedEl = document.getElementById('rejectedCount');
-            
-            if (pendingEl.textContent != pending) {
-                pendingEl.classList.add('pulse');
-                setTimeout(() => pendingEl.classList.remove('pulse'), 400);
-            }
-            if (approvedEl.textContent != approved) {
-                approvedEl.classList.add('pulse');
-                setTimeout(() => approvedEl.classList.remove('pulse'), 400);
-            }
-            if (rejectedEl.textContent != rejected) {
-                rejectedEl.classList.add('pulse');
-                setTimeout(() => rejectedEl.classList.remove('pulse'), 400);
-            }
-            
-            pendingEl.textContent = pending;
-            approvedEl.textContent = approved;
-            rejectedEl.textContent = rejected;
-        }
-
-        function filterApplications(filter, btn) {
-            currentFilter = filter;
-            document.querySelectorAll('.app-filters button').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            renderApplications(filter);
-        }
-
-        function renderApplications(filter) {
-            const container = document.getElementById('applicationsList');
-            let filtered = applications;
-            if (filter === 'pending') filtered = applications.filter(a => a.status === 'pending');
-            else if (filter === 'approved') filtered = applications.filter(a => a.status === 'approved');
-            else if (filter === 'rejected') filtered = applications.filter(a => a.status === 'rejected');
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#666;font-family:'Inter',system-ui,sans-serif;"><i class="fa-regular fa-inbox" style="font-size:40px;display:block;margin-bottom:12px;"></i><p>Нет заявок</p></div>`;
-                return;
-            }
-            container.innerHTML = filtered.map(app => `
-                <div class="application-card">
-                    <div class="app-header">
-                        <span class="app-nick">${app.minecraft_nick}</span>
-                        <span class="app-status ${app.status}">${app.status === 'pending' ? '⏳ Ожидает' : app.status === 'approved' ? '✅ Принята' : '❌ Отклонена'}</span>
-                    </div>
-                    <div class="app-date">${new Date(app.date).toLocaleString('ru-RU')}</div>
-                    <div class="app-details">
-                        <div><span class="label">Возраст:</span> ${app.age}</div>
-                        <div><span class="label">Discord:</span> ${app.discord_nick}</div>
-                        <div style="grid-column:1/-1;"><span class="label">Как узнал:</span> ${app.how_found}</div>
-                    </div>
-                    <div class="app-actions">
-                        ${app.status === 'pending' ? `
-                            <button class="approve-btn" onclick="approveApplication('${app.id}')"><i class="fa-regular fa-check"></i> Принять</button>
-                            <button class="reject-btn" onclick="rejectApplication('${app.id}')"><i class="fa-regular fa-xmark"></i> Отклонить</button>
-                        ` : ''}
-                        <button onclick="viewApplicationDetails('${app.id}')"><i class="fa-regular fa-eye"></i> Детали</button>
-                        <button class="delete-btn" onclick="deleteApplication('${app.id}')"><i class="fa-regular fa-trash-can"></i> Удалить</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function approveApplication(id) {
-            const app = applications.find(a => a.id === id);
-            if (!app) return;
-            
-            const card = document.querySelector(`.application-card:has(.approve-btn[onclick*="${id}"])`);
-            if (card) { card.querySelectorAll('.approve-btn, .reject-btn').forEach(b => b.disabled = true); }
-            
-            try {
-                const cloudSuccess = await saveApplicationToCloud(id, 'approved');
-                
-                if (cloudSuccess) {
-                    app.status = 'approved';
-                    saveApplications();
-                    showToast(`✅ Заявка одобрена!`, 'success');
-                    
-                    const whitelistSuccess = await sendToWhitelister(app.minecraft_nick);
-                    if (whitelistSuccess) {
-                        showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
-                    }
-                } else {
-                    showToast(`⚠️ Ошибка сохранения в облаке`, 'error');
-                }
-            } catch (error) {
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
-            }
-            
-            if (card) { card.querySelectorAll('.approve-btn, .reject-btn').forEach(b => b.disabled = false); }
-        }
-
-        async function rejectApplication(id) {
-            const app = applications.find(a => a.id === id);
-            if (!app) return;
-            
-            try {
-                const cloudSuccess = await saveApplicationToCloud(id, 'rejected');
-                if (cloudSuccess) {
-                    app.status = 'rejected';
-                    saveApplications();
-                    showToast(`❌ Заявка отклонена`, 'error');
-                } else {
-                    showToast(`⚠️ Ошибка сохранения в облаке`, 'error');
-                }
-            } catch (error) {
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
-            }
-        }
-
-        async function deleteApplication(id) {
-            try {
-                const cloudSuccess = await deleteApplicationFromCloud(id);
-                if (cloudSuccess) {
-                    applications = applications.filter(a => a.id !== id);
-                    saveApplications();
-                    showToast(`🗑️ Заявка удалена`, 'info');
-                } else {
-                    showToast(`⚠️ Ошибка удаления из облака`, 'error');
-                }
-            } catch (error) {
-                showToast(`❌ Ошибка: ${error.message}`, 'error');
-            }
-        }
-
-        function viewApplicationDetails(id) {
-            const app = applications.find(a => a.id === id);
-            if (!app) return;
-            document.getElementById('modalTitle').textContent = `Заявка от ${app.minecraft_nick}`;
-            document.getElementById('modalBody').innerHTML = `
-                <div class="detail-row"><span class="label">Ник:</span><span class="value">${app.minecraft_nick}</span></div>
-                <div class="detail-row"><span class="label">Возраст:</span><span class="value">${app.age}</span></div>
-                <div class="detail-row"><span class="label">Discord:</span><span class="value">${app.discord_nick}</span></div>
-                <div class="detail-row"><span class="label">Статус:</span><span class="value">${app.status}</span></div>
-                <div class="detail-row"><span class="label">Дата:</span><span class="value">${new Date(app.date).toLocaleString('ru-RU')}</span></div>
-                <div class="detail-row" style="flex-direction:column;align-items:stretch;padding:12px 0;">
-                    <span class="label" style="width:100%;margin-bottom:4px;">Опыт:</span>
-                    <span class="value" style="background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;">${app.experience}</span>
-                </div>
-                <div class="detail-row" style="flex-direction:column;align-items:stretch;padding:12px 0;border-bottom:none;">
-                    <span class="label" style="width:100%;margin-bottom:4px;">Ожидания:</span>
-                    <span class="value" style="background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;">${app.expectations}</span>
-                </div>
-            `;
-            document.getElementById('modalOverlay').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
-        document.getElementById('modalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // ============================================================
-        // ====== SCREENSHOTS — JSONBin ======
+        // ====== СКРИНШОТЫ ======
         // ============================================================
         let screenshots = [];
 
@@ -1943,6 +1604,70 @@
                 setData('admin_screenshots', screenshots);
             }
             renderScreenshots();
+        }
+
+        async function saveScreenshotsToCloud() {
+            const btn = document.getElementById('screenshotSaveBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Сохранение...';
+            
+            try {
+                const currentData = await loadFromJSONBin();
+                if (!currentData) {
+                    showToast('⚠️ Ошибка загрузки данных из облака', 'error');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+                
+                currentData.screenshots = screenshots;
+                currentData.updated = new Date().toISOString();
+                
+                const success = await saveToJSONBin(currentData);
+                
+                if (success) {
+                    showToast('✅ Скриншоты сохранены в облако!', 'success');
+                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                } else {
+                    showToast('⚠️ Ошибка сохранения в облако', 'error');
+                }
+            } catch (error) {
+                console.error('❌ Ошибка:', error);
+                showToast('⚠️ Ошибка сохранения', 'error');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        async function loadScreenshotsFromCloud() {
+            const btn = event?.target;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<span class="spinner"></span> Загрузка...';
+                btn.disabled = true;
+            }
+            
+            try {
+                const data = await loadFromJSONBin();
+                if (data && data.screenshots) {
+                    screenshots = data.screenshots;
+                    setData('admin_screenshots', screenshots);
+                    renderScreenshots();
+                    showToast('✅ Скриншоты загружены из облака', 'success');
+                } else {
+                    showToast('ℹ️ В облаке нет скриншотов', 'info');
+                }
+            } catch (error) {
+                console.error('❌ Ошибка:', error);
+                showToast('⚠️ Ошибка загрузки', 'error');
+            }
+            
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         function renderScreenshots() {
@@ -2038,7 +1763,295 @@
         }
 
         // ============================================================
-        // ====== WIKI — JSONBin ======
+        // ====== ЗАЯВКИ ======
+        // ============================================================
+        let applications = [];
+        let currentFilter = 'all';
+        let lastApplicationsHash = '';
+
+        function getApplicationsHash(apps) {
+            return JSON.stringify(apps.map(a => a.id + a.status));
+        }
+
+        async function checkAPIStatus() {
+            const btn = event?.target;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<span class="spinner"></span>';
+                btn.disabled = true;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/applications`, { signal: AbortSignal.timeout(5000) });
+                if (response.ok) {
+                    showToast('✅ API работает!', 'success');
+                    updateSyncStatus(true);
+                } else {
+                    showToast(`⚠️ API вернул код ${response.status}`, 'error');
+                    updateSyncStatus(false);
+                }
+            } catch (error) {
+                showToast('⚠️ API недоступен. Проверьте интернет-соединение.', 'error');
+                updateSyncStatus(false);
+            }
+            
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function forceCloudSync() {
+            const btn = event?.target;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<span class="spinner"></span> Синхр...';
+                btn.disabled = true;
+            }
+            
+            try {
+                const cloudApps = await loadApplicationsFromCloud();
+                if (cloudApps && cloudApps.length > 0) {
+                    applications = cloudApps;
+                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+                    lastApplicationsHash = getApplicationsHash(applications);
+                    updateStats();
+                    renderApplications(currentFilter);
+                    updateSyncStatus(true);
+                    showToast('✅ Заявки принудительно синхронизированы!', 'success');
+                } else {
+                    showToast('⚠️ Не удалось загрузить заявки из облака', 'error');
+                    updateSyncStatus(false);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showToast('⚠️ Ошибка синхронизации', 'error');
+            }
+            
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function loadApplications() {
+            loadApplicationsFromCloud().then(cloudApps => {
+                if (cloudApps && cloudApps.length > 0) {
+                    applications = cloudApps;
+                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+                    updateSyncStatus(true);
+                } else {
+                    applications = getData('mugivara_applications', []);
+                    updateSyncStatus(false);
+                }
+                lastApplicationsHash = getApplicationsHash(applications);
+                updateStats();
+                renderApplications(currentFilter);
+            }).catch(() => {
+                applications = getData('mugivara_applications', []);
+                lastApplicationsHash = getApplicationsHash(applications);
+                updateStats();
+                renderApplications(currentFilter);
+                updateSyncStatus(false);
+            });
+        }
+
+        function updateSyncStatus(online) {
+            const statusEl = document.getElementById('syncStatus');
+            const textEl = document.getElementById('syncStatusText');
+            if (statusEl) {
+                if (online) {
+                    statusEl.className = 'sync-status online';
+                    textEl.textContent = '🟢 Облако Онлайн';
+                } else {
+                    statusEl.className = 'sync-status offline';
+                    textEl.textContent = '🔴 Локальный режим';
+                }
+            }
+        }
+
+        async function refreshApplications() {
+            const btn = document.getElementById('refreshAppsBtn');
+            if (isRefreshing) return;
+            
+            isRefreshing = true;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Обновление...';
+            
+            try {
+                const cloudApps = await loadApplicationsFromCloud();
+                if (cloudApps && cloudApps.length > 0) {
+                    applications = cloudApps;
+                    localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+                    lastApplicationsHash = getApplicationsHash(applications);
+                    updateStats();
+                    renderApplications(currentFilter);
+                    updateSyncStatus(true);
+                    showToast('✅ Заявки обновлены из облака', 'success');
+                } else {
+                    showToast('⚠️ Не удалось загрузить из облака', 'error');
+                    updateSyncStatus(false);
+                }
+            } catch (error) {
+                console.error('Ошибка обновления:', error);
+                showToast('⚠️ Ошибка обновления заявок', 'error');
+            }
+            
+            btn.innerHTML = '<i class="fa-regular fa-rotate"></i> Обновить';
+            btn.disabled = false;
+            isRefreshing = false;
+        }
+
+        function saveApplications() {
+            localStorage.setItem('mugivara_applications', JSON.stringify(applications));
+            try {
+                const mainData = localStorage.getItem('mugivara_main_data');
+                let main = mainData ? JSON.parse(mainData) : {};
+                main.applications = applications;
+                localStorage.setItem('mugivara_main_data', JSON.stringify(main));
+            } catch (e) {}
+            
+            lastApplicationsHash = getApplicationsHash(applications);
+            updateStats();
+            renderApplications(currentFilter);
+        }
+
+        function updateStats() {
+            const pending = applications.filter(a => a.status === 'pending').length;
+            const approved = applications.filter(a => a.status === 'approved').length;
+            const rejected = applications.filter(a => a.status === 'rejected').length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+        }
+
+        function filterApplications(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.app-filters button').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderApplications(filter);
+        }
+
+        function renderApplications(filter) {
+            const container = document.getElementById('applicationsList');
+            let filtered = applications;
+            if (filter === 'pending') filtered = applications.filter(a => a.status === 'pending');
+            else if (filter === 'approved') filtered = applications.filter(a => a.status === 'approved');
+            else if (filter === 'rejected') filtered = applications.filter(a => a.status === 'rejected');
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#666;font-family:'Inter',system-ui,sans-serif;"><i class="fa-regular fa-inbox" style="font-size:40px;display:block;margin-bottom:12px;"></i><p>Нет заявок</p></div>`;
+                return;
+            }
+            container.innerHTML = filtered.map(app => `
+                <div class="application-card">
+                    <div class="app-header">
+                        <span class="app-nick">${app.minecraft_nick}</span>
+                        <span class="app-status ${app.status}">${app.status === 'pending' ? '⏳ Ожидает' : app.status === 'approved' ? '✅ Принята' : '❌ Отклонена'}</span>
+                    </div>
+                    <div class="app-date">${new Date(app.date).toLocaleString('ru-RU')}</div>
+                    <div class="app-details">
+                        <div><span class="label">Возраст:</span> ${app.age}</div>
+                        <div><span class="label">Discord:</span> ${app.discord_nick}</div>
+                        <div style="grid-column:1/-1;"><span class="label">Как узнал:</span> ${app.how_found}</div>
+                    </div>
+                    <div class="app-actions">
+                        ${app.status === 'pending' ? `
+                            <button class="approve-btn" onclick="approveApplication('${app.id}')"><i class="fa-regular fa-check"></i> Принять</button>
+                            <button class="reject-btn" onclick="rejectApplication('${app.id}')"><i class="fa-regular fa-xmark"></i> Отклонить</button>
+                        ` : ''}
+                        <button onclick="viewApplicationDetails('${app.id}')"><i class="fa-regular fa-eye"></i> Детали</button>
+                        <button class="delete-btn" onclick="deleteApplication('${app.id}')"><i class="fa-regular fa-trash-can"></i> Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function approveApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+            
+            try {
+                const cloudSuccess = await saveApplicationToCloud(id, 'approved');
+                if (cloudSuccess) {
+                    app.status = 'approved';
+                    saveApplications();
+                    showToast(`✅ Заявка одобрена!`, 'success');
+                } else {
+                    showToast(`⚠️ Ошибка сохранения в облаке`, 'error');
+                }
+            } catch (error) {
+                showToast(`❌ Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        async function rejectApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+            
+            try {
+                const cloudSuccess = await saveApplicationToCloud(id, 'rejected');
+                if (cloudSuccess) {
+                    app.status = 'rejected';
+                    saveApplications();
+                    showToast(`❌ Заявка отклонена`, 'error');
+                } else {
+                    showToast(`⚠️ Ошибка сохранения в облаке`, 'error');
+                }
+            } catch (error) {
+                showToast(`❌ Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteApplication(id) {
+            try {
+                const cloudSuccess = await deleteApplicationFromCloud(id);
+                if (cloudSuccess) {
+                    applications = applications.filter(a => a.id !== id);
+                    saveApplications();
+                    showToast(`🗑️ Заявка удалена`, 'info');
+                } else {
+                    showToast(`⚠️ Ошибка удаления из облака`, 'error');
+                }
+            } catch (error) {
+                showToast(`❌ Ошибка: ${error.message}`, 'error');
+            }
+        }
+
+        function viewApplicationDetails(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+            document.getElementById('modalTitle').textContent = `Заявка от ${app.minecraft_nick}`;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="detail-row"><span class="label">Ник:</span><span class="value">${app.minecraft_nick}</span></div>
+                <div class="detail-row"><span class="label">Возраст:</span><span class="value">${app.age}</span></div>
+                <div class="detail-row"><span class="label">Discord:</span><span class="value">${app.discord_nick}</span></div>
+                <div class="detail-row"><span class="label">Статус:</span><span class="value">${app.status}</span></div>
+                <div class="detail-row"><span class="label">Дата:</span><span class="value">${new Date(app.date).toLocaleString('ru-RU')}</span></div>
+                <div class="detail-row" style="flex-direction:column;align-items:stretch;padding:12px 0;">
+                    <span class="label" style="width:100%;margin-bottom:4px;">Опыт:</span>
+                    <span class="value" style="background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;">${app.experience}</span>
+                </div>
+                <div class="detail-row" style="flex-direction:column;align-items:stretch;padding:12px 0;border-bottom:none;">
+                    <span class="label" style="width:100%;margin-bottom:4px;">Ожидания:</span>
+                    <span class="value" style="background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;">${app.expectations}</span>
+                </div>
+            `;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ============================================================
+        // ====== WIKI ======
         // ============================================================
         let wikiCategories = [];
         let wikiSelectedCat = null;
@@ -2469,7 +2482,7 @@
         }
 
         // ============================================================
-        // ====== RULES — JSONBin ======
+        // ====== RULES ======
         // ============================================================
         let rulesCategories = [];
         let rulesSelectedCat = null;
@@ -2894,42 +2907,114 @@
             if (win) { win.document.write(html); win.document.close(); }
         }
 
-        async function manualSync() {
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="spinner"></span> Синхр.';
-            btn.disabled = true;
-            
-            try {
-                const jsonData = await loadFromJSONBin();
-                if (jsonData) {
-                    if (jsonData.wikiCategories) {
-                        wikiCategories = jsonData.wikiCategories;
-                        localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
-                        renderWikiEditor();
-                    }
-                    
-                    if (jsonData.rulesCategories) {
-                        rulesCategories = jsonData.rulesCategories;
-                        localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
-                        renderRulesEditor();
-                    }
-                    
-                    if (jsonData.screenshots) {
-                        localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
-                        loadScreenshots();
-                    }
-                    
-                    showToast('✅ Все данные синхронизированы!', 'success');
+        // ============================================================
+        // ====== НАСТРОЙКИ WHITELISTER ======
+        // ============================================================
+        function loadSettings() {
+            document.getElementById('whitelisterUrl').value = localStorage.getItem('whitelister_url') || '';
+            document.getElementById('whitelisterKey').value = localStorage.getItem('whitelister_key') || '';
+            updateWhitelistStatus();
+            checkWhitelisterConnection();
+        }
+
+        function saveWhitelisterSetting() {
+            const url = document.getElementById('whitelisterUrl').value.trim();
+            const key = document.getElementById('whitelisterKey').value.trim();
+            if (url) localStorage.setItem('whitelister_url', url);
+            else localStorage.removeItem('whitelister_url');
+            if (key) localStorage.setItem('whitelister_key', key);
+            else localStorage.removeItem('whitelister_key');
+            showToast('✅ Настройки Whitelister сохранены', 'success');
+            updateWhitelistStatus();
+            checkWhitelisterConnection();
+        }
+
+        function updateWhitelistStatus(online = null) {
+            const statusEl = document.getElementById('whitelistStatus');
+            const textEl = document.getElementById('whitelistStatusText');
+            const url = localStorage.getItem('whitelister_url') || '';
+            const key = localStorage.getItem('whitelister_key') || '';
+            if (url && key) {
+                if (online === true) {
+                    statusEl.className = 'whitelist-status online';
+                    textEl.textContent = 'Whitelister ✅';
+                    document.querySelector('#whitelistStatus .dot').className = 'dot online';
+                } else if (online === false) {
+                    statusEl.className = 'whitelist-status offline';
+                    textEl.textContent = 'Whitelister ❌';
+                    document.querySelector('#whitelistStatus .dot').className = 'dot offline';
                 } else {
-                    showToast('⚠️ Ошибка загрузки данных', 'error');
+                    statusEl.className = 'whitelist-status unknown';
+                    textEl.textContent = 'Whitelister ⚠️';
+                    document.querySelector('#whitelistStatus .dot').className = 'dot unknown';
                 }
-            } catch (e) {
-                showToast('⚠️ Ошибка синхронизации', 'error');
+            } else {
+                statusEl.className = 'whitelist-status unknown';
+                textEl.textContent = 'Whitelister ⚠️';
+                document.querySelector('#whitelistStatus .dot').className = 'dot unknown';
             }
-            
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+        }
+
+        async function checkWhitelisterConnection() {
+            const url = localStorage.getItem('whitelister_url') || '';
+            const key = localStorage.getItem('whitelister_key') || '';
+            const statusEl = document.getElementById('whitelisterStatusText');
+            if (!url) { statusEl.innerHTML = '⚠️ URL не указан'; updateWhitelistStatus(null); return; }
+            if (!key) { statusEl.innerHTML = '⚠️ Ключ не указан'; updateWhitelistStatus(null); return; }
+            statusEl.innerHTML = '⏳ Проверка соединения...';
+            try {
+                const response = await fetch(`${url}/health`, { signal: AbortSignal.timeout(5000) });
+                if (response.ok) {
+                    statusEl.innerHTML = '✅ Соединение с Whitelister установлено!';
+                    statusEl.style.color = '#4ecdc4';
+                    updateWhitelistStatus(true);
+                    showToast('✅ Whitelister подключен!', 'success');
+                } else {
+                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
+                    statusEl.style.color = '#ff6b6b';
+                    updateWhitelistStatus(false);
+                }
+            } catch (error) {
+                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
+                statusEl.style.color = '#ff6b6b';
+                updateWhitelistStatus(false);
+            }
+        }
+
+        function getWhitelisterConfig() {
+            return { url: localStorage.getItem('whitelister_url') || '', key: localStorage.getItem('whitelister_key') || '' };
+        }
+
+        async function sendToWhitelister(nick) {
+            const { url, key } = getWhitelisterConfig();
+            if (!url || !key) {
+                showToast('⚠️ Whitelister не настроен. Перейдите в Настройки.', 'error');
+                return false;
+            }
+            try {
+                const endpoints = [`${url}/api/whitelist/add`, `${url}/api/add`, `${url}/whitelist/add`, `${url}/command`];
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-API-Key': key, 'Authorization': `Bearer ${key}` },
+                            body: JSON.stringify({ player: nick, nick: nick, username: nick, command: `whitelist add ${nick}` })
+                        });
+                        if (response.ok) return true;
+                    } catch (e) { continue; }
+                }
+                return fallbackWhitelistMethod(nick);
+            } catch { return fallbackWhitelistMethod(nick); }
+        }
+
+        function fallbackWhitelistMethod(nick) {
+            try {
+                let commands = localStorage.getItem('mc_commands_queue') || '';
+                const cmd = `whitelist add ${nick}\n`;
+                if (!commands.includes(cmd)) { commands += cmd; localStorage.setItem('mc_commands_queue', commands); }
+                showToast(`📝 Команда сохранена в очередь (файловый метод)`, 'info');
+                return true;
+            } catch { return false; }
         }
 
         // ============================================================
@@ -2990,6 +3075,44 @@
                 document.querySelector('#themeToggle i').className = 'fa-regular fa-sun';
             }
         });
+
+        async function manualSync() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Синхр.';
+            btn.disabled = true;
+            
+            try {
+                const jsonData = await loadFromJSONBin();
+                if (jsonData) {
+                    if (jsonData.wikiCategories) {
+                        wikiCategories = jsonData.wikiCategories;
+                        localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
+                        renderWikiEditor();
+                    }
+                    
+                    if (jsonData.rulesCategories) {
+                        rulesCategories = jsonData.rulesCategories;
+                        localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
+                        renderRulesEditor();
+                    }
+                    
+                    if (jsonData.screenshots) {
+                        localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
+                        loadScreenshots();
+                    }
+                    
+                    showToast('✅ Все данные синхронизированы!', 'success');
+                } else {
+                    showToast('⚠️ Ошибка загрузки данных', 'error');
+                }
+            } catch (e) {
+                showToast('⚠️ Ошибка синхронизации', 'error');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     </script>
 </body>
 </html>
