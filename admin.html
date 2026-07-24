@@ -273,6 +273,29 @@
         .sync-status.local { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
         .sync-status.local .dot { background: #ffaa44; }
         .sync-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .whitelist-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .whitelist-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        .whitelist-status.online { border-color: rgba(78,205,196,0.2); color: #4ecdc4; background: rgba(78,205,196,0.1); }
+        .whitelist-status.online .dot { background: #4ecdc4; }
+        .whitelist-status.offline { border-color: rgba(255,107,107,0.2); color: #ff6b6b; background: rgba(255,107,107,0.1); }
+        .whitelist-status.offline .dot { background: #ff6b6b; }
+        .whitelist-status.unknown { border-color: rgba(255,170,68,0.2); color: #ffaa44; background: rgba(255,170,68,0.1); }
+        .whitelist-status.unknown .dot { background: #ffaa44; }
 
         .toast {
             position: fixed;
@@ -316,7 +339,6 @@
         .refresh-apps-btn:hover { background: rgba(78, 205, 196, 0.2); border-color: rgba(78, 205, 196, 0.4); transform: scale(1.02); }
         .refresh-apps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .refresh-apps-btn .fa-spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .app-header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
         .auto-refresh-badge {
@@ -472,95 +494,7 @@
         body.light .app-filters button { border-color: rgba(0,0,0,0.06); color: #666; }
         body.light .app-filters button.active { background: rgba(0,0,0,0.08); color: #1a1a1a; border-color: rgba(0,0,0,0.15); }
 
-        /* ===== СКРИНШОТЫ ===== */
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .screenshot-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 12px;
-            transition: all 0.3s ease;
-        }
-        .screenshot-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-4px); }
-        .screenshot-card .preview {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border-radius: 8px;
-            background: #1a1a2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .screenshot-card .preview img { width: 100%; height: 100%; object-fit: cover; }
-        .screenshot-card .preview .placeholder { color: #555; font-size: 12px; text-align: center; font-family: 'Inter', system-ui, sans-serif; }
-        .screenshot-card .preview .placeholder i { font-size: 28px; display: block; margin-bottom: 6px; }
-        .screenshot-card .screenshot-name { font-size: 13px; color: #aaa; margin-bottom: 8px; font-family: 'Inter', system-ui, sans-serif; }
-        .screenshot-card .screenshot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .screenshot-card .screenshot-actions button {
-            padding: 4px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-size: 12px;
-            flex: 1;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .screenshot-card .screenshot-actions button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .screenshot-card .screenshot-actions .delete-btn:hover { border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
-        .upload-area {
-            border: 2px dashed rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .upload-area:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.02); }
-        .upload-area i { font-size: 40px; color: #555; margin-bottom: 12px; }
-        .upload-area p { color: #888; font-size: 14px; font-family: 'Inter', system-ui, sans-serif; }
-        .upload-area input[type="file"] { display: none; }
-        .screenshot-save-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            border-radius: 10px;
-            background: rgba(78, 205, 196, 0.1);
-            border: 1px solid rgba(78, 205, 196, 0.2);
-            color: #4ecdc4;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-            margin-bottom: 16px;
-            width: 100%;
-            max-width: 300px;
-            justify-content: center;
-        }
-        .screenshot-save-btn:hover { background: rgba(78, 205, 196, 0.2); border-color: rgba(78, 205, 196, 0.4); transform: scale(1.02); }
-        .screenshot-save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        body.light .screenshot-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .screenshot-card .screenshot-name { color: #555; }
-        body.light .screenshot-card .screenshot-actions button { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .upload-area { border-color: rgba(0,0,0,0.08); }
-        body.light .upload-area i { color: #888; }
-        body.light .upload-area p { color: #666; }
-        body.light .screenshot-save-btn { background: rgba(78, 205, 196, 0.08); border-color: rgba(78, 205, 196, 0.15); }
-        body.light .screenshot-save-btn:hover { background: rgba(78, 205, 196, 0.15); }
-
-        /* ===== НАСТРОЙКИ ===== */
+        /* ===== НАСТРОЙКИ WHITELISTER ===== */
         .settings-section {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.06);
@@ -690,39 +624,6 @@
             margin-right: 6px;
             vertical-align: middle;
         }
-
-        .section-controls {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .section-controls button {
-            padding: 10px 24px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: transparent;
-            color: #ccc;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .section-controls button:hover { background: rgba(255,255,255,0.06); color: #fff; }
-        .section-controls .save-btn { background: #fff; color: #0a0a0a; border-color: #fff; }
-        .section-controls .save-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
-        .section-controls .preview-btn { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
-        .section-status { margin-top: 12px; font-size: 14px; color: #4ecdc4; font-family: 'Inter', system-ui, sans-serif; }
-        .section-status.error { color: #ff6b6b; }
-
-        body.light .section-controls { border-color: rgba(0,0,0,0.06); }
-        body.light .section-controls button { border-color: rgba(0,0,0,0.08); color: #666; }
-        body.light .section-controls button:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-        body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
-        body.light .section-controls .save-btn:hover { background: #444; }
 
         /* ===== WIKI ===== */
         .wiki-layout { display: flex; gap: 24px; min-height: 500px; }
@@ -1106,6 +1007,39 @@
         body.light .rules-sec-title-edit { color: #1a1a1a; border-bottom-color: rgba(0,0,0,0.2); }
         body.light .rules-sec-title-edit:focus { border-bottom-color: #4ecdc4; }
 
+        .section-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .section-controls button {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: #ccc;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .section-controls button:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .section-controls .save-btn { background: #fff; color: #0a0a0a; border-color: #fff; }
+        .section-controls .save-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
+        .section-controls .preview-btn { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+        .section-status { margin-top: 12px; font-size: 14px; color: #4ecdc4; font-family: 'Inter', system-ui, sans-serif; }
+        .section-status.error { color: #ff6b6b; }
+
+        body.light .section-controls { border-color: rgba(0,0,0,0.06); }
+        body.light .section-controls button { border-color: rgba(0,0,0,0.08); color: #666; }
+        body.light .section-controls button:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light .section-controls .save-btn { background: #222; color: #f5f5f5; border-color: #222; }
+        body.light .section-controls .save-btn:hover { background: #444; }
+
         @media (max-width: 768px) {
             .wiki-layout { flex-direction: column; }
             .wiki-sidebar-editor { width: 100%; max-height: 300px; }
@@ -1117,8 +1051,6 @@
             .settings-section .setting-row { flex-direction: column; align-items: stretch; }
             .settings-section .setting-row label { min-width: auto; }
             .settings-section .setting-row input { min-width: auto; }
-            .screenshot-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .screenshot-save-btn { max-width: 100%; }
         }
         @media (max-width: 640px) {
             .login-box { padding: 32px 24px; }
@@ -1181,9 +1113,6 @@
                 <button class="admin-tab active" data-tab="applications" onclick="switchTab('applications')">
                     <i class="fa-regular fa-pen-to-square"></i> Заявки
                 </button>
-                <button class="admin-tab" data-tab="screenshots" onclick="switchTab('screenshots')">
-                    <i class="fa-regular fa-image"></i> Скриншоты
-                </button>
                 <button class="admin-tab" data-tab="wiki" onclick="switchTab('wiki')">
                     <i class="fa-regular fa-book"></i> Вики
                 </button>
@@ -1202,11 +1131,18 @@
                     <span class="dot"></span>
                     <span id="syncStatusText">☁️ Синхронизировано</span>
                 </span>
+                <span class="whitelist-status unknown" id="whitelistStatus">
+                    <span class="dot unknown"></span>
+                    <span id="whitelistStatusText">Whitelister ⚠️</span>
+                </span>
                 <button onclick="syncAllToCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-up"></i> Сохранить
                 </button>
                 <button onclick="syncAllFromCloud()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(255,170,68,0.2);background:rgba(255,170,68,0.05);color:#ffaa44;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
                     <i class="fa-regular fa-cloud-arrow-down"></i> Загрузить
+                </button>
+                <button onclick="checkWhitelisterConnection()" style="padding:6px 16px;border-radius:8px;border:1px solid rgba(78,205,196,0.2);background:rgba(78,205,196,0.05);color:#4ecdc4;cursor:pointer;font-size:12px;font-family:'Inter',system-ui,sans-serif;">
+                    <i class="fa-regular fa-plug"></i> Проверить
                 </button>
                 <button class="admin-logout" onclick="logout()">
                     <i class="fa-regular fa-right-from-bracket"></i> Выйти
@@ -1227,9 +1163,6 @@
             </div>
             <div class="sidebar-item active" data-tab="applications" onclick="switchTabMobile('applications')">
                 <i class="fa-regular fa-pen-to-square"></i> Заявки
-            </div>
-            <div class="sidebar-item" data-tab="screenshots" onclick="switchTabMobile('screenshots')">
-                <i class="fa-regular fa-image"></i> Скриншоты
             </div>
             <div class="sidebar-item" data-tab="wiki" onclick="switchTabMobile('wiki')">
                 <i class="fa-regular fa-book"></i> Вики
@@ -1275,31 +1208,6 @@
             <div id="applicationsList"></div>
         </div>
 
-        <!-- SCREENSHOTS -->
-        <div id="tab-screenshots" class="admin-panel" style="display:none;">
-            <h2><i class="fa-regular fa-image"></i> Управление скриншотами</h2>
-            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Загружайте и управляйте скриншотами для главной страницы.</p>
-            
-            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-                <button class="screenshot-save-btn" id="screenshotSaveBtn" onclick="saveScreenshotsToCloud()">
-                    <i class="fa-regular fa-cloud-arrow-up"></i>
-                    <span>Сохранить скриншоты в облако</span>
-                </button>
-                <button class="screenshot-save-btn" style="background:rgba(255,170,68,0.1);border-color:rgba(255,170,68,0.2);color:#ffaa44;" onclick="loadScreenshotsFromCloud()">
-                    <i class="fa-regular fa-cloud-arrow-down"></i>
-                    <span>Загрузить из облака</span>
-                </button>
-            </div>
-            
-            <div class="screenshot-grid" id="screenshotGrid"></div>
-            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <i class="fa-regular fa-cloud-arrow-up"></i>
-                <p><strong>Нажмите или перетащите</strong> файлы</p>
-                <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFileUpload(event)">
-            </div>
-            <div id="uploadStatus" style="margin-top:12px;font-size:14px;color:#4ecdc4;font-family:'Inter',system-ui,sans-serif;"></div>
-        </div>
-
         <!-- WIKI -->
         <div id="tab-wiki" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-book"></i> Редактор вики</h2>
@@ -1326,23 +1234,34 @@
 
         <!-- SETTINGS -->
         <div id="tab-settings" class="admin-panel" style="display:none;">
-            <h2><i class="fa-regular fa-gear"></i> Настройки</h2>
-            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Настройте синхронизацию с JSONBin.</p>
+            <h2><i class="fa-regular fa-gear"></i> Настройки Whitelister</h2>
+            <p style="color:#666;margin-bottom:20px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Настройте подключение к Whitelister для автоматического добавления в вайтлист.</p>
             
             <div class="settings-section">
-                <h3><i class="fa-solid fa-cloud"></i> Синхронизация с JSONBin</h3>
-                <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
-                    <p>Все данные хранятся локально и автоматически синхронизируются с облаком.</p>
-                    <p>🔄 <strong>Авто-синхронизация:</strong> каждые 30 секунд</p>
-                    <p style="margin-top:8px;color:#4ecdc4;">✅ Заявки сразу попадают в облако при отправке!</p>
+                <h3><i class="fa-solid fa-server"></i> Whitelister API</h3>
+                <div class="setting-row">
+                    <label>URL API:</label>
+                    <input type="text" id="whitelisterUrl" placeholder="http://ваш-ip-сервера:8080">
+                    <button class="save-setting-btn" onclick="saveWhitelisterSetting()">Сохранить</button>
+                </div>
+                <div class="setting-row">
+                    <label>Секретный ключ:</label>
+                    <input type="password" id="whitelisterKey" placeholder="Ваш секретный ключ">
+                    <button class="save-setting-btn" onclick="saveWhitelisterSetting()">Сохранить</button>
+                </div>
+                <div class="setting-row" style="margin-top:8px;font-size:13px;color:#666;font-family:'Inter',system-ui,sans-serif;">
+                    <span id="whitelisterStatusText">⏳ Статус: не проверено</span>
+                    <button class="save-setting-btn" onclick="checkWhitelisterConnection()" style="margin-left:12px;">Проверить соединение</button>
                 </div>
             </div>
-            
-            <div class="settings-section" style="border-color:rgba(255,170,68,0.2);">
-                <h3 style="color:#ffaa44;"><i class="fa-regular fa-circle-info"></i> Информация</h3>
+            <div class="settings-section" style="border-color:rgba(78,205,196,0.2);">
+                <h3 style="color:#4ecdc4;"><i class="fa-regular fa-circle-info"></i> Инструкция по настройке Whitelister</h3>
                 <div style="font-size:13px;color:#aaa;line-height:1.7;font-family:'Inter',system-ui,sans-serif;">
-                    <p><strong>JSONBin</strong> — бесплатное облачное хранилище для JSON.</p>
-                    <p>Все данные: заявки, вики, правила и скриншоты.</p>
+                    <p>1. Установите плагин <strong>Whitelister</strong> на сервер Minecraft.</p>
+                    <p>2. В файле <code style="background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;">plugins/Whitelister/config.yml</code> включите API.</p>
+                    <p>3. Введите URL и ключ в поля выше.</p>
+                    <p>4. Нажмите <strong>«Проверить соединение»</strong> для теста.</p>
+                    <p style="margin-top:8px;color:#4ecdc4;">✅ После настройки при принятии заявки игрок будет автоматически добавлен в вайтлист!</p>
                 </div>
             </div>
         </div>
@@ -1472,14 +1391,13 @@
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.admin-tab[data-tab="${tab}"]`)?.classList.add('active');
             document.getElementById('tab-applications').style.display = tab === 'applications' ? 'block' : 'none';
-            document.getElementById('tab-screenshots').style.display = tab === 'screenshots' ? 'block' : 'none';
             document.getElementById('tab-wiki').style.display = tab === 'wiki' ? 'block' : 'none';
             document.getElementById('tab-rules').style.display = tab === 'rules' ? 'block' : 'none';
             document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none';
             if (tab === 'applications') loadApplications();
-            if (tab === 'screenshots') loadScreenshots();
             if (tab === 'wiki') renderWikiEditor();
             if (tab === 'rules') renderRulesEditor();
+            if (tab === 'settings') loadSettings();
         }
 
         function getData(key, defaultVal) {
@@ -1536,6 +1454,14 @@
             textEl.textContent = text;
         }
 
+        function updateWhitelistStatus(status, text) {
+            const el = document.getElementById('whitelistStatus');
+            const textEl = document.getElementById('whitelistStatusText');
+            el.className = `whitelist-status ${status}`;
+            document.querySelector('#whitelistStatus .dot').className = `dot ${status}`;
+            textEl.textContent = text;
+        }
+
         async function autoSync() {
             if (isSyncing) return;
             isSyncing = true;
@@ -1551,7 +1477,6 @@
                 
                 // Собираем все данные
                 currentData.applications = getData('mugivara_applications', []);
-                currentData.screenshots = getData('admin_screenshots', []);
                 currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
                 currentData.rulesCategories = getData('rules_categories', getDefaultRules());
                 currentData.updated = new Date().toISOString();
@@ -1589,7 +1514,6 @@
                 }
                 
                 currentData.applications = getData('mugivara_applications', []);
-                currentData.screenshots = getData('admin_screenshots', []);
                 currentData.wikiCategories = getData('wiki_categories', getDefaultWiki());
                 currentData.rulesCategories = getData('rules_categories', getDefaultRules());
                 currentData.updated = new Date().toISOString();
@@ -1630,10 +1554,6 @@
                     if (data.applications) {
                         localStorage.setItem('mugivara_applications', JSON.stringify(data.applications));
                         loadApplications();
-                    }
-                    if (data.screenshots) {
-                        localStorage.setItem('admin_screenshots', JSON.stringify(data.screenshots));
-                        loadScreenshots();
                     }
                     if (data.wikiCategories) {
                         localStorage.setItem('wiki_categories', JSON.stringify(data.wikiCategories));
@@ -1747,7 +1667,6 @@
             app.status = 'approved';
             saveApplications();
             showToast(`✅ Заявка одобрена!`, 'success');
-            // Авто-синхронизация после изменения
             setTimeout(autoSync, 500);
         }
 
@@ -1800,179 +1719,121 @@
         });
 
         // ============================================================
-        // ====== СКРИНШОТЫ ======
+        // ====== WHITELISTER ======
         // ============================================================
-        let screenshots = [];
-
-        function loadScreenshots() {
-            screenshots = getData('admin_screenshots', null);
-            if (!screenshots || screenshots.length !== 12) {
-                screenshots = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, name: `screenshot${i+1}.jpg`, data: null, placeholder: true }));
-                setData('admin_screenshots', screenshots);
-            }
-            renderScreenshots();
+        function loadSettings() {
+            document.getElementById('whitelisterUrl').value = localStorage.getItem('whitelister_url') || '';
+            document.getElementById('whitelisterKey').value = localStorage.getItem('whitelister_key') || '';
+            updateWhitelistStatus('unknown', 'Whitelister ⚠️');
+            checkWhitelisterConnection();
         }
 
-        async function saveScreenshotsToCloud() {
-            const btn = document.getElementById('screenshotSaveBtn');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Сохранение...';
+        function saveWhitelisterSetting() {
+            const url = document.getElementById('whitelisterUrl').value.trim();
+            const key = document.getElementById('whitelisterKey').value.trim();
+            if (url) localStorage.setItem('whitelister_url', url);
+            else localStorage.removeItem('whitelister_url');
+            if (key) localStorage.setItem('whitelister_key', key);
+            else localStorage.removeItem('whitelister_key');
+            showToast('✅ Настройки Whitelister сохранены', 'success');
+            updateWhitelistStatus('unknown', 'Whitelister ⚠️');
+            checkWhitelisterConnection();
+        }
+
+        async function checkWhitelisterConnection() {
+            const url = localStorage.getItem('whitelister_url') || '';
+            const key = localStorage.getItem('whitelister_key') || '';
+            const statusEl = document.getElementById('whitelisterStatusText');
+            
+            if (!url) { 
+                statusEl.innerHTML = '⚠️ URL не указан';
+                updateWhitelistStatus('unknown', 'Whitelister ⚠️');
+                return; 
+            }
+            if (!key) { 
+                statusEl.innerHTML = '⚠️ Ключ не указан';
+                updateWhitelistStatus('unknown', 'Whitelister ⚠️');
+                return; 
+            }
+            
+            statusEl.innerHTML = '⏳ Проверка соединения...';
             
             try {
-                const currentData = await loadFromJSONBin();
-                if (!currentData) {
-                    showToast('⚠️ Ошибка загрузки данных из облака', 'error');
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    return;
-                }
+                const response = await fetch(`${url}/health`, { 
+                    signal: AbortSignal.timeout(5000) 
+                });
                 
-                currentData.screenshots = screenshots;
-                currentData.updated = new Date().toISOString();
-                
-                const success = await saveToJSONBin(currentData);
-                
-                if (success) {
-                    showToast('✅ Скриншоты сохранены в облако!', 'success');
-                    updateSyncStatus('synced', '☁️ Синхронизировано');
-                    localStorage.setItem('mugivara_last_update', Date.now().toString());
+                if (response.ok) {
+                    statusEl.innerHTML = '✅ Соединение с Whitelister установлено!';
+                    statusEl.style.color = '#4ecdc4';
+                    updateWhitelistStatus('online', 'Whitelister ✅');
+                    showToast('✅ Whitelister подключен!', 'success');
                 } else {
-                    showToast('⚠️ Ошибка сохранения в облако', 'error');
-                    updateSyncStatus('local', '📦 Локально');
+                    statusEl.innerHTML = `❌ Ошибка: ${response.status}`;
+                    statusEl.style.color = '#ff6b6b';
+                    updateWhitelistStatus('offline', 'Whitelister ❌');
                 }
             } catch (error) {
-                console.error('❌ Ошибка:', error);
-                showToast('⚠️ Ошибка сохранения', 'error');
-                updateSyncStatus('local', '📦 Локально');
-            }
-            
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
-
-        async function loadScreenshotsFromCloud() {
-            const btn = event?.target;
-            const originalText = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.innerHTML = '<span class="spinner"></span> Загрузка...';
-                btn.disabled = true;
-            }
-            
-            try {
-                const data = await loadFromJSONBin();
-                if (data && data.screenshots) {
-                    screenshots = data.screenshots;
-                    setData('admin_screenshots', screenshots);
-                    renderScreenshots();
-                    updateSyncStatus('synced', '☁️ Синхронизировано');
-                    showToast('✅ Скриншоты загружены из облака', 'success');
-                } else {
-                    showToast('ℹ️ В облаке нет скриншотов', 'info');
-                    updateSyncStatus('local', '📦 Локально');
-                }
-            } catch (error) {
-                console.error('❌ Ошибка:', error);
-                showToast('⚠️ Ошибка загрузки', 'error');
-                updateSyncStatus('local', '📦 Локально');
-            }
-            
-            if (btn) {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                statusEl.innerHTML = `❌ Не удалось подключиться: ${error.message}`;
+                statusEl.style.color = '#ff6b6b';
+                updateWhitelistStatus('offline', 'Whitelister ❌');
             }
         }
 
-        function renderScreenshots() {
-            const grid = document.getElementById('screenshotGrid');
-            grid.innerHTML = screenshots.map((s, index) => `
-                <div class="screenshot-card">
-                    <div class="preview" onclick="document.getElementById('fileInput_${index}').click()">
-                        ${s.data ? `<img src="${s.data}" alt="${s.name}">` : `
-                            <div class="placeholder">
-                                <i class="fa-regular fa-image"></i>
-                                <div>${s.name}</div>
-                                <div style="font-size:10px;color:#444;margin-top:4px;">Пусто</div>
-                            </div>
-                        `}
-                        <input type="file" id="fileInput_${index}" accept="image/*" style="display:none;" onchange="uploadToSlot(${index}, event)">
-                    </div>
-                    <div class="screenshot-name">${s.name}</div>
-                    <div class="screenshot-actions">
-                        <button onclick="document.getElementById('fileInput_${index}').click()"><i class="fa-regular fa-upload"></i> Загрузить</button>
-                        ${s.data ? `<button onclick="removeScreenshot(${index})" class="delete-btn"><i class="fa-regular fa-trash-can"></i> Удалить</button>` : ''}
-                    </div>
-                </div>
-            `).join('');
-            updateUploadStatus();
-        }
-
-        function uploadToSlot(index, event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('⚠️ Файл слишком большой (макс 5MB)', 'error');
-                event.target.value = '';
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                screenshots[index] = { ...screenshots[index], data: e.target.result, placeholder: false, name: file.name };
-                setData('admin_screenshots', screenshots);
-                renderScreenshots();
-                showToast('✅ Скриншот загружен', 'success');
+        function getWhitelisterConfig() {
+            return { 
+                url: localStorage.getItem('whitelister_url') || '', 
+                key: localStorage.getItem('whitelister_key') || '' 
             };
-            reader.onerror = () => { showToast('❌ Ошибка чтения файла', 'error'); };
-            reader.readAsDataURL(file);
-            event.target.value = '';
         }
 
-        function removeScreenshot(index) {
-            screenshots[index] = { ...screenshots[index], data: null, placeholder: true, name: `screenshot${index+1}.jpg` };
-            setData('admin_screenshots', screenshots);
-            renderScreenshots();
-            showToast('🗑️ Скриншот удален', 'info');
-        }
-
-        function handleFileUpload(event) {
-            const files = event.target.files;
-            if (!files.length) return;
-            let loaded = 0;
-            const totalFiles = files.length;
-            for (let file of files) {
-                const emptyIndex = screenshots.findIndex(s => s.placeholder || !s.data);
-                if (emptyIndex === -1) {
-                    showToast('⚠️ Все 12 слотов заполнены! Удалите лишние скриншоты.', 'error');
-                    break;
-                }
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    screenshots[emptyIndex] = { ...screenshots[emptyIndex], data: e.target.result, placeholder: false, name: file.name };
-                    loaded++;
-                    if (loaded === totalFiles || loaded === screenshots.filter(s => s.placeholder || !s.data).length === 0) {
-                        setData('admin_screenshots', screenshots);
-                        renderScreenshots();
-                        showToast(`✅ Загружено ${loaded} файлов`, 'success');
-                    }
-                };
-                reader.onerror = () => {
-                    loaded++;
-                    if (loaded === totalFiles) {
-                        setData('admin_screenshots', screenshots);
-                        renderScreenshots();
-                        showToast(`⚠️ Загружено ${loaded - 1} из ${totalFiles} файлов`, 'info');
-                    }
-                };
-                reader.readAsDataURL(file);
+        async function sendToWhitelister(nick) {
+            const { url, key } = getWhitelisterConfig();
+            if (!url || !key) {
+                showToast('⚠️ Whitelister не настроен. Перейдите в Настройки.', 'error');
+                return false;
             }
-            event.target.value = '';
+            try {
+                const endpoints = [
+                    `${url}/api/whitelist/add`, 
+                    `${url}/api/add`, 
+                    `${url}/whitelist/add`, 
+                    `${url}/command`
+                ];
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json', 
+                                'X-API-Key': key, 
+                                'Authorization': `Bearer ${key}` 
+                            },
+                            body: JSON.stringify({ 
+                                player: nick, 
+                                nick: nick, 
+                                username: nick, 
+                                command: `whitelist add ${nick}` 
+                            })
+                        });
+                        if (response.ok) return true;
+                    } catch (e) { continue; }
+                }
+                return fallbackWhitelistMethod(nick);
+            } catch { return fallbackWhitelistMethod(nick); }
         }
 
-        function updateUploadStatus() {
-            const used = screenshots.filter(s => s.data).length;
-            const status = document.getElementById('uploadStatus');
-            status.textContent = `📊 Использовано ${used}/12 слотов`;
-            status.className = 'save-status';
+        function fallbackWhitelistMethod(nick) {
+            try {
+                let commands = localStorage.getItem('mc_commands_queue') || '';
+                const cmd = `whitelist add ${nick}\n`;
+                if (!commands.includes(cmd)) { 
+                    commands += cmd; 
+                    localStorage.setItem('mc_commands_queue', commands); 
+                }
+                showToast(`📝 Команда сохранена в очередь (файловый метод)`, 'info');
+                return true;
+            } catch { return false; }
         }
 
         // ============================================================
@@ -2632,9 +2493,6 @@
             
             const jsonData = await loadFromJSONBin();
             if (jsonData) {
-                if (jsonData.screenshots) {
-                    localStorage.setItem('admin_screenshots', JSON.stringify(jsonData.screenshots));
-                }
                 if (jsonData.wikiCategories) {
                     wikiCategories = jsonData.wikiCategories;
                     localStorage.setItem('wiki_categories', JSON.stringify(wikiCategories));
@@ -2656,9 +2514,9 @@
                 updateSyncStatus('local', '📦 Локально');
             }
             
-            loadScreenshots();
             renderWikiEditor();
             renderRulesEditor();
+            loadSettings();
             
             // Авто-обновление заявок
             if (applicationsRefreshInterval) {
