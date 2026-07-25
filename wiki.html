@@ -23,6 +23,7 @@
         }
     </script>
     <style>
+        /* Базовые стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
@@ -33,6 +34,7 @@
             font-weight: 400;
         }
 
+        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
@@ -84,6 +86,7 @@
             color: #fff;
         }
 
+        /* ===== ПЛАВАЮЩИЕ ЧАСТИЦЫ ===== */
         .wiki-floating-particles {
             position: fixed;
             inset: 0;
@@ -117,6 +120,7 @@
             100% { transform: translateY(-110vh) translateX(60px) scale(0.5); opacity: 0; }
         }
 
+        /* ===== АНИМАЦИЯ ФОНА (орбы) ===== */
         .wiki-bg-animate {
             position: fixed;
             inset: 0;
@@ -167,6 +171,7 @@
             100% { transform: translate(60px, -30px) scale(1.05) rotate(360deg); }
         }
 
+        /* ===== САЙДБАР (фиксированный) ===== */
         .wiki-sidebar {
             position: fixed;
             top: 4rem;
@@ -177,7 +182,7 @@
             border-right: 1px solid rgba(255,255,255,0.06);
             overflow-y: auto;
             transition: background-color 0.3s ease;
-            z-index: 100;
+            z-index: 20;
             padding: 1.5rem;
         }
         .wiki-sidebar::-webkit-scrollbar { width: 4px; }
@@ -241,11 +246,13 @@
         }
         body.light .wiki-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
 
+        /* ===== КАРТОЧКИ ВИКИ ===== */
         .wiki-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .wiki-card:hover { transform: translateY(-6px); }
 
+        /* ===== МОБИЛЬНОЕ МЕНЮ (выпадающее) ===== */
         #mobile-menu {
             animation: slideDown 0.25s ease forwards;
         }
@@ -254,36 +261,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .glitch-title {
-            position: relative;
-            animation: glitchText 3s infinite;
-            font-weight: 700;
-        }
-        @keyframes glitchText {
-            0%, 90%, 100% { transform: translate(0); }
-            92% { transform: translate(-2px, 1px); }
-            94% { transform: translate(2px, -1px); }
-            96% { transform: translate(-1px, 2px); }
-            98% { transform: translate(1px, -2px); }
-        }
-
-        .wiki-icon {
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .wiki-card:hover .wiki-icon {
-            transform: rotate(15deg) scale(1.1);
-        }
-
+        /* ===== ЭФФЕКТ СТЕКЛА ===== */
         .glass-card {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(12px);
@@ -299,7 +277,6 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 48px rgba(0,0,0,0.4);
         }
-
         body.light .glass-card {
             background: rgba(255,255,255,0.6);
             backdrop-filter: blur(12px);
@@ -311,6 +288,7 @@
             border-color: rgba(255,255,255,0.5);
         }
 
+        /* ===== СВЕТЛАЯ ТЕМА ===== */
         body.light {
             background-color: #f0f0f0;
             color: #1a1a1a;
@@ -493,6 +471,7 @@
             border-color: rgba(0,0,0,0.1);
         }
 
+        /* ===== ОСНОВНОЙ КОНТЕНТ ВИКИ ===== */
         .wiki-page-content ul {
             list-style: none;
             padding: 0;
@@ -504,6 +483,8 @@
             border-radius: 8px;
             border-left: 3px solid rgba(255,255,255,0.08);
             font-family: 'Inter', system-ui, sans-serif;
+            white-space: pre-wrap;   /* сохраняет переносы и пробелы */
+            word-wrap: break-word;   /* переносит длинные слова */
         }
         .wiki-page-content ul li:before {
             content: "•";
@@ -514,27 +495,6 @@
             background: rgba(0,0,0,0.02);
             border-left-color: rgba(0,0,0,0.08);
         }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 2000;
-            animation: toastSlide 0.4s ease;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        @keyframes toastSlide {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
-        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
-        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
 
         /* ===== ПЛАВНАЯ АНИМАЦИЯ БУРГЕРА ===== */
         #mobile-menu-button i {
@@ -548,13 +508,14 @@
             transform: rotate(0deg) scale(1);
         }
 
+        /* ===== МОБИЛЬНЫЙ САЙДБАР ===== */
         .burger-btn {
             display: none;
             position: fixed;
             top: 72px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 110;
+            z-index: 30;
             background: rgba(10,10,10,0.9);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.08);
@@ -595,7 +556,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 90;
+            z-index: 40;
             backdrop-filter: blur(4px);
         }
         .mobile-overlay.active {
@@ -609,7 +570,7 @@
             width: 300px;
             height: 100vh;
             background: #121212;
-            z-index: 120;
+            z-index: 50;
             transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
             padding: 24px 20px;
@@ -736,10 +697,32 @@
                 font-size: 10px;
             }
         }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: toastSlide 0.4s ease;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
+        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
+        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
     </style>
 </head>
 <body id="app-body">
 
+    <!-- ===== ФОН ===== -->
     <div class="wiki-bg-animate">
         <div class="orb"></div>
         <div class="orb"></div>
@@ -752,6 +735,7 @@
         <span class="particle"></span>
     </div>
 
+    <!-- ===== NAVBAR ===== -->
     <nav id="navbar" class="fixed top-0 w-full bg-black/95 backdrop-blur-md border-b border-white/5 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -813,12 +797,15 @@
         </div>
     </nav>
 
+    <!-- ===== БУРГЕР-КНОПКА (только мобилка) ===== -->
     <button class="burger-btn" id="burgerBtn" onclick="toggleMobileSidebar()">
         <i class="fa-solid fa-bars" id="burgerIcon"></i>
         <span id="burgerLabel">Меню</span>
     </button>
 
+    <!-- ===== ОСНОВНОЙ КОНТЕЙНЕР ===== -->
     <div class="wiki-main-wrapper" id="wikiMainWrapper">
+        <!-- Десктопный сайдбар -->
         <div class="wiki-sidebar transition-colors duration-300" id="wikiSidebar">
             <div class="mb-8">
                 <h1 class="text-2xl font-semibold text-white glitch-title"><i class="fa-solid fa-book mr-2"></i>ВИКИ</h1>
@@ -843,8 +830,10 @@
             </div>
         </div>
 
+        <!-- Мобильный оверлей -->
         <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
 
+        <!-- Мобильный сайдбар -->
         <div class="mobile-sidebar" id="mobileSidebar">
             <div class="sidebar-header">
                 <h2><i class="fa-solid fa-book mr-2"></i>Вики</h2>
@@ -862,6 +851,7 @@
             </div>
         </div>
 
+        <!-- КОНТЕНТ -->
         <div class="flex-1 pt-4 lg:pt-0 px-4 sm:px-6 lg:p-10">
             <div id="wiki-content" class="max-w-3xl mx-auto">
                 <!-- Загружается через JS -->
@@ -869,6 +859,7 @@
         </div>
     </div>
 
+    <!-- ===== FOOTER ===== -->
     <footer class="wiki-footer">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
             <div class="flex justify-center">
@@ -881,9 +872,15 @@
     </footer>
 
     <script>
+        // ============================================================
+        // ====== КОНФИГУРАЦИЯ JSONBin ======
+        // ============================================================
         const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
 
+        // ============================================================
+        // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
+        // ============================================================
         function copyIP() {
             navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
@@ -966,6 +963,9 @@
             }, 4000);
         }
 
+        // ============================================================
+        // ====== ВИКИ ======
+        // ============================================================
         let wikiCategories = [];
         let currentPage = 'home';
         let sectionsMap = {};
@@ -1224,6 +1224,7 @@
             return icons[id] || 'fa-solid fa-circle';
         }
 
+        // ===== ОТОБРАЖЕНИЕ СТРАНИЦЫ ВИКИ (с поддержкой переносов) =====
         function loadWikiPage(page) {
             const content = document.getElementById('wiki-content');
             if (!sectionsMap[page]) {
@@ -1256,7 +1257,11 @@
             }
             const items = section.items || [];
             const itemsHtml = items.length > 0 
-                ? `<ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`
+                ? `<ul>${items.map(item => {
+                    // Заменяем \n на <br> для переносов строк
+                    const formatted = item.replace(/\n/g, '<br>');
+                    return `<li>${formatted}</li>`;
+                }).join('')}</ul>`
                 : '<p class="text-neutral-400">Пункты отсутствуют</p>';
             let extraHtml = '';
             if (pageId === 'home') {
@@ -1280,7 +1285,9 @@
                 <div class="wiki-page-content">
                     <div class="glass-card p-8 sm:p-10">
                         <h1 class="text-3xl sm:text-4xl font-semibold text-white mb-6">${section.title}</h1>
-                        <div class="text-neutral-300 leading-relaxed">${itemsHtml}</div>
+                        <div class="text-neutral-300 leading-relaxed">
+                            ${itemsHtml}
+                        </div>
                         ${extraHtml}
                         <div class="mt-6 text-xs text-neutral-500 flex items-center gap-2 border-t border-white/5 pt-4">
                             <i class="fa-regular fa-circle-check text-green-400"></i>
@@ -1293,6 +1300,7 @@
             `;
         }
 
+        // ===== ОНЛАЙН =====
         async function updateOnline() {
             const el = document.getElementById('online-count');
             try {
@@ -1313,6 +1321,7 @@
             }
         }
 
+        // ===== СЛУШАЕМ ОБНОВЛЕНИЯ =====
         window.addEventListener('storage', (e) => {
             if (e.key === 'wiki_categories' || e.key === 'mugivara_main_data') {
                 const loaded = loadWikiFromStorage();
@@ -1332,6 +1341,9 @@
             }
         });
 
+        // ============================================================
+        // ====== ИНИЦИАЛИЗАЦИЯ ======
+        // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const icon = document.querySelector('#themeToggle i');

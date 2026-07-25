@@ -30,6 +30,7 @@
         body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
         body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
 
+        /* ===== LOGIN ===== */
         .login-container {
             min-height: 100vh;
             display: flex;
@@ -77,6 +78,7 @@
         .login-btn:hover { background: #e0e0e0; transform: translateY(-2px); }
         .login-error { color: #ff6b6b; font-size: 14px; margin-top: 12px; text-align: center; display: none; }
 
+        /* ===== ADMIN ===== */
         .admin-container { display: none; max-width: 1400px; margin: 0 auto; padding: 20px; }
         .admin-container.active { display: block; }
 
@@ -124,6 +126,7 @@
         }
         .admin-logout:hover { background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.3); color: #ff6b6b; }
 
+        /* ===== БУРГЕР ===== */
         .burger-toggle {
             display: none;
             background: transparent;
@@ -557,6 +560,7 @@
             vertical-align: middle;
         }
 
+        /* ===== WIKI ===== */
         .wiki-layout { display: flex; gap: 24px; min-height: 500px; }
         .wiki-sidebar-editor {
             width: 280px;
@@ -706,46 +710,52 @@
         }
         .wiki-add-btn:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
 
+        /* ===== ИЗМЕНЁННЫЙ СТИЛЬ ДЛЯ ЭЛЕМЕНТОВ ВИКИ ===== */
         .wiki-item-row {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 8px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
-        .wiki-item-row input {
+        .wiki-item-row textarea {
             flex: 1;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.04);
             border-radius: 6px;
-            padding: 6px 10px;
+            padding: 8px 10px;
             color: #ccc;
             font-size: 13px;
             font-family: 'Inter', system-ui, sans-serif;
+            resize: vertical;
+            min-height: 44px;
+            line-height: 1.5;
+            transition: border-color 0.3s ease;
         }
-        .wiki-item-row input:focus { outline: none; border-color: rgba(255,255,255,0.12); }
+        .wiki-item-row textarea:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+        }
         .wiki-item-row .item-delete {
             color: #666;
             cursor: pointer;
             background: transparent;
             border: none;
             font-size: 14px;
+            padding-top: 8px;
+            flex-shrink: 0;
         }
         .wiki-item-row .item-delete:hover { color: #ff6b6b; }
 
-        body.light .wiki-sidebar-editor { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .wiki-main-editor { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
-        body.light .wiki-cat-item { color: #666; }
-        body.light .wiki-cat-item:hover { background: rgba(0,0,0,0.04); color: #1a1a1a; }
-        body.light .wiki-cat-item.active { background: rgba(0,0,0,0.06); color: #1a1a1a; }
-        body.light .wiki-section-item { color: #666; }
-        body.light .wiki-section-item:hover { background: rgba(0,0,0,0.03); color: #333; }
-        body.light .wiki-section-item.active { background: rgba(0,0,0,0.05); color: #1a1a1a; }
-        body.light .wiki-item-row input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #333; }
-        body.light .wiki-item-row input:focus { border-color: rgba(0,0,0,0.12); }
-        body.light .wiki-add-btn { border-color: rgba(0,0,0,0.1); color: #888; }
-        body.light .wiki-add-btn:hover { border-color: rgba(0,0,0,0.2); color: #1a1a1a; }
-        body.light .sec-title-edit { color: #1a1a1a; border-bottom-color: rgba(0,0,0,0.2); }
-        body.light .sec-title-edit:focus { border-bottom-color: #4ecdc4; }
+        body.light .wiki-item-row textarea {
+            background: rgba(0,0,0,0.03);
+            border-color: rgba(0,0,0,0.04);
+            color: #333;
+        }
+        body.light .wiki-item-row textarea:focus {
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(0,0,0,0.06);
+        }
 
         .rules-layout { display: flex; gap: 24px; min-height: 500px; }
         .rules-sidebar-editor {
@@ -978,6 +988,8 @@
             .admin-panel { padding: 16px; }
             .application-card .app-details { grid-template-columns: 1fr; }
             .modal-content { padding: 20px; margin: 10px; }
+            .wiki-item-row { flex-wrap: wrap; }
+            .wiki-item-row textarea { min-height: 60px; }
         }
         @media (max-width: 640px) {
             .login-box { padding: 32px 24px; }
@@ -1130,10 +1142,12 @@
             <div id="applicationsList"></div>
         </div>
 
-        <!-- WIKI -->
+        <!-- WIKI (с поддержкой многострочных пунктов) -->
         <div id="tab-wiki" class="admin-panel" style="display:none;">
             <h2><i class="fa-regular fa-book"></i> Редактор вики</h2>
-            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">Управляйте категориями и разделами вики.</p>
+            <p style="color:#666;margin-bottom:16px;font-size:14px;font-family:'Inter',system-ui,sans-serif;">
+                Управляйте категориями и разделами вики. Для переноса строки в пункте используйте <kbd>Shift+Enter</kbd> или просто <kbd>Enter</kbd>.
+            </p>
             <div id="wikiEditor"></div>
             <div class="section-controls">
                 <button class="preview-btn" onclick="previewWikiFull()"><i class="fa-regular fa-eye"></i> Предпросмотр</button>
@@ -1173,7 +1187,7 @@
         const ADMIN_PASSWORD = '123qweasdzxczxc1000-7//';
         
         // ====== WHITELISTAPI НАСТРОЙКИ ======
-        const WHITELISTAPI_URL = 'http://play.mugivaracraft.ru:25565';
+        const WHITELISTAPI_URL = 'http://play.mugivaracraft.ru:30458';
         const WHITELISTAPI_TOKEN = 'qweasdzxc1000-7//';
 
         // ============================================================
@@ -1647,12 +1661,10 @@
             saveApplications();
             showToast(`✅ Заявка одобрена!`, 'success');
             
-            // Пытаемся добавить в вайтлист через WhitelistAPI
             const whitelistSuccess = await sendToWhitelistApi(app.minecraft_nick);
             if (whitelistSuccess) {
                 showToast(`✅ Игрок ${app.minecraft_nick} добавлен в вайтлист!`, 'success');
             } else {
-                // Сохраняем команду в локальную очередь
                 saveCommandToQueue(`whitelist add ${app.minecraft_nick}`);
                 showToast(`⚠️ Не удалось добавить ${app.minecraft_nick} в вайтлист. Команда сохранена в очередь.`, 'error');
             }
@@ -1799,7 +1811,7 @@
         });
 
         // ============================================================
-        // ====== WIKI ======
+        // ====== WIKI (С ПОДДЕРЖКОЙ МНОГОСТРОЧНЫХ ПУНКТОВ) ======
         // ============================================================
         let wikiCategories = [];
         let wikiSelectedCat = null;
@@ -1893,6 +1905,7 @@
             renderWikiMain();
         }
 
+        // ИЗМЕНЁННАЯ ФУНКЦИЯ renderWikiMain — использует textarea вместо input
         function renderWikiMain() {
             const container = document.getElementById('wikiMainEditor');
             if (!container) return;
@@ -1921,8 +1934,9 @@
                     <div style="font-size:13px;color:#888;margin-bottom:8px;font-family:'Inter',system-ui,sans-serif;">Пункты (${section.items ? section.items.length : 0})</div>
                     ${(section.items || []).map((item, idx) => `
                         <div class="wiki-item-row">
-                            <input value="${item.replace(/"/g, '&quot;')}" placeholder="Введите пункт..." 
-                                   onchange="updateWikiItem('${section.id}', ${idx}, this.value)">
+                            <textarea rows="1" placeholder="Введите пункт (Enter для новой строки)" 
+                                   onchange="updateWikiItem('${section.id}', ${idx}, this.value)"
+                                   oninput="autoResize(this)">${item.replace(/"/g, '&quot;')}</textarea>
                             <button class="item-delete" onclick="deleteWikiItem('${section.id}', ${idx})"><i class="fa-regular fa-xmark"></i></button>
                         </div>
                     `).join('')}
@@ -1933,7 +1947,21 @@
             `;
             
             container.innerHTML = html;
+
+            // Авто-высота для всех textarea
+            container.querySelectorAll('.wiki-item-row textarea').forEach(el => {
+                autoResize(el);
+            });
         }
+
+        // Функция автоматического изменения высоты textarea
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = (el.scrollHeight) + 'px';
+        }
+
+        // Остальные функции вики (selectWikiCategory, selectWikiSection, addWikiCategory, deleteWikiCategory, addWikiSection, deleteWikiSection, updateWikiSectionTitle, addWikiItem, deleteWikiItem, updateWikiItem, saveAllWikiSections, previewWikiFull) остаются без изменений, так как они работают с массивом строк.
+        // Но функцию updateWikiItem нужно оставить без изменений — она сохраняет текст как есть.
 
         function selectWikiCategory(catId) {
             wikiSelectedCat = catId;
@@ -2030,6 +2058,16 @@
                     setData('wiki_categories', wikiCategories);
                     unsavedWiki = true;
                     renderWikiSidebar();
+                    // Фокус на новом textarea после отрисовки
+                    setTimeout(() => {
+                        const textareas = document.querySelectorAll('#wikiMainEditor .wiki-item-row textarea');
+                        if (textareas.length > 0) {
+                            const last = textareas[textareas.length - 1];
+                            last.focus();
+                            last.select();
+                            autoResize(last);
+                        }
+                    }, 100);
                     break;
                 }
             }
@@ -2104,7 +2142,7 @@
                 .section{margin-bottom:20px;padding:16px 20px;border:1px solid rgba(255,255,255,0.06);border-radius:12px;}
                 .section h3{color:#fff;font-size:20px;margin-bottom:10px;}
                 .section ul{list-style:none;padding:0;}
-                .section ul li{padding:8px 12px;margin:4px 0;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);font-family:'Inter',system-ui,sans-serif;}
+                .section ul li{padding:8px 12px;margin:4px 0;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid rgba(255,255,255,0.1);font-family:'Inter',system-ui,sans-serif;white-space:pre-wrap;word-wrap:break-word;}
                 .section ul li:before{content:"•";color:#888;margin-right:10px;}
                 h1{font-size:32px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:16px;margin-bottom:30px;}
             </style></head><body><h1>📖 Вики Mugivara</h1>`;
@@ -2112,7 +2150,11 @@
                 if (!cat.sections || cat.sections.length === 0) return;
                 html += `<div class="category"><h2>${cat.title}</h2>`;
                 cat.sections.forEach(sec => {
-                    const items = (sec.items || []).map(i => `<li>${i}</li>`).join('');
+                    const items = (sec.items || []).map(i => {
+                        // Заменяем \n на <br> для отображения переносов
+                        const formatted = i.replace(/\n/g, '<br>');
+                        return `<li>${formatted}</li>`;
+                    }).join('');
                     html += `<div class="section"><h3>${sec.title}</h3><ul>${items || '<li style="color:#666;">Пункты отсутствуют</li>'}</ul></div>`;
                 });
                 html += `</div>`;
@@ -2480,7 +2522,6 @@
             renderRulesEditor();
             addQueueButton();
             
-            // Проверяем WhitelistAPI при старте
             setTimeout(checkWhitelistApi, 2000);
             
             if (applicationsRefreshInterval) {
