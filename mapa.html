@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Карта Мира</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <!-- Фавикон: белый фон, синяя Z -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,35 +16,63 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                    fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        brand: '#0099CC',
+                        brandLight: '#EAEAEA',
+                        brandDark: '#333333',
+                        brandBg: '#FDFBF8',
                     }
                 }
             }
         }
     </script>
     <style>
+        /* ===== БАЗА ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
+        body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
+            background-color: #FDFBF8;
+            color: #333333;
             font-weight: 400;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)); }
-        * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-track { background: #EAEAEA; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0077A3; }
+        * { scrollbar-width: thin; scrollbar-color: #0099CC #EAEAEA; }
 
-        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
-        body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
+        /* ===== НАВБАР ===== */
+        #navbar {
+            background: rgba(253, 251, 248, 0.55) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(0, 153, 204, 0.15) !important;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03) !important;
+            z-index: 50 !important;
+        }
+        #navbar .text-white { color: #333333 !important; }
+        #navbar .text-neutral-300 { color: #333333 !important; }
+        #navbar .text-white\/80 { color: #555555 !important; }
+        #navbar .border-white\/10 { border-color: rgba(0,153,204,0.08) !important; }
 
-        .nav-link { transition: all 0.2s ease; font-weight: 500; letter-spacing: 0.03em; }
-        .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
+        .nav-link {
+            color: #555555 !important;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+        .nav-link:hover {
+            color: #0099CC !important;
+            transform: translateY(-1px);
+        }
+        .nav-link.text-white\/80 { color: #555555 !important; }
+        .nav-link.text-white\/80:hover { color: #0099CC !important; }
 
         .nav-btn {
             padding: 0.4rem 1.2rem;
@@ -52,16 +81,18 @@
             font-weight: 500;
             letter-spacing: 0.03em;
             font-family: 'Inter', system-ui, sans-serif;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
         .nav-btn-ip {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #ccc;
+            background: rgba(0,153,204,0.08);
+            border-color: rgba(0,153,204,0.12);
+            color: #333333;
         }
         .nav-btn-ip:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.25);
-            color: #fff;
+            background: rgba(0,153,204,0.15);
+            border-color: #0099CC;
+            color: #0099CC;
         }
         .nav-btn-discord {
             background: #5865F2;
@@ -71,278 +102,220 @@
         .nav-btn-discord:hover {
             background: #4752C4;
         }
-
-        .theme-toggle {
-            transition: all 0.3s ease;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #ccc;
-            cursor: pointer;
-        }
-        .theme-toggle:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-        }
+        .theme-toggle { display: none !important; }
 
         #mobile-menu {
-            animation: slideDown 0.25s ease forwards;
+            background: rgba(253, 251, 248, 0.92) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            border-top: 1px solid rgba(0,153,204,0.08) !important;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        #mobile-menu .text-white { color: #333333 !important; }
+        #mobile-menu .border-neutral-800 { border-color: #EAEAEA !important; }
+        #mobile-menu .bg-neutral-800 { background-color: rgba(0,153,204,0.05) !important; }
+        #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
+        #mobile-menu .border-neutral-600 { border-color: #CCCCCC !important; }
 
-        .admin-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 20px;
-            border-radius: 9999px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.15);
-            font-size: 11px;
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            cursor: pointer;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .admin-link-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.35);
-            border-color: rgba(255,255,255,0.08);
-            transform: translateY(-1px);
-        }
-        body.light .admin-link-btn {
-            background: rgba(0,0,0,0.02);
-            border-color: rgba(0,0,0,0.04);
-            color: rgba(0,0,0,0.15);
-        }
-        body.light .admin-link-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: rgba(0,0,0,0.3);
-            border-color: rgba(0,0,0,0.08);
-        }
-
-        .map-icon-wrapper {
+        .logo-z {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.04);
-            border: 2px solid rgba(255,255,255,0.06);
-            transition: all 0.4s ease;
+            width: 48px;
+            height: 48px;
+            background: #FFFFFF;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,153,204,0.15), 0 2px 6px rgba(0,0,0,0.04);
+            font-size: 28px;
+            font-weight: 800;
+            color: #0099CC;
+            transition: transform 0.2s ease;
+            line-height: 1;
         }
-        .map-icon-wrapper:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.15);
-            transform: scale(1.05) rotate(-5deg);
-        }
-        .map-icon-wrapper i {
-            font-size: 36px;
-            color: rgba(255,255,255,0.6);
-            transition: all 0.4s ease;
-        }
-        .map-icon-wrapper:hover i {
-            color: #fff;
-            transform: scale(1.1);
-        }
-        body.light .map-icon-wrapper {
-            background: rgba(0,0,0,0.04);
-            border-color: rgba(0,0,0,0.06);
-        }
-        body.light .map-icon-wrapper i {
-            color: rgba(0,0,0,0.5);
-        }
-        body.light .map-icon-wrapper:hover {
-            background: rgba(0,0,0,0.08);
-            border-color: rgba(0,0,0,0.15);
-        }
-        body.light .map-icon-wrapper:hover i {
-            color: #000;
-        }
-
-        .btn-premium {
-            padding: 0.6rem 2rem;
-            font-size: 0.85rem;
-            letter-spacing: 0.06em;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            border: 1px solid transparent;
-            font-family: 'Inter', system-ui, sans-serif;
-            text-transform: uppercase;
-        }
-        .btn-premium-primary {
-            background: #ffffff;
-            color: #0a0a0a;
-            border-color: #ffffff;
-        }
-        .btn-premium-primary:hover {
-            background: #e8e8e8;
-            border-color: #e8e8e8;
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 12px 40px rgba(255,255,255,0.1);
-        }
-        .btn-premium-secondary {
-            background: rgba(255,255,255,0.06);
-            color: #ffffff;
-            border-color: rgba(255,255,255,0.15);
-        }
-        .btn-premium-secondary:hover {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(255,255,255,0.3);
-            transform: translateY(-3px) scale(1.03);
-        }
+        .logo-z:hover { transform: scale(1.05); }
 
         .online-dot {
             animation: pulse-dot 2s infinite;
+            background-color: #0099CC;
         }
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
-        #mobile-menu-button i {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: inline-block;
-        }
-        #mobile-menu-button i.fa-times {
-            transform: rotate(90deg) scale(1.1);
-        }
-        #mobile-menu-button i.fa-bars {
-            transform: rotate(0deg) scale(1);
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .map-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7rem 1.5rem 3rem; /* верхний отступ больше, чтобы не перекрывать навбар */
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        body.light {
-            background-color: #f0f0f0;
-            color: #1a1a1a;
+        .glass-card {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,153,204,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+            transition: all 0.4s ease;
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            width: 100%;
+            max-width: 640px;
         }
-        body.light .bg-neutral-950 { background-color: #e8e8e8; }
-        body.light .bg-neutral-900 { background-color: #dddddd; }
-        body.light .bg-neutral-800 { background-color: #d0d0d0; }
-        body.light .bg-black { background-color: #d5d5d5; }
-        body.light .border-neutral-800 { border-color: #bbbbbb; }
-        body.light .border-neutral-700 { border-color: #aaaaaa; }
-        body.light .border-neutral-600 { border-color: #999999; }
-        body.light .border-white\/10 { border-color: rgba(0,0,0,0.08); }
-        body.light .border-white\/20 { border-color: rgba(0,0,0,0.15); }
-        body.light .text-white { color: #111111 !important; }
-        body.light .text-neutral-400 { color: #444444 !important; }
-        body.light .text-neutral-500 { color: #555555 !important; }
-        body.light .text-neutral-300 { color: #333333 !important; }
-        body.light .text-neutral-200 { color: #222222 !important; }
-        body.light .text-white\/80 { color: #333333 !important; }
-        body.light .text-white\/70 { color: #444444 !important; }
-        body.light .text-white\/90 { color: #222222 !important; }
-        body.light .text-white\/60 { color: #444444 !important; }
-        body.light .text-white\/40 { color: #666666 !important; }
-        body.light #navbar { 
-            background-color: rgba(235,235,235,0.95) !important; 
-            border-color: #bbbbbb !important; 
+        .glass-card:hover {
+            border-color: #0099CC;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,153,204,0.08);
         }
-        body.light #navbar .text-white { color: #111111 !important; }
-        body.light #navbar .text-neutral-300 { color: #333333 !important; }
-        body.light #navbar .text-white\/80 { color: #333333 !important; }
-        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
-        body.light .theme-toggle { 
-            border-color: rgba(0,0,0,0.15) !important; 
-            color: #333 !important; 
-        }
-        body.light .theme-toggle:hover { 
-            background: rgba(0,0,0,0.06) !important; 
-            color: #000 !important; 
-        }
-        body.light .nav-btn-ip {
-            background: rgba(0,0,0,0.05) !important;
-            border-color: rgba(0,0,0,0.1) !important;
-            color: #333 !important;
-        }
-        body.light .nav-btn-ip:hover {
-            background: rgba(0,0,0,0.1) !important;
-            border-color: rgba(0,0,0,0.2) !important;
-            color: #000 !important;
-        }
-        body.light #mobile-menu {
-            background-color: #e8e8e8 !important;
-            border-color: #bbbbbb !important;
-        }
-        body.light #mobile-menu .text-white { color: #111111 !important; }
-        body.light #mobile-menu .border-neutral-800 { border-color: #bbbbbb !important; }
-        body.light #mobile-menu .bg-neutral-800 { background-color: #ccc !important; }
-        body.light #mobile-menu .bg-neutral-800:hover { background-color: #bbb !important; }
-        body.light #mobile-menu .border-neutral-600 { border-color: #999 !important; }
 
+        .map-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(0,153,204,0.06);
+            border: 2px solid rgba(0,153,204,0.12);
+            transition: all 0.4s ease;
+            margin-bottom: 1.5rem;
+        }
+        .map-icon i {
+            font-size: 36px;
+            color: #0099CC;
+        }
+        .glass-card:hover .map-icon {
+            background: rgba(0,153,204,0.1);
+            border-color: #0099CC;
+            transform: scale(1.05) rotate(-4deg);
+        }
+
+        .btn-premium {
+            padding: 0.6rem 1.8rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid transparent;
+            font-family: 'Inter', system-ui, sans-serif;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+        .btn-premium-primary {
+            background: #0099CC;
+            color: #FFFFFF;
+            border-color: #0099CC;
+        }
+        .btn-premium-primary:hover {
+            background: #0077A3;
+            border-color: #0077A3;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(0,153,204,0.2);
+            color: #FFFFFF;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-new {
+            background: rgba(0,153,204,0.08);
+            color: #0099CC;
+            border: 1px solid rgba(0,153,204,0.15);
+        }
+
+        .info-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 0.75rem;
+        }
+        .info-line i {
+            color: #0099CC;
+            opacity: 0.6;
+        }
+
+        /* ===== МОБИЛЬНЫЕ ДОПОЛНЕНИЯ ===== */
         @media (max-width: 640px) {
-            .admin-link-btn { padding: 4px 14px; font-size: 10px; }
-            .map-icon-wrapper { width: 60px; height: 60px; }
-            .map-icon-wrapper i { font-size: 28px; }
+            .map-wrapper { padding: 6rem 1rem 2rem; }
+            .glass-card { padding: 2rem 1.5rem; }
+            .map-icon { width: 64px; height: 64px; }
+            .map-icon i { font-size: 28px; }
         }
+
+        .icon-fw { width: 1.25em; text-align: center; }
     </style>
 </head>
 <body id="app-body">
 
-    <nav id="navbar" class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50 transition-colors duration-300">
+    <!-- ===== NAVBAR (Liquid Glass) ===== -->
+    <nav id="navbar" class="fixed top-0 w-full backdrop-blur-md border-b z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg">Z</div>
-                <span class="text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+                <div class="logo-z">Z</div>
+                <span class="text-xl sm:text-2xl tracking-wider text-dark font-bold">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="index.html" class="text-white font-semibold nav-link">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-book"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-map"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-scroll"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition nav-link text-white/80"><i class="fa-solid fa-pen-to-square"></i> Заявка</a>
+                <a href="index.html" class="nav-link"><i class="fas fa-home icon-fw"></i> Главная</a>
+                <a href="wiki.html" class="nav-link"><i class="fas fa-book icon-fw"></i> Вики</a>
+                <a href="mapa.html" class="text-brand font-semibold nav-link"><i class="fas fa-map icon-fw"></i> Карта</a>
+                <a href="rules.html" class="nav-link"><i class="fas fa-scroll icon-fw"></i> Правила</a>
+                <a href="apply.html" class="nav-link"><i class="fas fa-pen-to-square icon-fw"></i> Заявка</a>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
-                <div class="hidden sm:flex items-center gap-1.5 bg-neutral-900/60 px-3 py-1.5 rounded-full border border-white/10 text-xs">
-                    <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
-                    <span class="font-medium text-white/80">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
+                <div class="hidden sm:flex items-center gap-1.5 bg-brandLight/60 px-3 py-1.5 rounded-full border border-brandLight text-xs">
+                    <div class="w-1.5 h-1.5 bg-brand rounded-full online-dot"></div>
+                    <span class="font-medium text-dark/80">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-dark">Загрузка...</span>
                 </div>
 
-                <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
-                    <i class="fa-regular fa-moon"></i>
-                </button>
-
                 <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
-                    <i class="fa-solid fa-copy text-xs"></i>
+                    <i class="fas fa-copy text-xs"></i>
                     <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
                     <span class="sm:hidden">IP</span>
                 </button>
-                
-                <a href="https://discord.gg/W226UHyv6f" target="_blank" 
+
+                <a href="https://discord.gg/W226UHyv6f" target="_blank"
                    class="nav-btn nav-btn-discord flex items-center gap-1.5">
-                    <i class="fa-brands fa-discord"></i> 
+                    <i class="fab fa-discord"></i>
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white transition-all duration-300">
-                    <i class="fa-solid fa-bars text-xl"></i>
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-dark/60 hover:text-brand transition-all duration-300">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
+        <div id="mobile-menu" class="hidden md:hidden border-t py-4 px-6">
             <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-white py-2">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition py-2"><i class="fa-solid fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition py-2"><i class="fa-solid fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition py-2"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition py-2"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
-                <div class="pt-3 border-t border-neutral-800">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white">
-                        <i class="fa-solid fa-copy"></i>
+                <a href="index.html" class="hover:text-brand transition py-2"><i class="fas fa-home w-5"></i> Главная</a>
+                <a href="wiki.html" class="hover:text-brand transition py-2"><i class="fas fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="text-brand py-2"><i class="fas fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-brand transition py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
+                <div class="pt-3 border-t border-brandLight">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-brandLight/50 hover:bg-brandLight/70 border border-brandLight rounded-full flex items-center gap-2 text-sm text-dark">
+                        <i class="fas fa-copy"></i>
                         <span>Скопировать IP: play.mugivaracraft.ru</span>
                     </button>
                 </div>
@@ -350,55 +323,49 @@
         </div>
     </nav>
 
-    <div class="min-h-[calc(100vh-80px)] pt-20 pb-16 px-4 sm:px-6 flex items-center justify-center">
-        <div class="max-w-2xl mx-auto text-center">
-            <div class="mb-12">
-                <div class="map-icon-wrapper mb-6">
-                    <i class="fa-solid fa-map"></i>
-                </div>
-                <h1 class="text-4xl sm:text-5xl font-semibold mb-4 text-white">Карта Мира</h1>
-                <p class="text-neutral-400 text-lg">Просмотр мира в реальном времени</p>
-                <div class="mt-3 inline-flex items-center gap-2 bg-neutral-900/60 px-4 py-1.5 rounded-full border border-white/5 text-xs">
-                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                    <span class="text-neutral-400">Dynmap • Обновляется в реальном времени</span>
-                </div>
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <div class="map-wrapper">
+        <div class="glass-card">
+            <div class="map-icon">
+                <i class="fas fa-map"></i>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-semibold text-dark mb-3">Карта Мира</h1>
+            <p class="text-dark/60 text-lg">Просмотр мира в реальном времени</p>
+            <div class="info-line">
+                <span class="badge badge-new"><i class="fas fa-sync-alt fa-fw"></i> Dynmap</span>
+                <span class="text-dark/30">•</span>
+                <span><i class="fas fa-clock"></i> Обновляется в реальном времени</span>
             </div>
 
-            <a href="http://map.mugivaracraft.ru:25981/" target="_blank"
-               class="btn-premium btn-premium-primary inline-flex">
-                <i class="fa-solid fa-map text-lg"></i>
-                <span>Открыть карту мира</span>
-                <i class="fa-solid fa-arrow-right text-xs opacity-60"></i>
-            </a>
+            <div class="mt-8">
+                <a href="http://map.mugivaracraft.ru:25981/" target="_blank"
+                   class="btn-premium btn-premium-primary inline-flex">
+                    <i class="fas fa-map text-lg"></i>
+                    <span>Открыть карту</span>
+                    <i class="fas fa-arrow-right text-xs opacity-60"></i>
+                </a>
+            </div>
 
-            <div class="mt-6 text-neutral-500 text-sm max-w-xs mx-auto">
-                <i class="fa-regular fa-window-restore mr-1"></i>
+            <div class="mt-5 text-dark/40 text-sm">
+                <i class="fas fa-window-restore mr-1"></i>
                 Карта открывается в новой вкладке
-                <span class="block text-neutral-600 text-xs mt-1">(Так работает стабильнее всего)</span>
+                <span class="block text-dark/30 text-xs mt-1">(так работает стабильнее всего)</span>
             </div>
 
-            <div class="mt-12 flex items-center justify-center gap-4 text-xs text-neutral-600">
-                <span><i class="fa-regular fa-circle-check text-green-400/60 mr-1"></i> Онлайн-карта</span>
-                <span class="w-px h-4 bg-neutral-700"></span>
-                <span><i class="fa-regular fa-clock text-blue-400/60 mr-1"></i> Реальное время</span>
-                <span class="w-px h-4 bg-neutral-700"></span>
-                <span><i class="fa-regular fa-compass text-yellow-400/60 mr-1"></i> Dynmap</span>
+            <div class="mt-8 flex items-center justify-center gap-4 text-xs text-dark/40">
+                <span><i class="fas fa-check-circle text-brand/60 mr-1"></i> Онлайн-карта</span>
+                <span class="w-px h-4 bg-brandLight"></span>
+                <span><i class="fas fa-clock text-brand/60 mr-1"></i> Реальное время</span>
+                <span class="w-px h-4 bg-brandLight"></span>
+                <span><i class="fas fa-compass text-brand/60 mr-1"></i> Dynmap</span>
             </div>
         </div>
     </div>
 
-    <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-            <div class="flex justify-center">
-                <a href="admin.html" class="admin-link-btn">
-                    <i class="fa-regular fa-crown"></i>
-                    <span>Управление сайтом</span>
-                </a>
-            </div>
-        </div>
-    </footer>
-
     <script>
+        // ============================================================
+        // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
+        // ============================================================
         function copyIP() {
             navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
@@ -419,24 +386,10 @@
             const btn = document.getElementById('mobile-menu-button');
             const icon = btn.querySelector('i');
             menu.classList.toggle('hidden');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-            icon.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            icon.className = menu.classList.contains('hidden') ? 'fas fa-bars text-xl' : 'fas fa-times text-xl';
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.querySelector('#themeToggle i');
-            body.classList.toggle('light');
-            if (body.classList.contains('light')) {
-                icon.className = 'fa-regular fa-sun';
-                localStorage.setItem('theme', 'light');
-            } else {
-                icon.className = 'fa-regular fa-moon';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
+        // ===== ОНЛАЙН =====
         async function updateOnline() {
             const el = document.getElementById('online-count');
             try {
@@ -446,27 +399,21 @@
                 const data = await resp.json();
                 if (data.online) {
                     el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "font-semibold text-white";
+                    el.className = "font-semibold text-dark";
                 } else {
                     el.textContent = "0/100";
-                    el.className = "font-semibold text-neutral-500";
+                    el.className = "font-semibold text-dark/40";
                 }
             } catch {
                 el.textContent = "—";
-                el.className = "font-semibold text-neutral-500";
+                el.className = "font-semibold text-dark/40";
             }
         }
 
+        // ============================================================
+        // ====== ИНИЦИАЛИЗАЦИЯ ======
+        // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            const icon = document.querySelector('#themeToggle i');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light');
-                icon.className = 'fa-regular fa-sun';
-            } else {
-                icon.className = 'fa-regular fa-moon';
-            }
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
             setTimeout(updateOnline, 300);
             setInterval(updateOnline, 10000);

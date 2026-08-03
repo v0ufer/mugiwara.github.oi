@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugivara — Zа ванильное Выживание</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <title>Mugivara — Ванильное выживание</title>
+    <!-- Фавикон: белый фон, синяя Z -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,8 +16,12 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                    fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        brand: '#0099CC',
+                        brandLight: '#EAEAEA',
+                        brandDark: '#333333',
+                        brandBg: '#FDFBF8',
                     }
                 }
             }
@@ -25,110 +30,138 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
+        body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background-color: #0a0a0a;
-            color: #e8e8e8;
+            background-color: #FDFBF8;
+            color: #333333;
             font-weight: 400;
         }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)); }
-        * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-track { background: #EAEAEA; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0077A3; }
+        * { scrollbar-width: thin; scrollbar-color: #0099CC #EAEAEA; }
 
-        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
-        body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
+        /* ===== НАВБАР — Liquid Glass (iOS 26 style) ===== */
+        #navbar {
+            background: rgba(253, 251, 248, 0.55) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(0, 153, 204, 0.15) !important;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03) !important;
+            transition: none;
+        }
+        #navbar .text-white { color: #333333 !important; }
+        #navbar .text-neutral-300 { color: #333333 !important; }
+        #navbar .text-white\/80 { color: #555555 !important; }
+        #navbar .border-white\/10 { border-color: rgba(0,153,204,0.08) !important; }
+        #navbar .bg-white\/5 { background-color: rgba(0,153,204,0.05) !important; }
 
-        /* ===== ГЕРОЙ-ФОН ===== */
+        .nav-link {
+            color: #555555 !important;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+        .nav-link:hover {
+            color: #0099CC !important;
+            transform: translateY(-1px);
+        }
+        .nav-link.text-white\/80 { color: #555555 !important; }
+        .nav-link.text-white\/80:hover { color: #0099CC !important; }
+
+        .nav-btn {
+            padding: 0.4rem 1.2rem;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            font-family: 'Inter', system-ui, sans-serif;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .nav-btn-ip {
+            background: rgba(0,153,204,0.08);
+            border-color: rgba(0,153,204,0.12);
+            color: #333333;
+        }
+        .nav-btn-ip:hover {
+            background: rgba(0,153,204,0.15);
+            border-color: #0099CC;
+            color: #0099CC;
+        }
+        .nav-btn-discord {
+            background: #5865F2;
+            color: #fff;
+            border: none;
+        }
+        .nav-btn-discord:hover {
+            background: #4752C4;
+        }
+
+        /* убираем переключатель темы */
+        .theme-toggle { display: none !important; }
+
+        #mobile-menu {
+            background: rgba(253, 251, 248, 0.92) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            border-top: 1px solid rgba(0,153,204,0.08) !important;
+        }
+        #mobile-menu .text-white { color: #333333 !important; }
+        #mobile-menu .border-neutral-800 { border-color: #EAEAEA !important; }
+        #mobile-menu .bg-neutral-800 { background-color: rgba(0,153,204,0.05) !important; }
+        #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
+        #mobile-menu .border-neutral-600 { border-color: #CCCCCC !important; }
+
+        /* ===== ГЕРОЙ ===== */
         .hero-bg {
-            --hero-image: url('images/hero-bg.jpg');
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.92)),
-                        var(--hero-image, #0a0a0a);
-            background-size: cover;
-            background-position: center;
+            background: #FDFBF8;
             min-height: 100dvh;
             position: relative;
             overflow: hidden;
         }
-        .hero-bg:not(.has-image) {
-            background: linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.92)),
-                        url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiMwYTBhMGEiLz48cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIGZpbGw9IiMxNTE1MTUiLz48cmVjdCB4PSIyMSIgeT0iMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMTQxNDE0Ii8+PHJlY3QgeD0iMSIgeT0iMjEiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgZmlsbD0iIzE0MTQxNCIvPjxyZWN0IHg9IjIxIiB5PSIyMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMTUxNTE1Ii8+PC9zdmc+');
-            background-size: 60px 60px;
-            background-blend-mode: overlay;
-        }
-        .hero-bg.has-image {
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.92)),
-                        var(--hero-image, #0a0a0a);
-            background-size: cover;
-            background-position: center;
-        }
-
         .hero-bg::before {
             content: '';
             position: absolute;
             inset: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-image:
+                linear-gradient(#EAEAEA 1px, transparent 1px),
+                linear-gradient(90deg, #EAEAEA 1px, transparent 1px);
             background-size: 32px 32px;
             pointer-events: none;
             z-index: 1;
+            opacity: 0.3;
         }
         .hero-bg::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.04) 0%, transparent 60%),
-                        radial-gradient(circle at 70% 60%, rgba(255,255,255,0.03) 0%, transparent 50%);
+            background: radial-gradient(circle at 30% 40%, rgba(0,153,204,0.04) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 60%, rgba(0,153,204,0.03) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
-
-        /* ===== ПЛАВАЮЩИЕ ЧАСТИЦЫ ===== */
-        .floating-particles {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .floating-particles .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            animation: floatUp 20s infinite linear;
-        }
-        .floating-particles .particle:nth-child(1) { left: 5%; animation-duration: 22s; animation-delay: 0s; width: 3px; height: 3px; }
-        .floating-particles .particle:nth-child(2) { left: 15%; animation-duration: 28s; animation-delay: 2s; width: 5px; height: 5px; background: rgba(255,255,255,0.08); }
-        .floating-particles .particle:nth-child(3) { left: 25%; animation-duration: 18s; animation-delay: 4s; width: 2px; height: 2px; }
-        .floating-particles .particle:nth-child(4) { left: 35%; animation-duration: 24s; animation-delay: 1s; width: 6px; height: 6px; background: rgba(255,255,255,0.06); }
-        .floating-particles .particle:nth-child(5) { left: 45%; animation-duration: 30s; animation-delay: 3s; width: 3px; height: 3px; }
-        .floating-particles .particle:nth-child(6) { left: 55%; animation-duration: 20s; animation-delay: 5s; width: 4px; height: 4px; background: rgba(255,255,255,0.12); }
-        .floating-particles .particle:nth-child(7) { left: 65%; animation-duration: 26s; animation-delay: 2.5s; width: 2px; height: 2px; }
-        .floating-particles .particle:nth-child(8) { left: 75%; animation-duration: 16s; animation-delay: 0.5s; width: 5px; height: 5px; background: rgba(255,255,255,0.05); }
-        .floating-particles .particle:nth-child(9) { left: 85%; animation-duration: 32s; animation-delay: 3.5s; width: 3px; height: 3px; }
-        .floating-particles .particle:nth-child(10) { left: 95%; animation-duration: 19s; animation-delay: 1.5s; width: 4px; height: 4px; background: rgba(255,255,255,0.1); }
-        .floating-particles .particle:nth-child(11) { top: 20%; left: 10%; animation-duration: 25s; animation-delay: 0.8s; width: 6px; height: 6px; background: rgba(255,255,255,0.04); }
-        .floating-particles .particle:nth-child(12) { top: 60%; left: 40%; animation-duration: 21s; animation-delay: 4.2s; width: 3px; height: 3px; }
-        .floating-particles .particle:nth-child(13) { top: 30%; left: 70%; animation-duration: 27s; animation-delay: 1.2s; width: 5px; height: 5px; background: rgba(255,255,255,0.07); }
-        .floating-particles .particle:nth-child(14) { top: 70%; left: 85%; animation-duration: 23s; animation-delay: 3.8s; width: 2px; height: 2px; }
-        .floating-particles .particle:nth-child(15) { top: 50%; left: 20%; animation-duration: 29s; animation-delay: 2.2s; width: 4px; height: 4px; background: rgba(255,255,255,0.09); }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-110vh) translateX(80px) scale(0.5); opacity: 0; }
-        }
-
         .hero-content { position: relative; z-index: 2; }
 
-        /* ===== ЛОГОТИП (БОЛЬШОЙ) ===== */
+        /* Логотип Z с тенью */
+        .logo-z {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: #FFFFFF;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,153,204,0.15), 0 2px 6px rgba(0,0,0,0.04);
+            font-size: 28px;
+            font-weight: 800;
+            color: #0099CC;
+            transition: transform 0.2s ease;
+            line-height: 1;
+        }
+        .logo-z:hover { transform: scale(1.05); }
+
         .hero-logo {
             max-width: 800px;
             width: 95%;
@@ -141,28 +174,72 @@
             transition: transform 0.3s ease;
         }
 
-        .hero-title-fallback {
+        .btn-premium {
+            padding: 0.6rem 1.8rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid transparent;
             font-family: 'Inter', system-ui, sans-serif;
-            font-weight: 800;
-            font-size: clamp(3rem, 10vw, 7rem);
-            letter-spacing: 0.05em;
             text-transform: uppercase;
-            text-shadow: 
-                0 0 30px rgba(255,255,255,0.05),
-                0 0 60px rgba(255,255,255,0.02),
-                3px 3px 0 rgba(0,0,0,0.5),
-                6px 6px 0 rgba(0,0,0,0.3),
-                0 8px 20px rgba(0,0,0,0.4);
-            color: #ffffff;
-            display: none;
+            text-decoration: none;
+        }
+        .btn-premium-primary {
+            background: #0099CC;
+            color: #FFFFFF;
+            border-color: #0099CC;
+        }
+        .btn-premium-primary:hover {
+            background: #0077A3;
+            border-color: #0077A3;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(0,153,204,0.2);
+            color: #FFFFFF;
+        }
+        .btn-premium-secondary {
+            background: rgba(0,153,204,0.06);
+            color: #333333;
+            border-color: rgba(0,153,204,0.12);
+        }
+        .btn-premium-secondary:hover {
+            background: rgba(0,153,204,0.12);
+            border-color: #0099CC;
+            transform: translateY(-2px) scale(1.02);
+            color: #333333;
         }
 
-        .nav-link { transition: all 0.2s ease; font-weight: 500; letter-spacing: 0.03em; }
-        .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
+        /* ===== КАРТОЧКИ ===== */
+        .glass-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,153,204,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+            transition: all 0.4s ease;
+            border-radius: 16px;
+        }
+        .glass-card:hover {
+            border-color: #0099CC;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,153,204,0.08);
+        }
 
-        .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card:hover { transform: translateY(-6px); }
+        .card {
+            background: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: #0099CC;
+            box-shadow: 0 12px 48px rgba(0,153,204,0.06);
+        }
 
+        /* ===== СЕКЦИИ ===== */
         .section {
             opacity: 0;
             transform: translateY(50px) scale(0.97);
@@ -183,38 +260,15 @@
             transform: translateY(0);
         }
 
-        /* ===== АНИМАЦИЯ ЦИФР ===== */
-        .stat-number {
-            display: inline-block;
-            font-weight: 700;
-            font-size: 2rem;
-            transition: all 0.3s ease;
-        }
-        .stat-number.count-up {
-            animation: countUp 0.8s ease forwards;
-        }
-        @keyframes countUp {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        .section-bg-light { background-color: #FDFBF8; }
+        .section-bg-gray { background-color: #FAFAFA; }
 
-        /* ===== ЭФФЕКТ СТЕКЛА (Glassmorphism) ===== */
-        .glass-card {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
-            border-radius: 16px;
-        }
-        .glass-card:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.12);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 48px rgba(0,0,0,0.4);
-        }
+        .text-brand { color: #0099CC; }
+        .text-dark { color: #333333; }
+        .text-muted { color: #777777; }
+        .border-brand { border-color: #0099CC; }
 
+        /* ===== FAQ ===== */
         .faq-answer {
             max-height: 0;
             opacity: 0;
@@ -229,152 +283,40 @@
         }
         .faq-item.open .faq-icon { transform: rotate(180deg); }
 
-        #mobile-menu {
-            animation: slideDown 0.25s ease forwards;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .theme-toggle {
-            transition: all 0.3s ease;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #ccc;
-            cursor: pointer;
-        }
-        .theme-toggle:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-        }
+        /* ===== ОНЛАЙН ===== */
         .online-dot {
             animation: pulse-dot 2s infinite;
+            background-color: #0099CC;
         }
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
-        .btn-premium {
-            padding: 0.6rem 1.8rem;
-            font-size: 0.85rem;
-            letter-spacing: 0.06em;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid transparent;
-            font-family: 'Inter', system-ui, sans-serif;
-            text-transform: uppercase;
-        }
-        .btn-premium-primary {
-            background: #ffffff;
-            color: #0a0a0a;
-            border-color: #ffffff;
-        }
-        .btn-premium-primary:hover {
-            background: #e8e8e8;
-            border-color: #e8e8e8;
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(255,255,255,0.08);
-        }
-        .btn-premium-secondary {
-            background: rgba(255,255,255,0.06);
-            color: #ffffff;
-            border-color: rgba(255,255,255,0.15);
-        }
-        .btn-premium-secondary:hover {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(255,255,255,0.3);
-            transform: translateY(-2px) scale(1.02);
-        }
+        #online-count { color: #333333 !important; }
 
-        .nav-btn {
-            padding: 0.4rem 1.2rem;
-            font-size: 0.75rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .nav-btn-ip {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #ccc;
-        }
-        .nav-btn-ip:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.25);
-            color: #fff;
-        }
-        .nav-btn-discord {
-            background: #5865F2;
-            color: #fff;
-            border: none;
-        }
-        .nav-btn-discord:hover {
-            background: #4752C4;
-        }
-
-        /* ===== ПЛАВНАЯ АНИМАЦИЯ БУРГЕРА ===== */
-        #mobile-menu-button i {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: inline-block;
-        }
-        #mobile-menu-button i.fa-times {
-            transform: rotate(90deg) scale(1.1);
-        }
-        #mobile-menu-button i.fa-bars {
-            transform: rotate(0deg) scale(1);
-        }
-
-        .admin-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 20px;
-            border-radius: 9999px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.15);
-            font-size: 11px;
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            cursor: pointer;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .admin-link-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.35);
-            border-color: rgba(255,255,255,0.08);
-            transform: translateY(-1px);
-        }
-
-        .game-heading {
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        .sync-btn {
-            padding: 4px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.03);
-            color: #888;
-            cursor: pointer;
-            font-size: 11px;
+        /* ===== ИГРОКИ ===== */
+        .player-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #EAEAEA;
             transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
+            object-fit: cover;
+            background: #FDFBF8;
         }
-        .sync-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            border-color: rgba(255,255,255,0.12);
+        .player-avatar:hover {
+            transform: scale(1.1);
+            border-color: #0099CC;
+        }
+        .player-item .player-name {
+            font-size: 11px;
+            color: #777777;
+            font-weight: 400;
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         /* ===== БЕЙДЖИ ===== */
@@ -390,279 +332,57 @@
             letter-spacing: 0.05em;
         }
         .badge-new {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,153,204,0.08);
+            color: #0099CC;
+            border: 1px solid rgba(0,153,204,0.15);
         }
         .badge-popular {
             background: rgba(255,215,0,0.08);
-            color: #ffd700;
+            color: #B8860B;
             border: 1px solid rgba(255,215,0,0.15);
         }
         .badge-updated {
-            background: rgba(78,205,196,0.08);
-            color: #4ecdc4;
-            border: 1px solid rgba(78,205,196,0.15);
+            background: rgba(0,153,204,0.06);
+            color: #0077A3;
+            border: 1px solid rgba(0,153,204,0.1);
         }
 
-        /* ===== АВАТАРКИ ИГРОКОВ ===== */
-        .player-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.1);
+        /* ===== СТАТИСТИКА ===== */
+        .stat-number {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 2rem;
             transition: all 0.3s ease;
-            object-fit: cover;
-            background: rgba(255,255,255,0.03);
+            color: #0099CC;
         }
-        .player-avatar:hover {
-            transform: scale(1.1);
-            border-color: rgba(255,255,255,0.3);
+        .stat-number.count-up {
+            animation: countUp 0.8s ease forwards;
         }
-
-        .player-online-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-            align-items: center;
-            padding: 20px 0;
-            min-height: 80px;
-        }
-        .player-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-        .player-item .player-name {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            font-weight: 400;
-            max-width: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        @keyframes countUp {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        .empty-players {
-            color: rgba(255,255,255,0.3);
-            font-size: 14px;
-            padding: 16px 0;
-            text-align: center;
+        /* ===== ФУТЕР (без админки) ===== */
+        footer {
+            background: #FDFBF8;
+            border-top: 1px solid rgba(0,153,204,0.06);
+            padding: 2rem 0;
         }
 
-        /* ===== АНИМАЦИЯ СЧЁТЧИКА ===== */
-        .online-count-wrap .count-number.pulse {
-            animation: countPulse 0.4s ease;
-        }
-        @keyframes countPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); color: #fff; }
-            100% { transform: scale(1); }
-        }
-
-        /* ===== СВЕТЛАЯ ТЕМА ===== */
-        body.light {
-            background-color: #f0f0f0;
-            color: #1a1a1a;
-        }
-        body.light .glass-card {
-            background: rgba(255,255,255,0.6);
-            backdrop-filter: blur(12px);
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-        }
-        body.light .glass-card:hover {
-            background: rgba(255,255,255,0.7);
-            border-color: rgba(255,255,255,0.5);
-        }
-        body.light .floating-particles .particle {
-            background: rgba(0,0,0,0.08);
-        }
-        body.light #navbar { 
-            background-color: rgba(240,240,240,0.95) !important; 
-            border-color: #ccc !important; 
-        }
-        body.light #navbar .text-white { color: #1a1a1a !important; }
-        body.light #navbar .text-neutral-300 { color: #333 !important; }
-        body.light #navbar .text-white\/80 { color: #333 !important; }
-        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
-        body.light .theme-toggle { 
-            border-color: rgba(0,0,0,0.15) !important; 
-            color: #444 !important; 
-        }
-        body.light .theme-toggle:hover { 
-            background: rgba(0,0,0,0.06) !important; 
-            color: #000 !important; 
-        }
-        body.light .nav-btn-ip {
-            background: rgba(0,0,0,0.05) !important;
-            border-color: rgba(0,0,0,0.1) !important;
-            color: #444 !important;
-        }
-        body.light .nav-btn-ip:hover {
-            background: rgba(0,0,0,0.1) !important;
-            border-color: rgba(0,0,0,0.2) !important;
-            color: #000 !important;
-        }
-        body.light .hero-bg {
-            background: linear-gradient(rgba(220,220,220,0.85), rgba(200,200,200,0.9)),
-                        var(--hero-image, #d5d5d5);
-            background-size: cover;
-            background-position: center;
-        }
-        body.light .hero-bg:not(.has-image) {
-            background: linear-gradient(rgba(220,220,220,0.85), rgba(200,200,200,0.9)),
-                        url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiNlMGUwZTAiLz48cmVjdCB4PSIxIiB5PSIxIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIGZpbGw9IiNkNWQ1ZDUiLz48cmVjdCB4PSIyMSIgeT0iMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjY2NjY2NjIi8+PHJlY3QgeD0iMSIgeT0iMjEiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgZmlsbD0iI2NjY2NjYyIvPjxyZWN0IHg9IjIxIiB5PSIyMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjZDVkNWQ1Ii8+PC9zdmc+');
-            background-size: 60px 60px;
-            background-blend-mode: overlay;
-        }
-        body.light .hero-bg.has-image {
-            background: linear-gradient(rgba(220,220,220,0.85), rgba(200,200,200,0.9)),
-                        var(--hero-image, #d5d5d5);
-            background-size: cover;
-            background-position: center;
-        }
-        body.light .hero-bg::before { 
-            background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); 
-        }
-        body.light .hero-bg::after {
-            background: radial-gradient(circle at 30% 40%, rgba(0,0,0,0.04) 0%, transparent 60%),
-                        radial-gradient(circle at 70% 60%, rgba(0,0,0,0.03) 0%, transparent 50%);
-        }
-        body.light .online-dot { background-color: #333; }
-        body.light #online-count { color: #1a1a1a !important; }
-        body.light .faq-item { 
-            background: rgba(255,255,255,0.4); 
-            backdrop-filter: blur(12px);
-            border-color: rgba(255,255,255,0.2); 
-        }
-        body.light .faq-item button:hover { 
-            background: rgba(255,255,255,0.2); 
-        }
-        body.light .faq-item .text-white { color: #1a1a1a !important; }
-        body.light .faq-item .text-neutral-400 { color: #444 !important; }
-        body.light .card { 
-            background: rgba(255,255,255,0.6); 
-            backdrop-filter: blur(12px);
-            border-color: rgba(255,255,255,0.2); 
-        }
-        body.light .card:hover { 
-            border-color: rgba(255,255,255,0.5); 
-        }
-        body.light .card .text-white { color: #1a1a1a !important; }
-        body.light .card .text-neutral-300 { color: #333 !important; }
-        body.light .card .text-neutral-400 { color: #444 !important; }
-        body.light .card .text-neutral-500 { color: #555 !important; }
-        body.light .card .text-white\/80 { color: #333 !important; }
-        body.light .card .text-white\/70 { color: #444 !important; }
-        body.light .sync-btn {
-            border-color: rgba(0,0,0,0.06);
-            color: #666;
-        }
-        body.light .sync-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: #000;
-            border-color: rgba(0,0,0,0.1);
-        }
-        body.light #mobile-menu {
-            background-color: rgba(240,240,240,0.95) !important;
-            border-color: #ccc !important;
-        }
-        body.light #mobile-menu .text-white { color: #1a1a1a !important; }
-        body.light #mobile-menu .border-neutral-800 { border-color: #ccc !important; }
-        body.light #mobile-menu .bg-neutral-800 { background-color: #e8e8e8 !important; }
-        body.light #mobile-menu .bg-neutral-800:hover { background-color: #ddd !important; }
-        body.light #mobile-menu .border-neutral-600 { border-color: #bbb !important; }
-        body.light .badge-new {
-            background: rgba(0,0,0,0.05);
-            color: #333;
-            border-color: rgba(0,0,0,0.1);
-        }
-        body.light .badge-popular {
-            background: rgba(255,215,0,0.1);
-            color: #b8860b;
-            border-color: rgba(255,215,0,0.2);
-        }
-        body.light .badge-updated {
-            background: rgba(78,205,196,0.1);
-            color: #2a7a6a;
-            border-color: rgba(78,205,196,0.2);
-        }
-        body.light .btn-premium-primary {
-            background: #1a1a1a;
-            color: #f5f5f5;
-            border-color: #1a1a1a;
-        }
-        body.light .btn-premium-primary:hover {
-            background: #333;
-            border-color: #333;
-        }
-        body.light .btn-premium-secondary {
-            background: rgba(0,0,0,0.05);
-            color: #1a1a1a;
-            border-color: rgba(0,0,0,0.1);
-        }
-        body.light .btn-premium-secondary:hover {
-            background: rgba(0,0,0,0.1);
-        }
-        body.light .admin-link-btn {
-            background: rgba(0,0,0,0.02);
-            border-color: rgba(0,0,0,0.04);
-            color: rgba(0,0,0,0.15);
-        }
-        body.light .admin-link-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: rgba(0,0,0,0.3);
-            border-color: rgba(0,0,0,0.08);
-        }
-        body.light .player-item .player-name {
-            color: rgba(0,0,0,0.5);
-        }
-        body.light .player-avatar {
-            border-color: rgba(0,0,0,0.1);
-        }
-        body.light .player-avatar:hover {
-            border-color: rgba(0,0,0,0.3);
-        }
-        body.light .empty-players {
-            color: rgba(0,0,0,0.3);
-        }
-
+        /* ===== МОБИЛЬНЫЕ ДОПОЛНЕНИЯ ===== */
         @media (max-width: 640px) {
-            .admin-link-btn {
-                padding: 4px 14px;
-                font-size: 10px;
-            }
-            .hero-logo {
-                max-width: 450px;
-                width: 95%;
-            }
-            .stat-number {
-                font-size: 1.5rem;
-            }
-            .player-avatar {
-                width: 40px;
-                height: 40px;
-            }
-            .player-online-list {
-                gap: 12px;
-            }
-            .player-item .player-name {
-                font-size: 10px;
-                max-width: 50px;
-            }
+            .hero-logo { max-width: 450px; width: 95%; }
+            .stat-number { font-size: 1.5rem; }
+            .player-avatar { width: 40px; height: 40px; }
+            .player-item .player-name { font-size: 10px; max-width: 50px; }
+            .logo-z { width: 40px; height: 40px; font-size: 22px; }
         }
         @media (max-width: 480px) {
-            .hero-logo {
-                max-width: 340px;
-                width: 98%;
-            }
+            .hero-logo { max-width: 340px; width: 98%; }
         }
 
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -674,74 +394,73 @@
             z-index: 2000;
             animation: toastSlide 0.4s ease;
             max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            font-family: 'Inter', system-ui, sans-serif;
         }
         @keyframes toastSlide {
             from { opacity: 0; transform: translateY(20px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
-        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
-        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
+        .toast.success { background: #E6F7F0; border: 1px solid #0099CC; color: #0077A3; }
+        .toast.error { background: #FDE8E8; border: 1px solid #FF6B6B; color: #CC3333; }
+        .toast.info { background: #FFF4E6; border: 1px solid #FFAA44; color: #995522; }
+
+        .icon-fw { width: 1.25em; text-align: center; }
     </style>
 </head>
 <body id="app-body">
 
-    <!-- NAVBAR -->
-    <nav id="navbar" class="fixed top-0 w-full bg-black/95 backdrop-blur-md border-b border-white/5 z-50 transition-colors duration-300">
+    <!-- ===== NAVBAR (Liquid Glass) ===== -->
+    <nav id="navbar" class="fixed top-0 w-full backdrop-blur-md border-b z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg">Z</div>
-                <span class="text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+                <div class="logo-z">Z</div>
+                <span class="text-xl sm:text-2xl tracking-wider text-dark font-bold">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="index.html" class="text-white font-semibold nav-link">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-book"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-map"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-scroll"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition nav-link text-white/80"><i class="fa-solid fa-pen-to-square"></i> Заявка</a>
+                <a href="index.html" class="text-brand font-semibold nav-link"><i class="fas fa-home icon-fw"></i> Главная</a>
+                <a href="wiki.html" class="nav-link"><i class="fas fa-book icon-fw"></i> Вики</a>
+                <a href="mapa.html" class="nav-link"><i class="fas fa-map icon-fw"></i> Карта</a>
+                <a href="rules.html" class="nav-link"><i class="fas fa-scroll icon-fw"></i> Правила</a>
+                <a href="apply.html" class="nav-link"><i class="fas fa-pen-to-square icon-fw"></i> Заявка</a>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
-                <div class="hidden sm:flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 text-xs">
-                    <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
-                    <span class="font-medium text-white/80">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
+                <div class="hidden sm:flex items-center gap-1.5 bg-brandLight/60 px-3 py-1.5 rounded-full border border-brandLight text-xs">
+                    <div class="w-1.5 h-1.5 bg-brand rounded-full online-dot"></div>
+                    <span class="font-medium text-dark/80">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-dark">Загрузка...</span>
                 </div>
 
-                <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
-                    <i class="fa-regular fa-moon"></i>
-                </button>
-
                 <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
-                    <i class="fa-solid fa-copy text-xs"></i>
+                    <i class="fas fa-copy text-xs"></i>
                     <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
                     <span class="sm:hidden">IP</span>
                 </button>
-                
-                <a href="https://discord.gg/W226UHyv6f" target="_blank" 
+
+                <a href="https://discord.gg/W226UHyv6f" target="_blank"
                    class="nav-btn nav-btn-discord flex items-center gap-1.5">
-                    <i class="fa-brands fa-discord"></i> 
+                    <i class="fab fa-discord"></i>
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white transition-all duration-300">
-                    <i class="fa-solid fa-bars text-xl"></i>
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-dark/60 hover:text-brand transition-all duration-300">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-black border-t border-white/5 py-4 px-6">
+        <div id="mobile-menu" class="hidden md:hidden border-t py-4 px-6">
             <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-white py-2">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition py-2"><i class="fa-solid fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition py-2"><i class="fa-solid fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition py-2"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition py-2"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
-                <div class="pt-3 border-t border-white/5">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full flex items-center gap-2 text-sm text-white">
-                        <i class="fa-solid fa-copy"></i>
+                <a href="index.html" class="text-brand py-2"><i class="fas fa-home w-5"></i> Главная</a>
+                <a href="wiki.html" class="hover:text-brand transition py-2"><i class="fas fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-brand transition py-2"><i class="fas fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="hover:text-brand transition py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
+                <div class="pt-3 border-t border-brandLight">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-brandLight/50 hover:bg-brandLight/70 border border-brandLight rounded-full flex items-center gap-2 text-sm text-dark">
+                        <i class="fas fa-copy"></i>
                         <span>Скопировать IP: play.mugivaracraft.ru</span>
                     </button>
                 </div>
@@ -749,32 +468,24 @@
         </div>
     </nav>
 
-    <!-- HERO -->
+    <!-- ===== HERO ===== -->
     <section class="hero-bg flex items-center relative pt-16" id="heroSection">
-        <div class="floating-particles">
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-        </div>
         <div class="hero-content max-w-5xl mx-auto px-4 sm:px-6 text-center w-full">
-            <div class="inline-flex items-center gap-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 mb-5 text-xs tracking-wider">
-                <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-                <span class="text-white/80 font-medium">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
+            <div class="inline-flex items-center gap-2 bg-brandLight/60 px-4 py-1.5 rounded-full border border-brandLight mb-5 text-xs tracking-wider">
+                <div class="w-1.5 h-1.5 bg-brand rounded-full animate-pulse"></div>
+                <span class="text-dark/80 font-medium">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
             </div>
-            
-            <!-- ===== ЛОГОТИП (БОЛЬШОЙ) ===== -->
+
             <img src="logotip.png" alt="Mugivara" class="hero-logo" id="heroLogo" onerror="this.style.display='none'; document.getElementById('fallbackTitle').style.display='block';">
-            <h1 class="hero-title-fallback" id="fallbackTitle">MUGIVARA</h1>
-            
-            <p class="text-lg sm:text-xl md:text-2xl text-white/60 mb-8 max-w-2xl mx-auto px-4 font-light">
+            <h1 class="hero-title-fallback" id="fallbackTitle" style="display:none; font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(3rem,10vw,7rem);letter-spacing:0.05em;text-transform:uppercase;color:#333333;">MUGIVARA</h1>
+
+            <p class="text-lg sm:text-xl md:text-2xl text-dark/60 mb-8 max-w-2xl mx-auto px-4 font-light">
                 Ванильное выживание без PvP.<br>
                 Спокойная атмосфера и настоящие приключения
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center px-4">
                 <a href="https://discord.gg/W226UHyv6f" class="btn-premium btn-premium-primary">
-                    ПРИСОЕДИНЯЙСЯ <i class="fa-solid fa-arrow-right text-xs"></i>
+                    ПРИСОЕДИНЯЙСЯ <i class="fas fa-arrow-right text-xs"></i>
                 </a>
                 <a href="#about" class="btn-premium btn-premium-secondary">
                     УЗНАТЬ БОЛЬШЕ
@@ -783,189 +494,162 @@
         </div>
     </section>
 
-    <!-- ABOUT — БЛОК 1 -->
-    <section id="about" class="section py-16 sm:py-24 bg-black/70 transition-colors duration-300 relative">
-        <div class="floating-particles">
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-        </div>
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="section py-16 sm:py-24 section-bg-light relative">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 section-content">
             <div class="grid md:grid-cols-2 gap-10 sm:gap-16 items-center">
                 <div>
-                    <h2 class="text-3xl sm:text-4xl font-semibold mb-5 text-white stagger-child">Настоящее ванильное выживание</h2>
-                    <div class="space-y-5 text-base sm:text-lg text-white/50 stagger-child">
+                    <h2 class="text-3xl sm:text-4xl font-semibold mb-5 text-dark stagger-child">Настоящее ванильное выживание</h2>
+                    <div class="space-y-5 text-base sm:text-lg text-dark/60 stagger-child">
                         <p>Mugivara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
-                        <p class="text-white">Версия: 1.21.11</p>
+                        <p class="text-dark font-medium">Версия: 1.21.11</p>
                     </div>
                     <div class="mt-10 grid grid-cols-3 gap-4 stagger-child" id="statsContainer">
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-white"><span class="stat-number" data-target="10000">0</span></div>
-                            <div class="text-xs text-white/30">Мир</div>
+                            <div class="text-2xl font-bold text-brand"><span class="stat-number" data-target="10000">0</span></div>
+                            <div class="text-xs text-dark/40">блоков</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-white"><span class="stat-number" data-target="0.01">0</span>%</div>
-                            <div class="text-xs text-white/30">PvP</div>
+                            <div class="text-2xl font-bold text-brand"><span class="stat-number" data-target="0.01">0</span>%</div>
+                            <div class="text-xs text-dark/40">PvP</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-white"><span class="stat-number" data-target="99.9">0</span>%</div>
-                            <div class="text-xs text-white/30">Ванилла</div>
+                            <div class="text-2xl font-bold text-brand"><span class="stat-number" data-target="99.9">0</span>%</div>
+                            <div class="text-xs text-dark/40">Ванилла</div>
                         </div>
                     </div>
                 </div>
                 <div class="glass-card p-6 sm:p-8 stagger-child">
-                    <h3 class="text-white uppercase tracking-widest text-xs mb-4">Наши преимущества</h3>
-                    <ul class="space-y-4 text-sm text-white/60">
-                        <li class="flex gap-3 items-start"><i class="fa-solid fa-leaf text-white/40 mt-0.5"></i><span>Спокойное выживание в красивом мире</span></li>
-                        <li class="flex gap-3 items-start"><i class="fa-solid fa-users text-white/40 mt-0.5"></i><span>Дружелюбное сообщество</span></li>
-                        <li class="flex gap-3 items-start"><i class="fa-solid fa-house text-white/40 mt-0.5"></i><span>Полная свобода строительства</span></li>
-                        <li class="flex gap-3 items-start"><i class="fa-solid fa-shield-halved text-white/40 mt-0.5"></i><span>Без привата</span></li>
+                    <h3 class="text-brand uppercase tracking-widest text-xs mb-4">Наши преимущества</h3>
+                    <ul class="space-y-4 text-sm text-dark/60">
+                        <li class="flex gap-3 items-start"><i class="fas fa-leaf text-brand/60 mt-0.5"></i><span>Спокойное выживание в красивом мире</span></li>
+                        <li class="flex gap-3 items-start"><i class="fas fa-users text-brand/60 mt-0.5"></i><span>Дружелюбное сообщество</span></li>
+                        <li class="flex gap-3 items-start"><i class="fas fa-house text-brand/60 mt-0.5"></i><span>Полная свобода строительства</span></li>
+                        <li class="flex gap-3 items-start"><i class="fas fa-shield-halved text-brand/60 mt-0.5"></i><span>Без привата</span></li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- WIKI — БЛОК 2 -->
-    <section id="wiki" class="section py-16 sm:py-24 bg-black/50 transition-colors duration-300 relative">
-        <div class="floating-particles">
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-        </div>
+    <!-- ===== WIKI / РЕКОМЕНДАЦИИ ===== -->
+    <section id="wiki" class="section py-16 sm:py-24 section-bg-gray relative">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 section-content">
             <div class="text-center mb-12 sm:mb-16">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child">Рекомендации для приятной игры</h2>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-dark stagger-child">Рекомендации для приятной игры</h2>
             </div>
             <div class="grid md:grid-cols-2 gap-6 sm:gap-10">
                 <div class="glass-card p-6 sm:p-8 stagger-child">
                     <div class="flex items-center gap-3 mb-5">
-                        <i class="fa-solid fa-palette text-white/50 text-xl"></i>
-                        <h3 class="text-xl font-semibold text-white">Ресурс-паки</h3>
-                        <span class="badge badge-popular ml-auto"><i class="fa-regular fa-fire"></i> Популярное</span>
+                        <i class="fas fa-palette text-2xl text-brand/60"></i>
+                        <h3 class="text-xl font-semibold text-dark">Ресурс-паки</h3>
+                        <span class="badge badge-popular ml-auto"><i class="fas fa-fire"></i> Популярное</span>
                     </div>
-                    <div class="space-y-5 text-sm text-white/60">
-                        <div><div class="font-medium text-white">Vanilla Tweaks</div><p class="text-white/30 text-xs mt-0.5">Улучшенные текстуры, звуки и удобства.</p><a href="https://vanillatweaks.net" target="_blank" class="text-white/50 text-xs hover:underline">Скачать <i class="fa-solid fa-arrow-right text-[10px]"></i></a></div>
-                        <div><div class="font-medium text-white">Faithful 32x / 64x</div><p class="text-white/30 text-xs mt-0.5">Классический Faithful в высоком разрешении.</p></div>
-                        <div><div class="font-medium text-white">Bare Bones</div><p class="text-white/30 text-xs mt-0.5">Минималистичный пак для производительности.</p></div>
+                    <div class="space-y-5 text-sm text-dark/60">
+                        <div><div class="font-medium text-dark">Vanilla Tweaks</div><p class="text-dark/30 text-xs mt-0.5">Улучшенные текстуры, звуки и удобства.</p><a href="https://vanillatweaks.net" target="_blank" class="text-brand/60 text-xs hover:underline">Скачать <i class="fas fa-arrow-right text-[10px]"></i></a></div>
+                        <div><div class="font-medium text-dark">Faithful 32x / 64x</div><p class="text-dark/30 text-xs mt-0.5">Классический Faithful в высоком разрешении.</p></div>
+                        <div><div class="font-medium text-dark">Bare Bones</div><p class="text-dark/30 text-xs mt-0.5">Минималистичный пак для производительности.</p></div>
                     </div>
                 </div>
                 <div class="glass-card p-6 sm:p-8 stagger-child">
                     <div class="flex items-center gap-3 mb-5">
-                        <i class="fa-solid fa-puzzle-piece text-white/50 text-xl"></i>
-                        <h3 class="text-xl font-semibold text-white">Рекомендуемые моды</h3>
-                        <span class="badge badge-new ml-auto"><i class="fa-regular fa-star"></i> Обновлено</span>
+                        <i class="fas fa-puzzle-piece text-2xl text-brand/60"></i>
+                        <h3 class="text-xl font-semibold text-dark">Рекомендуемые моды</h3>
+                        <span class="badge badge-new ml-auto"><i class="fas fa-star"></i> Обновлено</span>
                     </div>
-                    <div class="space-y-3 text-sm text-white/60">
-                        <div class="flex justify-between"><span>Sodium + Iris</span><span class="text-white/40 text-xs">Обязательно</span></div>
+                    <div class="space-y-3 text-sm text-dark/60">
+                        <div class="flex justify-between"><span>Sodium + Iris</span><span class="text-dark/40 text-xs">Обязательно</span></div>
                         <div>Xaero's Minimap</div><div>AppleSkin</div><div>ReplayMod</div><div>Entity Culling</div>
                     </div>
-                    <p class="text-xs text-white/20 mt-6">Сервер полностью ванильный. Моды ставятся только на клиент.</p>
+                    <p class="text-xs text-dark/20 mt-6">Сервер полностью ванильный. Моды ставятся только на клиент.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FAQ — БЛОК 3 -->
-    <section id="faq" class="section py-16 sm:py-24 bg-black/70 transition-colors duration-300 relative">
-        <div class="floating-particles">
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-        </div>
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="section py-16 sm:py-24 section-bg-light relative">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 section-content">
             <div class="text-center mb-12 sm:mb-16">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-white stagger-child">Часто задаваемые вопросы</h2>
-                <span class="badge badge-popular mt-3"><i class="fa-regular fa-fire"></i> Популярное</span>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-dark stagger-child">Часто задаваемые вопросы</h2>
+                <span class="badge badge-popular mt-3"><i class="fas fa-fire"></i> Популярное</span>
             </div>
             <div class="space-y-3 stagger-child">
                 <div class="glass-card overflow-hidden">
                     <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
-                            <span class="font-medium text-sm sm:text-base text-white">Можно ли играть с модами?</span>
-                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 transition-transform duration-500 text-xs"></i>
+                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-brandLight/30 transition-colors">
+                            <span class="font-medium text-sm sm:text-base text-dark">Можно ли играть с модами?</span>
+                            <i class="faq-icon fas fa-chevron-down text-dark/30 transition-transform duration-500 text-xs"></i>
                         </button>
-                        <div class="faq-answer px-6 text-white/50 text-sm">Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.</div>
+                        <div class="faq-answer px-6 text-dark/50 text-sm">Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.</div>
                     </div>
                 </div>
                 <div class="glass-card overflow-hidden">
                     <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
-                            <span class="font-medium text-sm sm:text-base text-white">Нужна ли официальная лицензия?</span>
-                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 transition-transform duration-500 text-xs"></i>
+                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-brandLight/30 transition-colors">
+                            <span class="font-medium text-sm sm:text-base text-dark">Нужна ли официальная лицензия?</span>
+                            <i class="faq-icon fas fa-chevron-down text-dark/30 transition-transform duration-500 text-xs"></i>
                         </button>
-                        <div class="faq-answer px-6 text-white/50 text-sm">Нет, на нашем сервере можно играть как с лицензии, так и с пиратки.</div>
+                        <div class="faq-answer px-6 text-dark/50 text-sm">Нет, на нашем сервере можно играть как с лицензии, так и с пиратки.</div>
                     </div>
                 </div>
                 <div class="glass-card overflow-hidden">
                     <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
-                            <span class="font-medium text-sm sm:text-base text-white">Есть ли донат и привилегии?</span>
-                            <i class="faq-icon fa-solid fa-chevron-down text-white/30 transition-transform duration-500 text-xs"></i>
+                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-brandLight/30 transition-colors">
+                            <span class="font-medium text-sm sm:text-base text-dark">Есть ли донат и привилегии?</span>
+                            <i class="faq-icon fas fa-chevron-down text-dark/30 transition-transform duration-500 text-xs"></i>
                         </button>
-                        <div class="faq-answer px-6 text-white/50 text-sm">Нет. Сервер полностью бесплатный и честный.</div>
+                        <div class="faq-answer px-6 text-dark/50 text-sm">Нет. Сервер полностью бесплатный и честный.</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- COMMUNITY — БЛОК 4 -->
-    <section id="community" class="section py-16 sm:py-24 bg-black/50 transition-colors duration-300 relative">
-        <div class="floating-particles">
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-            <span class="particle"></span><span class="particle"></span><span class="particle"></span>
-        </div>
+    <!-- ===== COMMUNITY / ОНЛАЙН ===== -->
+    <section id="community" class="section py-16 sm:py-24 section-bg-gray relative">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center section-content">
-            <h2 class="text-3xl sm:text-4xl font-semibold mb-4 text-white stagger-child">Сейчас на сервере</h2>
-            <p class="text-white/40 mb-6 px-4 text-sm stagger-child">Игроки онлайн</p>
-            
+            <h2 class="text-3xl sm:text-4xl font-semibold mb-4 text-dark stagger-child">Сейчас на сервере</h2>
+            <p class="text-dark/40 mb-6 px-4 text-sm stagger-child">Игроки онлайн</p>
+
             <div class="stagger-child">
                 <div class="inline-flex items-center gap-3 glass-card px-6 py-3 rounded-full">
-                    <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
-                    <span class="text-white/60 text-sm">Онлайн:</span>
-                    <span id="online-count-hero" class="text-white font-bold text-xl">Загрузка...</span>
+                    <div class="w-2.5 h-2.5 bg-brand rounded-full animate-pulse"></div>
+                    <span class="text-dark/60 text-sm">Онлайн:</span>
+                    <span id="online-count-hero" class="text-dark font-bold text-xl">Загрузка...</span>
                 </div>
             </div>
 
             <div class="player-online-list stagger-child" id="playerList">
-                <!-- Загружается через JS -->
+                <!-- Загружается через JS, при отсутствии игроков ничего не показываем -->
             </div>
 
             <div class="mt-8 flex flex-wrap items-center justify-center gap-4 stagger-child">
-                <span class="badge badge-popular"><i class="fa-regular fa-fire"></i> Популярное</span>
-                <span class="badge badge-new"><i class="fa-regular fa-star"></i> Новое</span>
-                <span class="badge badge-updated"><i class="fa-regular fa-rotate"></i> Обновлено</span>
+                <span class="badge badge-popular"><i class="fas fa-fire"></i> Популярное</span>
+                <span class="badge badge-new"><i class="fas fa-star"></i> Новое</span>
+                <span class="badge badge-updated"><i class="fas fa-rotate"></i> Обновлено</span>
             </div>
 
             <div class="mt-10 flex flex-col sm:flex-row gap-5 justify-center stagger-child">
                 <a href="https://discord.gg/W226UHyv6f" target="_blank" class="glass-card flex-1 max-w-xs mx-auto p-6 transition-all">
-                    <i class="fa-brands fa-discord text-4xl sm:text-5xl text-[#5865F2] mb-4"></i>
-                    <div class="text-lg font-semibold text-white">Discord</div>
-                    <div class="text-white/40 text-sm">Общение и поддержка</div>
+                    <i class="fab fa-discord text-5xl text-[#5865F2] mb-4"></i>
+                    <div class="text-lg font-semibold text-dark">Discord</div>
+                    <div class="text-dark/40 text-sm">Общение и поддержка</div>
                 </a>
                 <a href="https://tiktok.com/@mugiwara_craft" target="_blank" class="glass-card flex-1 max-w-xs mx-auto p-6 transition-all">
-                    <i class="fa-brands fa-tiktok text-4xl sm:text-5xl text-[#FF0050] mb-4"></i>
-                    <div class="text-lg font-semibold text-white">TikTok</div>
-                    <div class="text-white/40 text-sm">Видео с сервера</div>
+                    <i class="fab fa-tiktok text-5xl text-[#FF0050] mb-4"></i>
+                    <div class="text-lg font-semibold text-dark">TikTok</div>
+                    <div class="text-dark/40 text-sm">Видео с сервера</div>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-black/90 py-8 sm:py-10 border-t border-white/5 transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-white/30 text-xs">
-            <p class="text-white/60">© 2026 Mugivara • Чистое ванильное выживание</p>
-            <p class="mt-1 text-white/30">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
-            
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-4">
-                <a href="admin.html" class="admin-link-btn">
-                    <i class="fa-regular fa-crown"></i>
-                    <span>Управление сайтом</span>
-                </a>
-            </div>
+    <!-- ===== FOOTER (без ссылки на админку) ===== -->
+    <footer>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-dark/30 text-xs">
+            <p class="text-dark/60">© 2026 Mugivara • Чистое ванильное выживание</p>
+            <p class="mt-1 text-dark/30">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
         </div>
     </footer>
 
@@ -1001,33 +685,22 @@
             const btn = document.getElementById('mobile-menu-button');
             const icon = btn.querySelector('i');
             menu.classList.toggle('hidden');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-            icon.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.querySelector('#themeToggle i');
-            body.classList.toggle('light');
-            if (body.classList.contains('light')) {
-                icon.className = 'fa-regular fa-sun';
-                localStorage.setItem('theme', 'light');
+            if (menu.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars text-xl';
             } else {
-                icon.className = 'fa-regular fa-moon';
-                localStorage.setItem('theme', 'dark');
+                icon.className = 'fas fa-times text-xl';
             }
         }
 
         function showToast(message, type = 'info') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-            
+
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = message;
             document.body.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
@@ -1044,21 +717,21 @@
                 const isFloat = target % 1 !== 0;
                 const duration = 1200;
                 const startTime = performance.now();
-                
+
                 num.classList.add('count-up');
-                
+
                 function updateNumber(time) {
                     const elapsed = time - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     const eased = 1 - Math.pow(1 - progress, 3);
                     const value = eased * target;
-                    
+
                     if (isFloat) {
                         num.textContent = value.toFixed(1);
                     } else {
                         num.textContent = Math.round(value);
                     }
-                    
+
                     if (progress < 1) {
                         requestAnimationFrame(updateNumber);
                     } else {
@@ -1069,7 +742,7 @@
                         }
                     }
                 }
-                
+
                 requestAnimationFrame(updateNumber);
             });
         }
@@ -1079,16 +752,16 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        
+
                         if (entry.target.id === 'about') {
                             animateNumbers();
                         }
                     }
                 });
             }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
-            
+
             document.querySelectorAll('.section').forEach(s => observer.observe(s));
-            
+
             setTimeout(() => {
                 document.querySelectorAll('.section').forEach(s => {
                     const rect = s.getBoundingClientRect();
@@ -1116,23 +789,23 @@
             }
         }
 
-        // ===== ОНЛАЙН И АВАТАРКИ =====
+        // ===== ОНЛАЙН И АВАТАРКИ (без плашки "Нет игроков") =====
         let lastOnlineCount = 0;
 
         async function updateOnlineFull() {
             const el = document.getElementById('online-count');
             const elHero = document.getElementById('online-count-hero');
             const playerList = document.getElementById('playerList');
-            
+
             try {
                 const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
                     signal: AbortSignal.timeout(4000)
                 });
                 const data = await resp.json();
-                
+
                 if (data.online) {
                     const count = data.players.online;
-                    
+
                     if (count !== lastOnlineCount) {
                         el.classList.add('pulse');
                         elHero.classList.add('pulse');
@@ -1142,53 +815,48 @@
                         }, 400);
                         lastOnlineCount = count;
                     }
-                    
+
                     el.textContent = `${count}/${data.players.max}`;
                     elHero.textContent = count;
-                    el.className = "font-semibold text-white";
-                    elHero.className = "text-white font-bold text-xl";
-                    
+                    el.className = "font-semibold text-dark";
+                    elHero.className = "text-dark font-bold text-xl";
+
                     if (data.players.sample && data.players.sample.length > 0) {
-                        const names = data.players.sample.map(p => p.name);
-                        renderPlayerAvatars(names);
+                        renderPlayerAvatars(data.players.sample.map(p => p.name));
                     } else {
                         renderPlayerAvatars([]);
                     }
                 } else {
                     el.textContent = "0/100";
                     elHero.textContent = "0";
-                    el.className = "font-semibold text-white/40";
-                    elHero.className = "text-white/40 font-bold text-xl";
+                    el.className = "font-semibold text-dark/40";
+                    elHero.className = "text-dark/40 font-bold text-xl";
                     renderPlayerAvatars([]);
                 }
             } catch {
                 el.textContent = "—";
                 elHero.textContent = "—";
-                el.className = "font-semibold text-white/40";
-                elHero.className = "text-white/40 font-bold text-xl";
+                el.className = "font-semibold text-dark/40";
+                elHero.className = "text-dark/40 font-bold text-xl";
                 renderPlayerAvatars([]);
             }
         }
 
         function renderPlayerAvatars(names) {
             const container = document.getElementById('playerList');
-            
+
             if (!names || names.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-players">
-                        <i class="fa-regular fa-users"></i> Нет игроков онлайн
-                    </div>
-                `;
+                container.innerHTML = ''; // Ничего не показываем
                 return;
             }
 
             container.innerHTML = names.map(name => `
                 <div class="player-item">
-                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/48" 
-                         alt="${name}" 
+                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/48"
+                         alt="${name}"
                          class="player-avatar"
                          loading="lazy"
-                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22%3E%3Crect width=%2248%22 height=%2248%22 fill=%22%23222%22/%3E%3Ctext x=%2224%22 y=%2232%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2220%22 font-family=%22sans-serif%22%3E${name.charAt(0).toUpperCase()}%3C/text%3E%3C/svg%3E'">
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22%3E%3Crect width=%2248%22 height=%2248%22 fill=%22%23EAEAEA%22/%3E%3Ctext x=%2224%22 y=%2232%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2220%22 font-family=%22sans-serif%22%3E${name.charAt(0).toUpperCase()}%3C/text%3E%3C/svg%3E'">
                     <span class="player-name">${name}</span>
                 </div>
             `).join('');
@@ -1198,21 +866,11 @@
         // ====== ИНИЦИАЛИЗАЦИЯ ======
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            const icon = document.querySelector('#themeToggle i');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light');
-                icon.className = 'fa-regular fa-sun';
-            } else {
-                icon.className = 'fa-regular fa-moon';
-            }
-
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
 
             setTimeout(updateOnlineFull, 300);
             setInterval(updateOnlineFull, 10000);
-            
+
             initObserver();
             setTimeout(checkHeroImage, 500);
         });

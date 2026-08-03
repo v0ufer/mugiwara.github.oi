@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Правила Сервера</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23ffffff'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%23000000'>Z</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,8 +15,12 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                    fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        brand: '#0099CC',
+                        brandLight: '#EAEAEA',
+                        brandDark: '#333333',
+                        brandBg: '#FDFBF8',
                     }
                 }
             }
@@ -25,25 +29,46 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
+        body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
+            background-color: #FDFBF8;
+            color: #333333;
             font-weight: 400;
+            min-height: 100vh;
         }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)); }
-        * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-track { background: #EAEAEA; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0077A3; }
+        * { scrollbar-width: thin; scrollbar-color: #0099CC #EAEAEA; }
 
-        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
-        body.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); border-color: rgba(0,0,0,0.04); }
+        /* ===== НАВБАР ===== */
+        #navbar {
+            background: rgba(253, 251, 248, 0.55) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(0, 153, 204, 0.15) !important;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03) !important;
+            z-index: 50 !important;
+        }
+        #navbar .text-white { color: #333333 !important; }
+        #navbar .text-neutral-300 { color: #333333 !important; }
+        #navbar .text-white\/80 { color: #555555 !important; }
+        #navbar .border-white\/10 { border-color: rgba(0,153,204,0.08) !important; }
 
-        .nav-link { transition: all 0.2s ease; font-weight: 500; letter-spacing: 0.03em; }
-        .nav-link:hover { color: #ffffff; transform: translateY(-1px); }
+        .nav-link {
+            color: #555555 !important;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+        .nav-link:hover {
+            color: #0099CC !important;
+            transform: translateY(-1px);
+        }
+        .nav-link.text-white\/80 { color: #555555 !important; }
+        .nav-link.text-white\/80:hover { color: #0099CC !important; }
 
         .nav-btn {
             padding: 0.4rem 1.2rem;
@@ -52,16 +77,18 @@
             font-weight: 500;
             letter-spacing: 0.03em;
             font-family: 'Inter', system-ui, sans-serif;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
         .nav-btn-ip {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #ccc;
+            background: rgba(0,153,204,0.08);
+            border-color: rgba(0,153,204,0.12);
+            color: #333333;
         }
         .nav-btn-ip:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.25);
-            color: #fff;
+            background: rgba(0,153,204,0.15);
+            border-color: #0099CC;
+            color: #0099CC;
         }
         .nav-btn-discord {
             background: #5865F2;
@@ -71,139 +98,182 @@
         .nav-btn-discord:hover {
             background: #4752C4;
         }
-
-        .theme-toggle {
-            transition: all 0.3s ease;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #ccc;
-            cursor: pointer;
-        }
-        .theme-toggle:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-        }
+        .theme-toggle { display: none !important; }
 
         #mobile-menu {
-            animation: slideDown 0.25s ease forwards;
+            background: rgba(253, 251, 248, 0.92) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            border-top: 1px solid rgba(0,153,204,0.08) !important;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        #mobile-menu .text-white { color: #333333 !important; }
+        #mobile-menu .border-neutral-800 { border-color: #EAEAEA !important; }
+        #mobile-menu .bg-neutral-800 { background-color: rgba(0,153,204,0.05) !important; }
+        #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
+        #mobile-menu .border-neutral-600 { border-color: #CCCCCC !important; }
 
-        .admin-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 20px;
-            border-radius: 9999px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.15);
-            font-size: 11px;
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            cursor: pointer;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .admin-link-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.35);
-            border-color: rgba(255,255,255,0.08);
-            transform: translateY(-1px);
-        }
-        body.light .admin-link-btn {
-            background: rgba(0,0,0,0.02);
-            border-color: rgba(0,0,0,0.04);
-            color: rgba(0,0,0,0.15);
-        }
-        body.light .admin-link-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: rgba(0,0,0,0.3);
-            border-color: rgba(0,0,0,0.08);
-        }
-
-        .rule-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .rule-card:hover {
-            transform: translateY(-4px);
-        }
-        .rule-number {
+        .logo-z {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #fff;
-            font-weight: 700;
-            font-size: 16px;
-            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: #FFFFFF;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,153,204,0.15), 0 2px 6px rgba(0,0,0,0.04);
+            font-size: 28px;
+            font-weight: 800;
+            color: #0099CC;
+            transition: transform 0.2s ease;
+            line-height: 1;
         }
-        body.light .rule-number {
-            background: rgba(0,0,0,0.04);
-            border-color: rgba(0,0,0,0.08);
-            color: #111;
-        }
-
-        .section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .section .stagger-child {
-            opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
-        }
-        .section.visible .stagger-child {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .logo-z:hover { transform: scale(1.05); }
 
         .online-dot {
             animation: pulse-dot 2s infinite;
+            background-color: #0099CC;
         }
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+        .rules-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 7rem 1.5rem 3rem;
+            width: 100%;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,153,204,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+            transition: all 0.4s ease;
+            border-radius: 16px;
+        }
+        .glass-card:hover {
+            border-color: #0099CC;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,153,204,0.08);
+        }
+
+        .rule-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(0,153,204,0.06);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .rule-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .rule-card:hover {
+            transform: translateY(-4px);
+            border-color: #0099CC;
+            box-shadow: 0 8px 30px rgba(0,153,204,0.06);
+        }
+
+        .rule-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #0099CC;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,153,204,0.15);
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.6rem 0.8rem;
+            margin: 0.4rem 0;
+            background: rgba(0,153,204,0.02);
+            border-radius: 10px;
+            border-left: 3px solid rgba(0,153,204,0.15);
+            transition: background 0.2s ease, transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            transform: translateX(-15px);
+        }
+        .rule-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .rule-item:hover {
+            background: rgba(0,153,204,0.04);
+        }
+        .rule-item i {
+            color: #0099CC;
+            opacity: 0.6;
+            margin-top: 0.1rem;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .rule-item span {
+            color: #444;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .category-header {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .category-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .category-header i {
+            color: #0099CC;
+            font-size: 1.5rem;
+        }
+
         .sync-btn {
             padding: 4px 14px;
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.03);
-            color: #888;
+            border: 1px solid rgba(0,153,204,0.12);
+            background: rgba(0,153,204,0.04);
+            color: #777;
             cursor: pointer;
             font-size: 11px;
             transition: all 0.3s ease;
             font-family: 'Inter', system-ui, sans-serif;
         }
         .sync-btn:hover {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            border-color: rgba(255,255,255,0.12);
+            background: rgba(0,153,204,0.08);
+            color: #0099CC;
+            border-color: #0099CC;
         }
-        body.light .sync-btn {
-            border-color: rgba(0,0,0,0.06);
-            color: #666;
+
+        @media (max-width: 640px) {
+            .rules-wrapper { padding: 6rem 1rem 2rem; }
+            .rule-card { padding: 1rem 1.2rem; }
+            .rule-number { width: 36px; height: 36px; font-size: 15px; }
+            .rule-item { padding: 0.4rem 0.6rem; }
+            .rule-item span { font-size: 0.85rem; }
+            .category-header { font-size: 1.2rem; }
         }
-        body.light .sync-btn:hover {
-            background: rgba(0,0,0,0.04);
-            color: #000;
-            border-color: rgba(0,0,0,0.1);
-        }
+
+        .icon-fw { width: 1.25em; text-align: center; }
 
         .toast {
             position: fixed;
@@ -216,165 +286,71 @@
             z-index: 2000;
             animation: toastSlide 0.4s ease;
             max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             font-family: 'Inter', system-ui, sans-serif;
         }
         @keyframes toastSlide {
             from { opacity: 0; transform: translateY(20px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .toast.success { background: rgba(78, 205, 196, 0.15); border: 1px solid rgba(78, 205, 196, 0.3); color: #4ecdc4; }
-        .toast.error { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; }
-        .toast.info { background: rgba(255,170,68,0.15); border: 1px solid rgba(255,170,68,0.3); color: #ffaa44; }
-
-        #mobile-menu-button i {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: inline-block;
-        }
-        #mobile-menu-button i.fa-times {
-            transform: rotate(90deg) scale(1.1);
-        }
-        #mobile-menu-button i.fa-bars {
-            transform: rotate(0deg) scale(1);
-        }
-
-        body.light {
-            background-color: #f0f0f0;
-            color: #1a1a1a;
-        }
-        body.light .bg-neutral-950 { background-color: #e8e8e8; }
-        body.light .bg-neutral-900 { background-color: #dddddd; }
-        body.light .bg-neutral-800 { background-color: #d0d0d0; }
-        body.light .bg-black { background-color: #d5d5d5; }
-        body.light .border-neutral-800 { border-color: #bbbbbb; }
-        body.light .border-neutral-700 { border-color: #aaaaaa; }
-        body.light .border-neutral-600 { border-color: #999999; }
-        body.light .border-white\/10 { border-color: rgba(0,0,0,0.08); }
-        body.light .border-white\/20 { border-color: rgba(0,0,0,0.15); }
-        body.light .text-white { color: #111111 !important; }
-        body.light .text-neutral-400 { color: #444444 !important; }
-        body.light .text-neutral-500 { color: #555555 !important; }
-        body.light .text-neutral-300 { color: #333333 !important; }
-        body.light .text-neutral-200 { color: #222222 !important; }
-        body.light .text-white\/80 { color: #333333 !important; }
-        body.light .text-white\/70 { color: #444444 !important; }
-        body.light .text-white\/90 { color: #222222 !important; }
-        body.light .text-white\/60 { color: #444444 !important; }
-        body.light .text-white\/40 { color: #666666 !important; }
-        body.light #navbar { 
-            background-color: rgba(235,235,235,0.95) !important; 
-            border-color: #bbbbbb !important; 
-        }
-        body.light #navbar .text-white { color: #111111 !important; }
-        body.light #navbar .text-neutral-300 { color: #333333 !important; }
-        body.light #navbar .text-white\/80 { color: #333333 !important; }
-        body.light #navbar .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
-        body.light .theme-toggle { 
-            border-color: rgba(0,0,0,0.15) !important; 
-            color: #333 !important; 
-        }
-        body.light .theme-toggle:hover { 
-            background: rgba(0,0,0,0.06) !important; 
-            color: #000 !important; 
-        }
-        body.light .nav-btn-ip {
-            background: rgba(0,0,0,0.05) !important;
-            border-color: rgba(0,0,0,0.1) !important;
-            color: #333 !important;
-        }
-        body.light .nav-btn-ip:hover {
-            background: rgba(0,0,0,0.1) !important;
-            border-color: rgba(0,0,0,0.2) !important;
-            color: #000 !important;
-        }
-        body.light .rule-card { 
-            background-color: #e0e0e0 !important; 
-            border-color: #bbbbbb !important; 
-        }
-        body.light .rule-card .text-white { color: #111111 !important; }
-        body.light .rule-card .text-neutral-300 { color: #333333 !important; }
-        body.light .rule-card .text-neutral-400 { color: #444444 !important; }
-        body.light .rule-card .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
-        body.light .rule-card .border-white\/20 { border-color: rgba(0,0,0,0.15) !important; }
-        body.light .text-red-400 { color: #aa3333 !important; }
-        body.light .text-yellow-400 { color: #886622 !important; }
-        body.light .text-orange-400 { color: #995522 !important; }
-        body.light .border-l-4 { border-color: #555 !important; }
-        body.light .bg-neutral-800 { background-color: #ccc !important; }
-        body.light .bg-neutral-800:hover { background-color: #bbb !important; }
-        body.light .bg-neutral-950\/95 { background-color: rgba(220,220,220,0.95) !important; }
-        body.light .bg-neutral-900\/60 { background-color: rgba(200,200,200,0.6) !important; }
-        body.light #mobile-menu {
-            background-color: #e8e8e8 !important;
-            border-color: #bbbbbb !important;
-        }
-        body.light #mobile-menu .text-white { color: #111111 !important; }
-        body.light #mobile-menu .border-neutral-800 { border-color: #bbbbbb !important; }
-        body.light #mobile-menu .bg-neutral-800 { background-color: #ccc !important; }
-        body.light #mobile-menu .bg-neutral-800:hover { background-color: #bbb !important; }
-        body.light #mobile-menu .border-neutral-600 { border-color: #999 !important; }
-
-        @media (max-width: 640px) {
-            .admin-link-btn { padding: 4px 14px; font-size: 10px; }
-        }
+        .toast.success { background: #E6F7F0; border: 1px solid #0099CC; color: #0077A3; }
+        .toast.error { background: #FDE8E8; border: 1px solid #FF6B6B; color: #CC3333; }
+        .toast.info { background: #FFF4E6; border: 1px solid #FFAA44; color: #995522; }
     </style>
 </head>
 <body id="app-body">
 
-    <nav id="navbar" class="fixed top-0 w-full bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800 z-50 transition-colors duration-300">
+    <!-- ===== NAVBAR ===== -->
+    <nav id="navbar" class="fixed top-0 w-full backdrop-blur-md border-b z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white text-black rounded-xl flex items-center justify-center font-bold text-base sm:text-lg">Z</div>
-                <span class="text-xl sm:text-2xl tracking-wider text-white font-bold">MUGIVARA</span>
+                <div class="logo-z">Z</div>
+                <span class="text-xl sm:text-2xl tracking-wider text-dark font-bold">MUGIVARA</span>
             </div>
 
             <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="index.html" class="text-white font-semibold nav-link">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-book"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-map"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition nav-link"><i class="fa-solid fa-scroll"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition nav-link text-white/80"><i class="fa-solid fa-pen-to-square"></i> Заявка</a>
+                <a href="index.html" class="nav-link"><i class="fas fa-home icon-fw"></i> Главная</a>
+                <a href="wiki.html" class="nav-link"><i class="fas fa-book icon-fw"></i> Вики</a>
+                <a href="mapa.html" class="nav-link"><i class="fas fa-map icon-fw"></i> Карта</a>
+                <a href="rules.html" class="text-brand font-semibold nav-link"><i class="fas fa-scroll icon-fw"></i> Правила</a>
+                <a href="apply.html" class="nav-link"><i class="fas fa-pen-to-square icon-fw"></i> Заявка</a>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
-                <div class="hidden sm:flex items-center gap-1.5 bg-neutral-900/60 px-3 py-1.5 rounded-full border border-white/10 text-xs">
-                    <div class="w-1.5 h-1.5 bg-white rounded-full online-dot"></div>
-                    <span class="font-medium text-white/80">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-white">Загрузка...</span>
+                <div class="hidden sm:flex items-center gap-1.5 bg-brandLight/60 px-3 py-1.5 rounded-full border border-brandLight text-xs">
+                    <div class="w-1.5 h-1.5 bg-brand rounded-full online-dot"></div>
+                    <span class="font-medium text-dark/80">Онлайн:</span>
+                    <span id="online-count" class="font-semibold text-dark">Загрузка...</span>
                 </div>
 
-                <button id="themeToggle" class="theme-toggle w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm sm:text-base" aria-label="Переключить тему">
-                    <i class="fa-regular fa-moon"></i>
-                </button>
-
                 <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
-                    <i class="fa-solid fa-copy text-xs"></i>
+                    <i class="fas fa-copy text-xs"></i>
                     <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
                     <span class="sm:hidden">IP</span>
                 </button>
-                
-                <a href="https://discord.gg/W226UHyv6f" target="_blank" 
+
+                <a href="https://discord.gg/W226UHyv6f" target="_blank"
                    class="nav-btn nav-btn-discord flex items-center gap-1.5">
-                    <i class="fa-brands fa-discord"></i> 
+                    <i class="fab fa-discord"></i>
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button id="mobile-menu-button" class="md:hidden p-1.5 text-neutral-300 hover:text-white transition-all duration-300">
-                    <i class="fa-solid fa-bars text-xl"></i>
+                <button id="mobile-menu-button" class="md:hidden p-1.5 text-dark/60 hover:text-brand transition-all duration-300">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-neutral-950 border-t border-neutral-800 py-4 px-6">
+        <div id="mobile-menu" class="hidden md:hidden border-t py-4 px-6">
             <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-white py-2">Главная</a>
-                <a href="wiki.html" class="hover:text-white transition py-2"><i class="fa-solid fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-white transition py-2"><i class="fa-solid fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-white transition py-2"><i class="fa-solid fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-white transition py-2"><i class="fa-solid fa-pen-to-square w-5"></i> Заявка</a>
-                <div class="pt-3 border-t border-neutral-800">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-full flex items-center gap-2 text-sm text-white">
-                        <i class="fa-solid fa-copy"></i>
+                <a href="index.html" class="hover:text-brand transition py-2"><i class="fas fa-home w-5"></i> Главная</a>
+                <a href="wiki.html" class="hover:text-brand transition py-2"><i class="fas fa-book w-5"></i> Вики</a>
+                <a href="mapa.html" class="hover:text-brand transition py-2"><i class="fas fa-map w-5"></i> Карта</a>
+                <a href="rules.html" class="text-brand py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
+                <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
+                <div class="pt-3 border-t border-brandLight">
+                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-brandLight/50 hover:bg-brandLight/70 border border-brandLight rounded-full flex items-center gap-2 text-sm text-dark">
+                        <i class="fas fa-copy"></i>
                         <span>Скопировать IP: play.mugivaracraft.ru</span>
                     </button>
                 </div>
@@ -382,44 +358,40 @@
         </div>
     </nav>
 
-    <div class="pt-20 pb-12 px-4 sm:px-6 max-w-4xl mx-auto">
-        <div class="text-center mb-12 sm:mb-16 section">
-            <h1 class="text-4xl sm:text-5xl font-semibold mb-4 text-white stagger-child"><i class="fa-solid fa-scroll mr-3"></i>Кодекс Мугивар</h1>
-            <p class="text-white/60 text-lg stagger-child">Правила сервера чистого выживания</p>
-            <div class="mt-2 text-xs text-neutral-500 stagger-child">
-                <i class="fa-regular fa-circle-check text-green-400"></i>
-                <span id="sync-status">Синхронизировано с облаком</span>
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <div class="rules-wrapper">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-semibold text-dark"><i class="fas fa-scroll text-brand mr-3"></i>Кодекс Мугивар</h1>
+            <p class="text-dark/60 text-lg mt-2">Правила сервера чистого выживания</p>
+            <!-- Упрощённый блок синхронизации — только одна иконка и кнопка -->
+            <div class="mt-3 flex flex-wrap items-center justify-center gap-3 text-sm text-dark/40">
+                <span id="sync-status"><i class="fas fa-check-circle text-brand"></i> Синхронизировано с облаком</span>
+                <button onclick="loadAllRulesFromCloud()" class="sync-btn">
+                    <i class="fas fa-cloud-upload-alt"></i> Обновить
+                </button>
             </div>
-            <button onclick="loadAllRulesFromCloud()" class="sync-btn stagger-child" style="margin-top:8px;">
-                <i class="fa-regular fa-cloud-arrow-down"></i> Обновить правила
-            </button>
         </div>
 
-        <div id="rulesContainer" class="rules-page-content">
+        <div id="rulesContainer">
             <!-- Загружается через JS -->
         </div>
 
-        <div class="text-center mt-12 text-neutral-400 italic text-sm sm:text-base section">
-            <p class="stagger-child">Нарушение правил может повлечь предупреждение, мут или бан.</p>
-            <p class="text-white/80 mt-1 stagger-child">Береги себя и других. Играй честно <i class="fa-regular fa-hand-peace"></i></p>
+        <div class="text-center mt-12 text-dark/50 italic text-sm">
+            <p>Нарушение правил может повлечь предупреждение, мут или бан.</p>
+            <p class="text-dark/60 mt-1">Береги себя и других. Играй честно <i class="fas fa-hand-peace text-brand/60"></i></p>
         </div>
     </div>
 
-    <footer class="bg-black py-4 border-t border-neutral-800 transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-            <div class="flex justify-center">
-                <a href="admin.html" class="admin-link-btn">
-                    <i class="fa-regular fa-crown"></i>
-                    <span>Управление сайтом</span>
-                </a>
-            </div>
-        </div>
-    </footer>
-
     <script>
+        // ============================================================
+        // ====== КОНФИГУРАЦИЯ JSONBin ======
+        // ============================================================
         const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
         const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
 
+        // ============================================================
+        // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
+        // ============================================================
         function copyIP() {
             navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
@@ -440,22 +412,7 @@
             const btn = document.getElementById('mobile-menu-button');
             const icon = btn.querySelector('i');
             menu.classList.toggle('hidden');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-            icon.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.querySelector('#themeToggle i');
-            body.classList.toggle('light');
-            if (body.classList.contains('light')) {
-                icon.className = 'fa-regular fa-sun';
-                localStorage.setItem('theme', 'light');
-            } else {
-                icon.className = 'fa-regular fa-moon';
-                localStorage.setItem('theme', 'dark');
-            }
+            icon.className = menu.classList.contains('hidden') ? 'fas fa-bars text-xl' : 'fas fa-times text-xl';
         }
 
         function showToast(message, type = 'info') {
@@ -473,6 +430,9 @@
             }, 4000);
         }
 
+        // ============================================================
+        // ====== ПРАВИЛА ======
+        // ============================================================
         let rulesCategories = [];
         let flatRulesItems = [];
 
@@ -558,9 +518,9 @@
 
         function getDefaultRulesCategories() {
             return [
-                { 
-                    id: 'rules_cat1', 
-                    title: 'Общие правила', 
+                {
+                    id: 'rules_cat1',
+                    title: 'Общие правила',
                     sections: [
                         { id: 'rules1', title: 'Нарушения имущества', items: [
                             'Использование чужих ферм без разрешения владельца',
@@ -578,18 +538,18 @@
                             'Доксинг (распространение личных данных)',
                             'Ложные доносы и обман администрации'
                         ] }
-                    ] 
+                    ]
                 },
-                { 
-                    id: 'rules_cat2', 
-                    title: 'Административные нарушения', 
+                {
+                    id: 'rules_cat2',
+                    title: 'Административные нарушения',
                     sections: [
                         { id: 'rules3', title: 'Наказания', items: [
                             'Предупреждение — за незначительные нарушения',
                             'Мут — за нарушения в чате (от 10 минут до 7 дней)',
                             'Бан — за гриферство, повторные нарушения, обход блокировок'
                         ] }
-                    ] 
+                    ]
                 }
             ];
         }
@@ -598,7 +558,7 @@
             const btn = event?.target;
             const originalText = btn ? btn.innerHTML : '';
             if (btn) {
-                btn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Загрузка...';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 btn.disabled = true;
             }
             try {
@@ -698,56 +658,139 @@
         function updateSyncStatus(synced) {
             const el = document.getElementById('sync-status');
             if (synced) {
-                el.innerHTML = '✅ Синхронизировано с облаком';
-                el.className = 'text-green-400';
+                el.innerHTML = '<i class="fas fa-check-circle text-brand"></i> Синхронизировано с облаком';
+                el.className = 'text-brand';
             } else {
-                el.innerHTML = '⚠️ Нет связи с облаком';
-                el.className = 'text-yellow-400';
+                el.innerHTML = '<i class="fas fa-exclamation-circle text-yellow-500"></i> Нет связи с облаком';
+                el.className = 'text-yellow-600';
             }
         }
+
+        // ===== ОТРИСОВКА ПРАВИЛ С АНИМАЦИЕЙ ПРИ СКРОЛЛЕ =====
+        let observer = null;
 
         function renderRules() {
             const container = document.getElementById('rulesContainer');
             if (!flatRulesItems || flatRulesItems.length === 0) {
                 container.innerHTML = `
-                    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 text-center">
-                        <p class="text-neutral-400">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
-                        <a href="admin.html" class="inline-block mt-4 text-white/60 hover:text-white transition-all text-sm">
-                            <i class="fa-regular fa-crown"></i> Открыть админ-панель
-                        </a>
+                    <div class="glass-card p-8 text-center">
+                        <p class="text-dark/50">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
                     </div>
                 `;
                 return;
             }
-            container.innerHTML = flatRulesItems.map((section, index) => `
-                <div class="rule-card bg-neutral-900 border border-neutral-700 rounded-2xl p-6 sm:p-10 mb-6 section">
-                    <div class="flex items-center gap-4 mb-6 stagger-child">
-                        <span class="rule-number flex-shrink-0">${index + 1}</span>
-                        <div class="flex-1 min-w-0">
-                            ${section.category && section.category !== 'Без категории' ? `
-                                <div class="text-xs text-neutral-500 mb-0.5">${section.category}</div>
-                            ` : ''}
-                            <h2 class="text-2xl sm:text-3xl font-semibold text-white leading-tight">${section.title || 'Без названия'}</h2>
+
+            // Группируем по категориям
+            const grouped = {};
+            flatRulesItems.forEach(item => {
+                const cat = item.category || 'Без категории';
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(item);
+            });
+
+            // Иконки для категорий
+            const categoryIcons = {
+                'Общие правила': 'fa-users',
+                'Административные нарушения': 'fa-gavel',
+                'Без категории': 'fa-tag'
+            };
+
+            let html = '';
+            let globalIndex = 0;
+            Object.keys(grouped).forEach(cat => {
+                const items = grouped[cat];
+                const catIcon = categoryIcons[cat] || 'fa-tag';
+                html += `
+                    <div class="category-header" data-category="${cat}">
+                        <h2 class="text-2xl font-semibold text-dark">${cat}</h2>
+                    </div>
+                `;
+                items.forEach((section) => {
+                    globalIndex++;
+                    // Иконка для раздела
+                    const sectionIconMap = {
+                        'Нарушения имущества': 'fa-shield-halved',
+                        'Общение в игре и Discord': 'fa-comments',
+                        'Наказания': 'fa-gavel',
+                        'Административные нарушения': 'fa-gavel'
+                    };
+                    const secIcon = sectionIconMap[section.title] || 'fa-list';
+                    html += `
+                        <div class="rule-card" data-delay="${(globalIndex-1) * 100}">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="rule-number">${globalIndex}</span>
+                                <h3 class="text-xl font-semibold text-dark flex items-center gap-2">
+                                    <i class="fas ${secIcon} text-brand/60"></i>
+                                    ${section.title}
+                                </h3>
+                            </div>
+                            <div>
+                                ${section.items && section.items.length > 0
+                                    ? section.items.map((item, itemIdx) => `
+                                        <div class="rule-item" data-delay="${(globalIndex-1) * 100 + (itemIdx+1) * 60}">
+                                            <i class="fas fa-circle-check"></i>
+                                            <span>${item}</span>
+                                        </div>
+                                    `).join('')
+                                    : '<p class="text-dark/40 italic">Пункты отсутствуют</p>'
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <div class="space-y-3 text-neutral-300 text-[15px] sm:text-base pl-2 stagger-child">
-                        ${section.items && section.items.length > 0 
-                            ? section.items.map(item => `
-                                <div class="flex gap-3 items-start">
-                                    <span class="text-white/40 font-mono text-sm">•</span>
-                                    <span>${item}</span>
-                                </div>
-                            `).join('')
-                            : '<div class="flex gap-3 items-start"><span class="text-white/40 font-mono text-sm">•</span><span class="text-neutral-500">Пункты отсутствуют</span></div>'
-                        }
-                    </div>
-                </div>
-            `).join('');
-            setTimeout(() => {
-                document.querySelectorAll('.section').forEach(s => {
-                    s.classList.add('visible');
+                    `;
                 });
-            }, 100);
+            });
+
+            container.innerHTML = html;
+
+            // Настраиваем Intersection Observer для анимации при скролле
+            if (observer) observer.disconnect();
+            observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        if (el.classList.contains('category-header')) {
+                            el.classList.add('visible');
+                        } else if (el.classList.contains('rule-card')) {
+                            el.classList.add('visible');
+                            el.querySelectorAll('.rule-item').forEach((item, idx) => {
+                                setTimeout(() => {
+                                    item.classList.add('visible');
+                                }, idx * 60);
+                            });
+                        } else if (el.classList.contains('rule-item')) {
+                            el.classList.add('visible');
+                        }
+                        observer.unobserve(el);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // Начинаем наблюдать за всеми элементами, которые должны анимироваться
+            document.querySelectorAll('.category-header, .rule-card, .rule-item').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const winHeight = window.innerHeight || document.documentElement.clientHeight;
+                if (rect.top < winHeight * 0.85 && rect.bottom > 0) {
+                    if (el.classList.contains('category-header')) {
+                        setTimeout(() => el.classList.add('visible'), 100);
+                    } else if (el.classList.contains('rule-card')) {
+                        setTimeout(() => {
+                            el.classList.add('visible');
+                            el.querySelectorAll('.rule-item').forEach((item, idx) => {
+                                setTimeout(() => {
+                                    item.classList.add('visible');
+                                }, idx * 60);
+                            });
+                        }, 200);
+                    } else if (el.classList.contains('rule-item')) {
+                        setTimeout(() => el.classList.add('visible'), 300);
+                    }
+                } else {
+                    observer.observe(el);
+                }
+            });
         }
 
         function initRules() {
@@ -761,6 +804,7 @@
             updateSyncStatus(true);
         }
 
+        // ===== ОНЛАЙН =====
         async function updateOnline() {
             const el = document.getElementById('online-count');
             try {
@@ -770,17 +814,18 @@
                 const data = await resp.json();
                 if (data.online) {
                     el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "font-semibold text-white";
+                    el.className = "font-semibold text-dark";
                 } else {
                     el.textContent = "0/100";
-                    el.className = "font-semibold text-neutral-500";
+                    el.className = "font-semibold text-dark/40";
                 }
             } catch {
                 el.textContent = "—";
-                el.className = "font-semibold text-neutral-500";
+                el.className = "font-semibold text-dark/40";
             }
         }
 
+        // ===== СЛУШАЕМ ОБНОВЛЕНИЯ =====
         window.addEventListener('storage', (e) => {
             if (e.key === 'rules_categories' || e.key === 'mugivara_main_data' || e.key === 'admin_rules_sections') {
                 const loaded = loadRulesFromStorage();
@@ -791,37 +836,15 @@
             }
         });
 
+        // ============================================================
+        // ====== ИНИЦИАЛИЗАЦИЯ ======
+        // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            const icon = document.querySelector('#themeToggle i');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light');
-                icon.className = 'fa-regular fa-sun';
-            } else {
-                icon.className = 'fa-regular fa-moon';
-            }
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
             initRules();
             setTimeout(updateOnline, 300);
             setInterval(updateOnline, 10000);
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-            document.querySelectorAll('.section').forEach(s => observer.observe(s));
-            setTimeout(() => {
-                document.querySelectorAll('.section').forEach(s => {
-                    const rect = s.getBoundingClientRect();
-                    if (rect.top < window.innerHeight * 0.85) {
-                        s.classList.add('visible');
-                    }
-                });
-            }, 100);
-            setTimeout(checkRulesUpdates, 2000);
+            setTimeout(checkRulesUpdates, 5000);
             setInterval(checkRulesUpdates, 30000);
         });
     </script>
