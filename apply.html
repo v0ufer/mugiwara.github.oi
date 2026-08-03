@@ -151,6 +151,12 @@
         body.dark-theme .theme-btn .sun-icon { display: none; }
         body.dark-theme .theme-btn .moon-icon { display: inline; }
 
+        @media (max-width: 767px) {
+            .theme-btn.desktop-only {
+                display: none !important;
+            }
+        }
+
         #mobile-menu {
             max-height: 0;
             overflow: hidden;
@@ -580,7 +586,7 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button class="theme-btn" id="theme-toggle-desktop" aria-label="Переключить тему">
+                <button class="theme-btn desktop-only" id="theme-toggle-desktop" aria-label="Переключить тему">
                     <span class="sun-icon"><i class="fas fa-sun"></i></span>
                     <span class="moon-icon"><i class="fas fa-moon"></i></span>
                 </button>

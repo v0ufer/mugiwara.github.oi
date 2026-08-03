@@ -162,6 +162,12 @@
         body.dark-theme .theme-btn .sun-icon { display: none; }
         body.dark-theme .theme-btn .moon-icon { display: inline; }
 
+        @media (max-width: 767px) {
+            .theme-btn.desktop-only {
+                display: none !important;
+            }
+        }
+
         #mobile-menu {
             max-height: 0;
             overflow: hidden;
@@ -311,6 +317,16 @@
         }
         .wiki-sidebar::-webkit-scrollbar { width: 4px; }
         .wiki-sidebar::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
+
+        /* Скрываем десктопный сайдбар на мобилках */
+        @media (max-width: 1024px) {
+            .wiki-sidebar {
+                display: none !important;
+            }
+            .wiki-main-wrapper {
+                padding-left: 0 !important;
+            }
+        }
 
         .sidebar-group { margin-bottom: 32px; }
         .sidebar-group-title {
@@ -602,7 +618,7 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <button class="theme-btn" id="theme-toggle-desktop" aria-label="Переключить тему">
+                <button class="theme-btn desktop-only" id="theme-toggle-desktop" aria-label="Переключить тему">
                     <span class="sun-icon"><i class="fas fa-sun"></i></span>
                     <span class="moon-icon"><i class="fas fa-moon"></i></span>
                 </button>

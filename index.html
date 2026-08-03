@@ -16,21 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        brand: '#0099CC',
-                        brandLight: '#EAEAEA',
-                        brandDark: '#333333',
-                        brandBg: '#FDFBF8',
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         :root {
             --bg-primary: #FDFBF8;
@@ -136,7 +121,6 @@
             background: #4752C4;
         }
 
-        /* ===== КНОПКА СМЕНЫ ТЕМЫ ===== */
         .theme-btn {
             background: var(--hover-bg);
             border: 1px solid var(--border-color);
@@ -187,7 +171,6 @@
         #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
         #mobile-menu .border-neutral-600 { border-color: var(--border-color) !important; }
 
-        /* ===== МОБИЛЬНАЯ СТРОКА С IP И ТЕМОЙ ===== */
         .mobile-theme-row {
             display: flex;
             align-items: center;
@@ -497,7 +480,6 @@
             transition: background 0.3s ease;
         }
 
-        /* ===== КЛАСС ДЛЯ БЭЙДЖА В ХЕДЕРЕ ===== */
         .badge-header {
             background: var(--badge-bg);
             border-color: var(--badge-border);
@@ -505,6 +487,13 @@
         }
         .badge-header .badge-text {
             color: var(--text-primary);
+        }
+
+        /* Скрываем кнопку темы на мобилках */
+        @media (max-width: 767px) {
+            .theme-btn.desktop-only {
+                display: none !important;
+            }
         }
 
         @media (max-width: 640px) {
@@ -580,8 +569,8 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <!-- Кнопка смены темы (десктоп) -->
-                <button class="theme-btn" id="theme-toggle-desktop" aria-label="Переключить тему">
+                <!-- Кнопка темы только на десктопе -->
+                <button class="theme-btn desktop-only" id="theme-toggle-desktop" aria-label="Переключить тему">
                     <span class="sun-icon"><i class="fas fa-sun"></i></span>
                     <span class="moon-icon"><i class="fas fa-moon"></i></span>
                 </button>
@@ -601,7 +590,6 @@
                 <a href="mapa.html" class="hover:text-brand transition py-2"><i class="fas fa-map w-5"></i> Карта</a>
                 <a href="rules.html" class="hover:text-brand transition py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
                 <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
-                <!-- Строка с IP и кнопкой темы -->
                 <div class="mobile-theme-row">
                     <button onclick="copyIP()" class="ip-btn">
                         <i class="fas fa-copy"></i>
@@ -947,7 +935,7 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
 
                 const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
                     signal: controller.signal
@@ -1021,7 +1009,7 @@
                 btn.addEventListener('click', toggleMobileMenu);
             }
             setTimeout(updateOnlineFull, 300);
-            setInterval(updateOnlineFull, 15000); // реже обновляем для экономии трафика
+            setInterval(updateOnlineFull, 15000);
 
             initObserver();
             setTimeout(checkHeroImage, 500);
