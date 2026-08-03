@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mugivara — Карта Мира</title>
-    <!-- Фавикон: белый фон, синяя Z -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='90' height='90' rx='20' fill='%23FFFFFF'/><text x='50' y='68' font-family='Arial' font-size='65' font-weight='bold' text-anchor='middle' fill='%230099CC'>Z</text></svg>">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0099CC">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,41 +32,73 @@
         }
     </script>
     <style>
-        /* ===== БАЗА ===== */
+        :root {
+            --bg-primary: #FDFBF8;
+            --bg-secondary: #FFFFFF;
+            --bg-navbar: rgba(253, 251, 248, 0.55);
+            --bg-mobile: rgba(253, 251, 248, 0.92);
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #888888;
+            --border-color: #EAEAEA;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --shadow-color: rgba(0,0,0,0.03);
+            --hover-bg: rgba(0,153,204,0.06);
+            --badge-bg: rgba(234, 234, 234, 0.6);
+            --badge-border: #EAEAEA;
+            --brand: #0099CC;
+        }
+        body.dark-theme {
+            --bg-primary: #333333;
+            --bg-secondary: #444444;
+            --bg-navbar: rgba(51, 51, 51, 0.85);
+            --bg-mobile: rgba(51, 51, 51, 0.92);
+            --text-primary: #EAEAEA;
+            --text-secondary: #AAAAAA;
+            --text-muted: #888888;
+            --border-color: #555555;
+            --card-bg: rgba(68, 68, 68, 0.6);
+            --shadow-color: rgba(0,0,0,0.2);
+            --hover-bg: rgba(0,153,204,0.12);
+            --badge-bg: rgba(85, 85, 85, 0.6);
+            --badge-border: #555555;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: #FDFBF8;
-            color: #333333;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             font-weight: 400;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #EAEAEA; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: var(--border-color); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #0077A3; }
-        * { scrollbar-width: thin; scrollbar-color: #0099CC #EAEAEA; }
+        * { scrollbar-width: thin; scrollbar-color: #0099CC var(--border-color); }
 
-        /* ===== НАВБАР ===== */
         #navbar {
-            background: rgba(253, 251, 248, 0.55) !important;
+            background: var(--bg-navbar) !important;
             backdrop-filter: blur(30px) saturate(180%) !important;
             -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(0, 153, 204, 0.15) !important;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.03) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            box-shadow: 0 4px 30px var(--shadow-color) !important;
+            transition: background 0.3s ease, border-color 0.3s ease;
             z-index: 50 !important;
         }
-        #navbar .text-white { color: #333333 !important; }
-        #navbar .text-neutral-300 { color: #333333 !important; }
-        #navbar .text-white\/80 { color: #555555 !important; }
-        #navbar .border-white\/10 { border-color: rgba(0,153,204,0.08) !important; }
+        #navbar .text-white { color: var(--text-primary) !important; }
+        #navbar .text-neutral-300 { color: var(--text-primary) !important; }
+        #navbar .text-white\/80 { color: var(--text-secondary) !important; }
+        #navbar .border-white\/10 { border-color: var(--border-color) !important; }
 
         .nav-link {
-            color: #555555 !important;
+            color: var(--text-secondary) !important;
             transition: all 0.2s ease;
             font-weight: 500;
             letter-spacing: 0.03em;
@@ -71,7 +107,7 @@
             color: #0099CC !important;
             transform: translateY(-1px);
         }
-        .nav-link.text-white\/80 { color: #555555 !important; }
+        .nav-link.text-white\/80 { color: var(--text-secondary) !important; }
         .nav-link.text-white\/80:hover { color: #0099CC !important; }
 
         .nav-btn {
@@ -87,7 +123,7 @@
         .nav-btn-ip {
             background: rgba(0,153,204,0.08);
             border-color: rgba(0,153,204,0.12);
-            color: #333333;
+            color: var(--text-primary);
         }
         .nav-btn-ip:hover {
             background: rgba(0,153,204,0.15);
@@ -102,19 +138,44 @@
         .nav-btn-discord:hover {
             background: #4752C4;
         }
-        .theme-toggle { display: none !important; }
 
-        /* ===== МОБИЛЬНОЕ МЕНЮ (плавный вылет) ===== */
+        .theme-btn {
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .theme-btn:hover {
+            border-color: #0099CC;
+            color: #0099CC;
+            transform: scale(1.05);
+        }
+        .theme-btn .sun-icon { display: inline; }
+        .theme-btn .moon-icon { display: none; }
+        body.dark-theme .theme-btn .sun-icon { display: none; }
+        body.dark-theme .theme-btn .moon-icon { display: inline; }
+
         #mobile-menu {
             max-height: 0;
             overflow: hidden;
             opacity: 0;
             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
                         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(253, 251, 248, 0.92) !important;
+                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        background 0.3s ease;
+            background: var(--bg-mobile) !important;
             backdrop-filter: blur(30px) saturate(180%) !important;
-            border-top: 1px solid rgba(0,153,204,0.08) !important;
+            border-top: 1px solid var(--border-color) !important;
             padding: 0 1.5rem;
         }
         #mobile-menu.open {
@@ -122,13 +183,50 @@
             opacity: 1;
             padding: 1.5rem 1.5rem;
         }
-        #mobile-menu .text-white { color: #333333 !important; }
-        #mobile-menu .border-neutral-800 { border-color: #EAEAEA !important; }
-        #mobile-menu .bg-neutral-800 { background-color: rgba(0,153,204,0.05) !important; }
+        #mobile-menu .text-white { color: var(--text-primary) !important; }
+        #mobile-menu .border-neutral-800 { border-color: var(--border-color) !important; }
+        #mobile-menu .bg-neutral-800 { background-color: var(--hover-bg) !important; }
         #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
-        #mobile-menu .border-neutral-600 { border-color: #CCCCCC !important; }
+        #mobile-menu .border-neutral-600 { border-color: var(--border-color) !important; }
 
-        /* ===== БУРГЕР (анимированный) ===== */
+        .mobile-theme-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        .mobile-theme-row .theme-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .mobile-theme-row .ip-btn {
+            flex: 1;
+            text-align: left;
+            padding: 10px 16px;
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: 'Inter', system-ui, sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mobile-theme-row .ip-btn:hover {
+            border-color: #0099CC;
+            background: rgba(0,153,204,0.08);
+        }
+        .mobile-theme-row .ip-btn i {
+            color: #0099CC;
+            font-size: 14px;
+        }
+
         .hamburger {
             display: flex;
             flex-direction: column;
@@ -144,7 +242,7 @@
             display: block;
             width: 24px;
             height: 2px;
-            background: #333333;
+            background: var(--text-primary);
             border-radius: 2px;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             transform-origin: center;
@@ -169,13 +267,13 @@
             justify-content: center;
             width: 48px;
             height: 48px;
-            background: #FFFFFF;
+            background: var(--bg-secondary);
             border-radius: 14px;
             box-shadow: 0 8px 24px rgba(0,153,204,0.15), 0 2px 6px rgba(0,0,0,0.04);
             font-size: 28px;
             font-weight: 800;
             color: #0099CC;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background 0.3s ease;
             line-height: 1;
         }
         .logo-z:hover { transform: scale(1.05); }
@@ -189,7 +287,15 @@
             50% { opacity: 0.3; }
         }
 
-        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .badge-header {
+            background: var(--badge-bg);
+            border-color: var(--badge-border);
+            color: var(--text-secondary);
+        }
+        .badge-header .badge-text {
+            color: var(--text-primary);
+        }
+
         .map-wrapper {
             flex: 1;
             display: flex;
@@ -200,12 +306,11 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .glass-card {
-            background: rgba(255,255,255,0.6);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(0,153,204,0.08);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow-color);
             transition: all 0.4s ease;
             border-radius: 24px;
             padding: 3rem 2.5rem;
@@ -218,7 +323,6 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 48px rgba(0,153,204,0.08);
         }
-
         .map-icon {
             display: inline-flex;
             align-items: center;
@@ -240,7 +344,6 @@
             border-color: #0099CC;
             transform: scale(1.05) rotate(-4deg);
         }
-
         .btn-premium {
             padding: 0.6rem 1.8rem;
             font-size: 0.85rem;
@@ -268,7 +371,6 @@
             box-shadow: 0 8px 30px rgba(0,153,204,0.2);
             color: #FFFFFF;
         }
-
         .badge {
             display: inline-flex;
             align-items: center;
@@ -285,14 +387,13 @@
             color: #0099CC;
             border: 1px solid rgba(0,153,204,0.15);
         }
-
         .info-line {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
             font-size: 0.8rem;
-            color: #777;
+            color: var(--text-muted);
             margin-top: 0.75rem;
         }
         .info-line i {
@@ -300,20 +401,18 @@
             opacity: 0.6;
         }
 
-        /* ===== МОБИЛЬНЫЕ ДОПОЛНЕНИЯ ===== */
         @media (max-width: 640px) {
             .map-wrapper { padding: 6rem 1rem 2rem; }
             .glass-card { padding: 2rem 1.5rem; }
             .map-icon { width: 64px; height: 64px; }
             .map-icon i { font-size: 28px; }
         }
-
         .icon-fw { width: 1.25em; text-align: center; }
     </style>
 </head>
 <body id="app-body">
 
-    <!-- ===== NAVBAR (Liquid Glass) ===== -->
+    <!-- NAVBAR -->
     <nav id="navbar" class="fixed top-0 w-full backdrop-blur-md border-b z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -330,10 +429,10 @@
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
-                <div class="hidden sm:flex items-center gap-1.5 bg-brandLight/60 px-3 py-1.5 rounded-full border border-brandLight text-xs">
+                <div class="hidden sm:flex items-center gap-1.5 badge-header px-3 py-1.5 rounded-full border text-xs">
                     <div class="w-1.5 h-1.5 bg-brand rounded-full online-dot"></div>
-                    <span class="font-medium text-dark/80">Онлайн:</span>
-                    <span id="online-count" class="font-semibold text-dark">Загрузка...</span>
+                    <span class="badge-text font-medium">Онлайн:</span>
+                    <span id="online-count" class="badge-text font-semibold">Загрузка...</span>
                 </div>
 
                 <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
@@ -348,7 +447,11 @@
                     <span class="hidden sm:inline">DISCORD</span>
                 </a>
 
-                <!-- Анимированный бургер -->
+                <button class="theme-btn" id="theme-toggle-desktop" aria-label="Переключить тему">
+                    <span class="sun-icon"><i class="fas fa-sun"></i></span>
+                    <span class="moon-icon"><i class="fas fa-moon"></i></span>
+                </button>
+
                 <button id="mobile-menu-button" class="md:hidden hamburger" aria-label="Открыть меню" aria-expanded="false">
                     <span></span>
                     <span></span>
@@ -357,7 +460,6 @@
             </div>
         </div>
 
-        <!-- Мобильное меню (плавный вылет) -->
         <div id="mobile-menu" class="md:hidden">
             <div class="flex flex-col gap-3 text-base font-medium">
                 <a href="index.html" class="hover:text-brand transition py-2"><i class="fas fa-home w-5"></i> Главная</a>
@@ -365,10 +467,14 @@
                 <a href="mapa.html" class="text-brand py-2"><i class="fas fa-map w-5"></i> Карта</a>
                 <a href="rules.html" class="hover:text-brand transition py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
                 <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
-                <div class="pt-3 border-t border-brandLight">
-                    <button onclick="copyIP()" class="w-full text-left px-4 py-2.5 bg-brandLight/50 hover:bg-brandLight/70 border border-brandLight rounded-full flex items-center gap-2 text-sm text-dark">
+                <div class="mobile-theme-row">
+                    <button onclick="copyIP()" class="ip-btn">
                         <i class="fas fa-copy"></i>
-                        <span>Скопировать IP: play.mugivaracraft.ru</span>
+                        <span>play.mugivaracraft.ru</span>
+                    </button>
+                    <button class="theme-btn" id="theme-toggle-mobile" aria-label="Переключить тему">
+                        <span class="sun-icon"><i class="fas fa-sun"></i></span>
+                        <span class="moon-icon"><i class="fas fa-moon"></i></span>
                     </button>
                 </div>
             </div>
@@ -406,18 +512,32 @@
 
             <div class="mt-8 flex items-center justify-center gap-4 text-xs text-dark/40">
                 <span><i class="fas fa-check-circle text-brand/60 mr-1"></i> Онлайн-карта</span>
-                <span class="w-px h-4 bg-brandLight"></span>
+                <span class="w-px h-4 bg-border"></span>
                 <span><i class="fas fa-clock text-brand/60 mr-1"></i> Реальное время</span>
-                <span class="w-px h-4 bg-brandLight"></span>
+                <span class="w-px h-4 bg-border"></span>
                 <span><i class="fas fa-compass text-brand/60 mr-1"></i> Dynmap</span>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================================
-        // ====== УНИВЕРСАЛЬНЫЕ ФУНКЦИИ ======
-        // ============================================================
+        // ===== ТЕМА =====
+        (function() {
+            const body = document.body;
+            const savedTheme = localStorage.getItem('mugivara-theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-theme');
+            }
+            const toggleBtns = document.querySelectorAll('.theme-btn');
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    body.classList.toggle('dark-theme');
+                    const isDark = body.classList.contains('dark-theme');
+                    localStorage.setItem('mugivara-theme', isDark ? 'dark' : 'light');
+                });
+            });
+        })();
+
         function copyIP() {
             navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
                 const el = document.getElementById("ip-text");
@@ -433,12 +553,10 @@
             });
         }
 
-        // ===== ПЛАВНОЕ МОБИЛЬНОЕ МЕНЮ И БУРГЕР =====
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const btn = document.getElementById('mobile-menu-button');
             const isOpen = menu.classList.contains('open');
-
             if (isOpen) {
                 menu.classList.remove('open');
                 btn.classList.remove('active');
@@ -452,37 +570,37 @@
             }
         }
 
-        // ===== ОНЛАЙН =====
         async function updateOnline() {
             const el = document.getElementById('online-count');
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
                 const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
-                    signal: AbortSignal.timeout(4000)
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
+                if (!resp.ok) throw new Error('Ошибка ответа');
                 const data = await resp.json();
                 if (data.online) {
                     el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "font-semibold text-dark";
+                    el.className = "badge-text font-semibold";
                 } else {
                     el.textContent = "0/100";
-                    el.className = "font-semibold text-dark/40";
+                    el.className = "badge-text font-semibold text-muted";
                 }
             } catch {
                 el.textContent = "—";
-                el.className = "font-semibold text-dark/40";
+                el.className = "badge-text font-semibold text-muted";
             }
         }
 
-        // ============================================================
-        // ====== ИНИЦИАЛИЗАЦИЯ ======
-        // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('mobile-menu-button');
             if (btn) {
                 btn.addEventListener('click', toggleMobileMenu);
             }
             setTimeout(updateOnline, 300);
-            setInterval(updateOnline, 10000);
+            setInterval(updateOnline, 15000);
         });
     </script>
 </body>
