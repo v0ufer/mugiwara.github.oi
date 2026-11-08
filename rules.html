@@ -1,1029 +1,235 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){try{var t=localStorage.getItem("mugivara-theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugivara — Правила Сервера</title>
+    <title>Правила — Mugivara</title>
+    <meta name="description" content="Кодекс Мугивар — правила ванильного сервера Mugivara.">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0099CC">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#000000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        brand: '#0099CC',
-                        brandLight: '#EAEAEA',
-                        brandDark: '#333333',
-                        brandBg: '#FDFBF8',
-                    }
-                }
-            }
-        }
-    </script>
+    <style>html,body{background:#0a0a0b;margin:0;padding:0;}html[data-theme="light"],html[data-theme="light"] body{background:#f7f9fb;color:#14181d;}#navbar-host{display:block;height:57.6px;}</style>
+
+    <link rel="stylesheet" href="assets/style.css">
     <style>
-        :root {
-            --bg-primary: #FDFBF8;
-            --bg-secondary: #FFFFFF;
-            --bg-navbar: rgba(253, 251, 248, 0.55);
-            --bg-mobile: rgba(253, 251, 248, 0.92);
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --text-muted: #888888;
-            --border-color: #EAEAEA;
-            --card-bg: rgba(255, 255, 255, 0.6);
-            --shadow-color: rgba(0,0,0,0.03);
-            --hover-bg: rgba(0,153,204,0.06);
-            --badge-bg: rgba(234, 234, 234, 0.6);
-            --badge-border: #EAEAEA;
-            --brand: #0099CC;
-        }
-        body.dark-theme {
-            --bg-primary: #333333;
-            --bg-secondary: #444444;
-            --bg-navbar: rgba(51, 51, 51, 0.85);
-            --bg-mobile: rgba(51, 51, 51, 0.92);
-            --text-primary: #EAEAEA;
-            --text-secondary: #AAAAAA;
-            --text-muted: #888888;
-            --border-color: #555555;
-            --card-bg: rgba(68, 68, 68, 0.6);
-            --shadow-color: rgba(0,0,0,0.2);
-            --hover-bg: rgba(0,153,204,0.12);
-            --badge-bg: rgba(85, 85, 85, 0.6);
-            --badge-border: #555555;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-weight: 400;
-            min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--border-color); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0077A3; }
-        * { scrollbar-width: thin; scrollbar-color: #0099CC var(--border-color); }
-
-        #navbar {
-            background: var(--bg-navbar) !important;
-            backdrop-filter: blur(30px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-            border-bottom: 1px solid var(--border-color) !important;
-            box-shadow: 0 4px 30px var(--shadow-color) !important;
-            transition: background 0.3s ease, border-color 0.3s ease;
-            z-index: 50 !important;
-        }
-        #navbar .text-white { color: var(--text-primary) !important; }
-        #navbar .text-neutral-300 { color: var(--text-primary) !important; }
-        #navbar .text-white\/80 { color: var(--text-secondary) !important; }
-        #navbar .border-white\/10 { border-color: var(--border-color) !important; }
-
-        .nav-link {
-            color: var(--text-secondary) !important;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-        }
-        .nav-link:hover {
-            color: #0099CC !important;
-            transform: translateY(-1px);
-        }
-        .nav-link.text-white\/80 { color: var(--text-secondary) !important; }
-        .nav-link.text-white\/80:hover { color: #0099CC !important; }
-
-        .nav-btn {
-            padding: 0.4rem 1.2rem;
-            font-size: 0.75rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            font-family: 'Inter', system-ui, sans-serif;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .nav-btn-ip {
-            background: rgba(0,153,204,0.08);
-            border-color: rgba(0,153,204,0.12);
-            color: var(--text-primary);
-        }
-        .nav-btn-ip:hover {
-            background: rgba(0,153,204,0.15);
-            border-color: #0099CC;
-            color: #0099CC;
-        }
-        .nav-btn-discord {
-            background: #5865F2;
-            color: #fff;
-            border: none;
-        }
-        .nav-btn-discord:hover {
-            background: #4752C4;
-        }
-
-        .theme-btn {
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            padding: 0;
-            flex-shrink: 0;
-        }
-        .theme-btn:hover {
-            border-color: #0099CC;
-            color: #0099CC;
-            transform: scale(1.05);
-        }
-        .theme-btn .sun-icon { display: inline; }
-        .theme-btn .moon-icon { display: none; }
-        body.dark-theme .theme-btn .sun-icon { display: none; }
-        body.dark-theme .theme-btn .moon-icon { display: inline; }
-
-        @media (max-width: 767px) {
-            .theme-btn.desktop-only {
-                display: none !important;
-            }
-        }
-
-        #mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        background 0.3s ease;
-            background: var(--bg-mobile) !important;
-            backdrop-filter: blur(30px) saturate(180%) !important;
-            border-top: 1px solid var(--border-color) !important;
-            padding: 0 1.5rem;
-        }
-        #mobile-menu.open {
-            max-height: 600px;
-            opacity: 1;
-            padding: 1.5rem 1.5rem;
-        }
-        #mobile-menu .text-white { color: var(--text-primary) !important; }
-        #mobile-menu .border-neutral-800 { border-color: var(--border-color) !important; }
-        #mobile-menu .bg-neutral-800 { background-color: var(--hover-bg) !important; }
-        #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
-        #mobile-menu .border-neutral-600 { border-color: var(--border-color) !important; }
-
-        .mobile-theme-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-        }
-        .mobile-theme-row .theme-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        .mobile-theme-row .ip-btn {
-            flex: 1;
-            text-align: left;
-            padding: 10px 16px;
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 9999px;
-            color: var(--text-primary);
-            font-size: 13px;
-            font-family: 'Inter', system-ui, sans-serif;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .mobile-theme-row .ip-btn:hover {
-            border-color: #0099CC;
-            background: rgba(0,153,204,0.08);
-        }
-        .mobile-theme-row .ip-btn i {
-            color: #0099CC;
-            font-size: 14px;
-        }
-
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 5px;
-            background: transparent;
-            border: none;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .hamburger span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--text-primary);
-            border-radius: 2px;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: center;
-        }
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-        .hamburger:hover span {
-            background: #0099CC;
-        }
-
-        .logo-z {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            background: var(--bg-secondary);
-            border-radius: 14px;
-            box-shadow: 0 8px 24px rgba(0,153,204,0.15), 0 2px 6px rgba(0,0,0,0.04);
-            font-size: 28px;
-            font-weight: 800;
-            color: #0099CC;
-            transition: transform 0.2s ease, background 0.3s ease;
-            line-height: 1;
-        }
-        .logo-z:hover { transform: scale(1.05); }
-
-        .online-dot {
-            animation: pulse-dot 2s infinite;
-            background-color: #0099CC;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .badge-header {
-            background: var(--badge-bg);
-            border-color: var(--badge-border);
-            color: var(--text-secondary);
-        }
-        .badge-header .badge-text {
-            color: var(--text-primary);
-        }
-
-        .rules-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 7rem 1.5rem 3rem;
-            width: 100%;
-        }
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            transition: all 0.4s ease;
-            border-radius: 16px;
-        }
-        .glass-card:hover {
-            border-color: #0099CC;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 48px rgba(0,153,204,0.08);
-        }
-        .rule-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(8px);
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
-        }
-        .rule-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .rule-card:hover {
-            transform: translateY(-4px);
-            border-color: #0099CC;
-            box-shadow: 0 8px 30px rgba(0,153,204,0.06);
-        }
-        .rule-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #0099CC;
-            color: #fff;
-            font-weight: 700;
-            font-size: 18px;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,153,204,0.15);
-        }
-        .rule-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.6rem 0.8rem;
-            margin: 0.4rem 0;
-            background: rgba(0,153,204,0.02);
-            border-radius: 10px;
-            border-left: 3px solid rgba(0,153,204,0.15);
-            transition: background 0.2s ease, transform 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            transform: translateX(-15px);
-        }
-        .rule-item.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .rule-item:hover {
-            background: var(--hover-bg);
-        }
-        .rule-item i {
-            color: #0099CC;
-            opacity: 0.6;
-            margin-top: 0.1rem;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-        .rule-item span {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        .category-header {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .category-header.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .category-header i {
-            color: #0099CC;
-            font-size: 1.5rem;
-        }
-        .sync-btn {
-            padding: 4px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(0,153,204,0.12);
-            background: rgba(0,153,204,0.04);
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        .sync-btn:hover {
-            background: rgba(0,153,204,0.08);
-            color: #0099CC;
-            border-color: #0099CC;
-        }
-
-        @media (max-width: 640px) {
-            .rules-wrapper { padding: 6rem 1rem 2rem; }
-            .rule-card { padding: 1rem 1.2rem; }
-            .rule-number { width: 36px; height: 36px; font-size: 15px; }
-            .rule-item { padding: 0.4rem 0.6rem; }
-            .rule-item span { font-size: 0.85rem; }
-            .category-header { font-size: 1.2rem; }
-        }
-        .icon-fw { width: 1.25em; text-align: center; }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 2000;
-            animation: toastSlide 0.4s ease;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        @keyframes toastSlide {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .toast.success { background: #E6F7F0; border: 1px solid #0099CC; color: #0077A3; }
-        .toast.error { background: #FDE8E8; border: 1px solid #FF6B6B; color: #CC3333; }
-        .toast.info { background: #FFF4E6; border: 1px solid #FFAA44; color: #995522; }
+        .rules-wrap { max-width: 52rem; margin: 0 auto; }
+        .rule-section { border: 1px solid var(--border); border-radius: 14px; background: var(--card); margin-bottom: 1.2rem; overflow: hidden; }
+        .rule-section-head { padding: 1.1rem 1.4rem; display: flex; align-items: center; gap: 0.9rem; border-bottom: 1px solid var(--border); }
+        .rule-num { width: 2.2rem; height: 2.2rem; border-radius: 10px; background: var(--primary); color: var(--primary-foreground); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+        .rule-section-body { padding: 0.6rem 1.4rem 1rem; }
+        .rule-item { display: flex; gap: 0.7rem; padding: 0.6rem 0; color: var(--muted-foreground); font-size: 0.92rem; align-items: flex-start; }
+        .rule-item i { color: var(--primary); margin-top: 0.2rem; font-size: 0.85rem; }
+        .sync-bar { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0 2.5rem; color: var(--muted-foreground); font-size: 0.85rem; }
+        .sync-btn { padding: 0.3rem 0.9rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--muted-foreground); cursor: pointer; font-size: 0.8rem; }
+        .sync-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .rule-cat-title { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; margin: 2rem 0 1rem; font-size: 1.2rem; }
+        @media (prefers-reduced-motion: reduce) { .rule-section { margin-bottom: 1.2rem; } }
     </style>
 </head>
-<body id="app-body">
+<body>
+    <div id="navbar-host"></div>
 
-    <!-- NAVBAR -->
-    <nav id="navbar" class="fixed top-0 w-full backdrop-blur-md border-b z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="logo-z">Z</div>
-                <span class="text-xl sm:text-2xl tracking-wider text-dark font-bold">MUGIVARA</span>
+    <section class="section">
+        <div class="container rules-wrap">
+            <div style="text-align:center;" class="reveal">
+                <h1 class="section-title">Кодекс Мугивар</h1>
+                <p class="section-sub">Правила ванильного сервера · чистое выживание без PvP</p>
             </div>
 
-            <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="index.html" class="nav-link"><i class="fas fa-home icon-fw"></i> Главная</a>
-                <a href="wiki.html" class="nav-link"><i class="fas fa-book icon-fw"></i> Вики</a>
-                <a href="mapa.html" class="nav-link"><i class="fas fa-map icon-fw"></i> Карта</a>
-                <a href="rules.html" class="text-brand font-semibold nav-link"><i class="fas fa-scroll icon-fw"></i> Правила</a>
-                <a href="apply.html" class="nav-link"><i class="fas fa-pen-to-square icon-fw"></i> Заявка</a>
+            <div class="sync-bar">
+                <span id="sync-status"><i class="fas fa-check-circle" style="color:var(--primary);"></i> Синхронизировано с облаком</span>
+                <button onclick="loadAllRulesFromCloud()" class="sync-btn"><i class="fas fa-cloud-upload-alt"></i> Обновить</button>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3">
-                <div class="hidden sm:flex items-center gap-1.5 badge-header px-3 py-1.5 rounded-full border text-xs">
-                    <div class="w-1.5 h-1.5 bg-brand rounded-full online-dot"></div>
-                    <span class="badge-text font-medium">Онлайн:</span>
-                    <span id="online-count" class="badge-text font-semibold">Загрузка...</span>
-                </div>
+            <div id="rulesContainer"></div>
 
-                <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
-                    <i class="fas fa-copy text-xs"></i>
-                    <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
-                    <span class="sm:hidden">IP</span>
-                </button>
-
-                <a href="https://discord.gg/W226UHyv6f" target="_blank"
-                   class="nav-btn nav-btn-discord flex items-center gap-1.5">
-                    <i class="fab fa-discord"></i>
-                    <span class="hidden sm:inline">DISCORD</span>
-                </a>
-
-                <button class="theme-btn desktop-only" id="theme-toggle-desktop" aria-label="Переключить тему">
-                    <span class="sun-icon"><i class="fas fa-sun"></i></span>
-                    <span class="moon-icon"><i class="fas fa-moon"></i></span>
-                </button>
-
-                <button id="mobile-menu-button" class="md:hidden hamburger" aria-label="Открыть меню" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+            <div style="text-align:center;margin-top:2.5rem;color:var(--muted-foreground);font-style:italic;font-size:0.9rem;">
+                <p>Нарушение правил может повлечь предупреждение, мут или бан.</p>
+                <p style="margin-top:0.3rem;">Береги себя и других. Играй честно <i class="fas fa-hand-peace" style="color:var(--primary);"></i></p>
             </div>
         </div>
+    </section>
 
-        <div id="mobile-menu" class="md:hidden">
-            <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="hover:text-brand transition py-2"><i class="fas fa-home w-5"></i> Главная</a>
-                <a href="wiki.html" class="hover:text-brand transition py-2"><i class="fas fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-brand transition py-2"><i class="fas fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="text-brand py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
-                <div class="mobile-theme-row">
-                    <button onclick="copyIP()" class="ip-btn">
-                        <i class="fas fa-copy"></i>
-                        <span>play.mugivaracraft.ru</span>
-                    </button>
-                    <button class="theme-btn" id="theme-toggle-mobile" aria-label="Переключить тему">
-                        <span class="sun-icon"><i class="fas fa-sun"></i></span>
-                        <span class="moon-icon"><i class="fas fa-moon"></i></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
-    <div class="rules-wrapper">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl sm:text-5xl font-semibold text-dark"><i class="fas fa-scroll text-brand mr-3"></i>Кодекс Мугивар</h1>
-            <p class="text-dark/60 text-lg mt-2">Правила сервера чистого выживания</p>
-            <div class="mt-3 flex flex-wrap items-center justify-center gap-3 text-sm text-dark/40">
-                <span id="sync-status"><i class="fas fa-check-circle text-brand"></i> Синхронизировано с облаком</span>
-                <button onclick="loadAllRulesFromCloud()" class="sync-btn">
-                    <i class="fas fa-cloud-upload-alt"></i> Обновить
-                </button>
-            </div>
-        </div>
-
-        <div id="rulesContainer">
-            <!-- Загружается через JS -->
-        </div>
-
-        <div class="text-center mt-12 text-dark/50 italic text-sm">
-            <p>Нарушение правил может повлечь предупреждение, мут или бан.</p>
-            <p class="text-dark/60 mt-1">Береги себя и других. Играй честно <i class="fas fa-hand-peace text-brand/60"></i></p>
-        </div>
-    </div>
+    <div id="footer-host"></div>
 
     <script>
-        // ===== ТЕМА =====
         (function() {
-            const body = document.body;
-            const savedTheme = localStorage.getItem('mugivara-theme');
-            if (savedTheme === 'dark') {
-                body.classList.add('dark-theme');
-            }
-            const toggleBtns = document.querySelectorAll('.theme-btn');
-            toggleBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    body.classList.toggle('dark-theme');
-                    const isDark = body.classList.contains('dark-theme');
-                    localStorage.setItem('mugivara-theme', isDark ? 'dark' : 'light');
-                });
-            });
-        })();
+            const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
+            const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
 
-        const JSONBIN_API_KEY = '$2a$10$URKtwmPsnoAKHj1hYcx0uuaUNwhJzV..m9zBM5rRKfsTFJYCJAFPe';
-        const JSONBIN_BIN_ID = '6a5b75a4f5f4af5e29a06b2e';
+            let rulesCategories = [];
+            let flatRulesItems = [];
 
-        function copyIP() {
-            navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
-                const el = document.getElementById("ip-text");
-                const old = el.textContent;
-                el.textContent = "СКОПИРОВАНО ✓";
-                setTimeout(() => {
-                    if (el.classList.contains('hidden')) {
-                        document.getElementById("ip-text").textContent = "IP";
-                    } else {
-                        el.textContent = old;
-                    }
-                }, 2000);
-            });
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const btn = document.getElementById('mobile-menu-button');
-            const isOpen = menu.classList.contains('open');
-            if (isOpen) {
-                menu.classList.remove('open');
-                btn.classList.remove('active');
-                btn.setAttribute('aria-expanded', 'false');
-                btn.setAttribute('aria-label', 'Открыть меню');
-            } else {
-                menu.classList.add('open');
-                btn.classList.add('active');
-                btn.setAttribute('aria-expanded', 'true');
-                btn.setAttribute('aria-label', 'Закрыть меню');
-            }
-        }
-
-        function showToast(message, type = 'info') {
-            const existing = document.querySelector('.toast');
-            if (existing) existing.remove();
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px)';
-                toast.style.transition = 'all 0.4s ease';
-                setTimeout(() => toast.remove(), 500);
-            }, 4000);
-        }
-
-        let rulesCategories = [];
-        let flatRulesItems = [];
-
-        function loadRulesFromStorage() {
-            try {
-                const mainData = localStorage.getItem('mugivara_main_data');
-                if (mainData) {
-                    const data = JSON.parse(mainData);
-                    if (data.rulesCategories && data.rulesCategories.length > 0) {
-                        rulesCategories = data.rulesCategories;
-                        flattenRules();
-                        return true;
-                    }
-                }
-            } catch (e) {}
-            try {
-                const data = localStorage.getItem('rules_categories');
-                if (data) {
-                    rulesCategories = JSON.parse(data);
-                    if (rulesCategories && rulesCategories.length > 0) {
-                        flattenRules();
-                        return true;
-                    }
-                }
-            } catch (e) {}
-            try {
-                const data = localStorage.getItem('admin_rules_sections');
-                if (data) {
-                    const oldData = JSON.parse(data);
-                    if (oldData && oldData.length > 0) {
-                        rulesCategories = [{
-                            id: 'rules_cat_old',
-                            title: 'Правила сервера',
-                            sections: oldData.map((sec, idx) => ({
-                                id: sec.id || 'rule_' + idx,
-                                title: sec.title || 'Раздел ' + (idx + 1),
-                                items: sec.items || []
-                            }))
-                        }];
-                        flattenRules();
-                        saveRulesToStorage();
-                        return true;
-                    }
-                }
-            } catch (e) {}
-            return false;
-        }
-
-        function saveRulesToStorage() {
-            try {
-                localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
-                const mainData = localStorage.getItem('mugivara_main_data');
-                let data = mainData ? JSON.parse(mainData) : {};
-                data.rulesCategories = rulesCategories;
-                localStorage.setItem('mugivara_main_data', JSON.stringify(data));
-                const flatSections = [];
+            function flattenRules() {
+                flatRulesItems = [];
                 rulesCategories.forEach(cat => {
                     (cat.sections || []).forEach(sec => {
-                        flatSections.push({
-                            id: sec.id,
-                            title: sec.title,
-                            items: sec.items || []
+                        flatRulesItems.push({
+                            id: sec.id, title: sec.title || 'Без названия',
+                            items: sec.items || [], category: cat.title || 'Без категории'
                         });
                     });
                 });
-                localStorage.setItem('admin_rules_sections', JSON.stringify(flatSections));
-            } catch (e) {}
-        }
+            }
 
-        function flattenRules() {
-            flatRulesItems = [];
-            rulesCategories.forEach(cat => {
-                (cat.sections || []).forEach(sec => {
-                    flatRulesItems.push({
-                        id: sec.id,
-                        title: sec.title || 'Без названия',
-                        items: sec.items || [],
-                        category: cat.title || 'Без категории'
+            function loadRulesFromStorage() {
+                try {
+                    const mainData = localStorage.getItem('mugivara_main_data');
+                    if (mainData) {
+                        const data = JSON.parse(mainData);
+                        if (data.rulesCategories && data.rulesCategories.length > 0) {
+                            rulesCategories = data.rulesCategories; flattenRules(); return true;
+                        }
+                    }
+                } catch (e) {}
+                try {
+                    const data = localStorage.getItem('rules_categories');
+                    if (data) { rulesCategories = JSON.parse(data); if (rulesCategories.length) { flattenRules(); return true; } }
+                } catch (e) {}
+                return false;
+            }
+
+            function saveRulesToStorage() {
+                try {
+                    localStorage.setItem('rules_categories', JSON.stringify(rulesCategories));
+                    const mainData = localStorage.getItem('mugivara_main_data');
+                    let data = mainData ? JSON.parse(mainData) : {};
+                    data.rulesCategories = rulesCategories;
+                    localStorage.setItem('mugivara_main_data', JSON.stringify(data));
+                } catch (e) {}
+            }
+
+            function getDefaultRulesCategories() {
+                return [
+                    {
+                        id: 'rules_cat1', title: 'Общие правила',
+                        sections: [
+                            { id: 'rules1', title: 'Нарушения имущества', items: [
+                                'Использование чужих ферм без разрешения владельца',
+                                'Использование чужих трейдхоллов без разрешения',
+                                'Действия с чужой территорией без согласия (радиус 50 блоков от построек)',
+                                'Действия с чужими хранилищами без согласия',
+                                'Принудительный обмен ресурсами',
+                                'Разрушение чужих хранилищ с целью навредить',
+                                'Гриферство в любом виде без соглашения'
+                            ] },
+                            { id: 'rules2', title: 'Общение в игре и Discord', items: [
+                                'Личные оскорбления и переход на личности',
+                                'Флуд, спам, крик (капс) без причины',
+                                'Обсуждение политики, религии и провокационных тем',
+                                'Доксинг (распространение личных данных)',
+                                'Ложные доносы и обман администрации'
+                            ] }
+                        ]
+                    },
+                    {
+                        id: 'rules_cat2', title: 'Административные нарушения',
+                        sections: [
+                            { id: 'rules3', title: 'Наказания', items: [
+                                'Предупреждение — за незначительные нарушения',
+                                'Мут — за нарушения в чате (от 10 минут до 7 дней)',
+                                'Бан — за гриферство, повторные нарушения, обход блокировок'
+                            ] }
+                        ]
+                    }
+                ];
+            }
+
+            function renderRules() {
+                const container = document.getElementById('rulesContainer');
+                if (!flatRulesItems.length) {
+                    container.innerHTML = '<div class="card p-8" style="text-align:center;color:var(--muted-foreground);">Правила пока не добавлены.</div>';
+                    return;
+                }
+                const grouped = {};
+                flatRulesItems.forEach(item => {
+                    if (!grouped[item.category]) grouped[item.category] = [];
+                    grouped[item.category].push(item);
+                });
+                const catIcons = { 'Общие правила': 'fa-users', 'Административные нарушения': 'fa-gavel' };
+                let html = ''; let globalIndex = 0;
+                Object.keys(grouped).forEach(cat => {
+                    html += '<div class="rule-cat-title"><i class="fas ' + (catIcons[cat] || 'fa-tag') + '" style="color:var(--primary);"></i>' + cat + '</div>';
+                    grouped[cat].forEach(sec => {
+                        globalIndex++;
+                        html += '<div class="rule-section"><div class="rule-section-head"><span class="rule-num">' + globalIndex + '</span><div style="font-weight:700;">' + sec.title + '</div></div><div class="rule-section-body">';
+                        if (sec.items && sec.items.length) {
+                            html += sec.items.map(it => '<div class="rule-item"><i class="fas fa-circle-check"></i><span>' + it + '</span></div>').join('');
+                        } else {
+                            html += '<div style="color:var(--muted-foreground);font-style:italic;font-size:0.85rem;">Пункты отсутствуют</div>';
+                        }
+                        html += '</div></div>';
                     });
                 });
-            });
-        }
-
-        function getDefaultRulesCategories() {
-            return [
-                {
-                    id: 'rules_cat1',
-                    title: 'Общие правила',
-                    sections: [
-                        { id: 'rules1', title: 'Нарушения имущества', items: [
-                            'Использование чужих ферм без разрешения владельца',
-                            'Использование чужих трейдхоллов без разрешения',
-                            'Действия с чужой территорией без согласия (радиус 50 блоков от построек)',
-                            'Действия с чужими хранилищами без согласия',
-                            'Принудительный обмен ресурсами',
-                            'Разрушение чужих хранилищ с целью навредить',
-                            'Гриферство в любом виде без соглашения'
-                        ] },
-                        { id: 'rules2', title: 'Общение в игре и Discord', items: [
-                            'Личные оскорбления и переход на личности',
-                            'Флуд, спам, крик (капс) без причины',
-                            'Обсуждение политики, религии и провокационных тем',
-                            'Доксинг (распространение личных данных)',
-                            'Ложные доносы и обман администрации'
-                        ] }
-                    ]
-                },
-                {
-                    id: 'rules_cat2',
-                    title: 'Административные нарушения',
-                    sections: [
-                        { id: 'rules3', title: 'Наказания', items: [
-                            'Предупреждение — за незначительные нарушения',
-                            'Мут — за нарушения в чате (от 10 минут до 7 дней)',
-                            'Бан — за гриферство, повторные нарушения, обход блокировок'
-                        ] }
-                    ]
-                }
-            ];
-        }
-
-        async function loadAllRulesFromCloud() {
-            const btn = event?.target;
-            const originalText = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                btn.disabled = true;
+                container.innerHTML = html;
             }
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY },
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                if (!response.ok) throw new Error('Ошибка загрузки');
-                const data = await response.json();
-                const cloudData = data.record;
-                if (cloudData && cloudData.rulesCategories && cloudData.rulesCategories.length > 0) {
-                    rulesCategories = cloudData.rulesCategories;
-                    flattenRules();
-                    saveRulesToStorage();
-                    localStorage.setItem('mugivara_last_update', Date.now().toString());
-                    renderRules();
-                    updateSyncStatus(true);
-                    showToast('✅ Правила обновлены из облака', 'success');
-                } else if (cloudData && cloudData.rulesSections && cloudData.rulesSections.length > 0) {
-                    rulesCategories = [{
-                        id: 'rules_cat_cloud',
-                        title: 'Правила сервера',
-                        sections: cloudData.rulesSections.map((sec, idx) => ({
-                            id: sec.id || 'rule_' + idx,
-                            title: sec.title || 'Раздел ' + (idx + 1),
-                            items: sec.items || []
-                        }))
-                    }];
-                    flattenRules();
-                    saveRulesToStorage();
-                    localStorage.setItem('mugivara_last_update', Date.now().toString());
-                    renderRules();
-                    updateSyncStatus(true);
-                    showToast('✅ Правила обновлены из облака (конвертировано)', 'success');
-                } else {
-                    showToast('ℹ️ В облаке нет данных правил', 'info');
-                }
-            } catch (error) {
-                console.warn('⚠️ Ошибка загрузки правил:', error.message);
-                showToast('⚠️ Ошибка загрузки правил из облака', 'error');
-                updateSyncStatus(false);
-            }
-            if (btn) {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
 
-        async function checkRulesUpdates() {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY },
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                if (!response.ok) return;
-                const data = await response.json();
-                const cloudData = data.record;
-                if (cloudData && cloudData.updated) {
-                    const cloudTime = new Date(cloudData.updated).getTime();
-                    const localTime = parseInt(localStorage.getItem('mugivara_last_update') || '0');
-                    if (cloudTime > localTime) {
-                        let hasNewRules = false;
-                        if (cloudData.rulesCategories && cloudData.rulesCategories.length > 0) {
-                            rulesCategories = cloudData.rulesCategories;
-                            hasNewRules = true;
-                        } else if (cloudData.rulesSections && cloudData.rulesSections.length > 0) {
-                            rulesCategories = [{
-                                id: 'rules_cat_cloud',
-                                title: 'Правила сервера',
-                                sections: cloudData.rulesSections.map((sec, idx) => ({
-                                    id: sec.id || 'rule_' + idx,
-                                    title: sec.title || 'Раздел ' + (idx + 1),
-                                    items: sec.items || []
-                                }))
-                            }];
-                            hasNewRules = true;
-                        }
-                        if (hasNewRules) {
-                            console.log('🔄 Найдены обновления правил в облаке');
-                            flattenRules();
-                            saveRulesToStorage();
-                            localStorage.setItem('mugivara_last_update', Date.now().toString());
-                            renderRules();
-                            updateSyncStatus(true);
-                            showToast('🔄 Правила обновлены из облака', 'info');
-                        } else {
-                            updateSyncStatus(true);
-                        }
+            function updateSyncStatus(synced) {
+                const el = document.getElementById('sync-status');
+                if (synced) el.innerHTML = '<i class="fas fa-check-circle" style="color:var(--primary);"></i> Синхронизировано с облаком';
+                else el.innerHTML = '<i class="fas fa-exclamation-circle" style="color:#e0a100;"></i> Нет связи с облаком';
+            }
+
+            async function loadAllRulesFromCloud() {
+                const btn = event && event.target && event.target.closest ? event.target.closest('.sync-btn') : null;
+                const original = btn ? btn.innerHTML : '';
+                if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true; }
+                try {
+                    const c = new AbortController(); const t = setTimeout(() => c.abort(), 6000);
+                    const r = await fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID + '/latest', { headers: { 'X-Master-Key': JSONBIN_API_KEY }, signal: c.signal });
+                    clearTimeout(t);
+                    if (!r.ok) throw new Error();
+                    const d = await r.json(); const cd = d.record;
+                    if (cd && cd.rulesCategories && cd.rulesCategories.length) {
+                        rulesCategories = cd.rulesCategories; flattenRules(); saveRulesToStorage();
+                        renderRules(); updateSyncStatus(true);
+                        window.showToast ? window.showToast('Правила обновлены из облака') : alert('Обновлено');
                     } else {
-                        updateSyncStatus(true);
+                        window.showToast ? window.showToast('В облаке нет данных правил') : alert('Нет данных');
                     }
-                }
-            } catch (error) {
-                console.warn('⚠️ Ошибка проверки обновлений:', error.message);
-                updateSyncStatus(false);
+                } catch (e) { updateSyncStatus(false); }
+                if (btn) { btn.innerHTML = original; btn.disabled = false; }
             }
-        }
 
-        function updateSyncStatus(synced) {
-            const el = document.getElementById('sync-status');
-            if (synced) {
-                el.innerHTML = '<i class="fas fa-check-circle text-brand"></i> Синхронизировано с облаком';
-                el.className = 'text-brand';
-            } else {
-                el.innerHTML = '<i class="fas fa-exclamation-circle text-yellow-500"></i> Нет связи с облаком';
-                el.className = 'text-yellow-600';
+            async function checkRulesUpdates() {
+                try {
+                    const c = new AbortController(); const t = setTimeout(() => c.abort(), 6000);
+                    const r = await fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID + '/latest', { headers: { 'X-Master-Key': JSONBIN_API_KEY }, signal: c.signal });
+                    clearTimeout(t);
+                    if (!r.ok) return;
+                    const d = await r.json(); const cd = d.record;
+                    if (cd && cd.rulesCategories && cd.rulesCategories.length) {
+                        rulesCategories = cd.rulesCategories; flattenRules(); saveRulesToStorage(); renderRules(); updateSyncStatus(true);
+                    } else updateSyncStatus(true);
+                } catch (e) { updateSyncStatus(false); }
             }
-        }
 
-        let observer = null;
-        function renderRules() {
-            const container = document.getElementById('rulesContainer');
-            if (!flatRulesItems || flatRulesItems.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-card p-8 text-center">
-                        <p class="text-dark/50">Правила еще не добавлены. Перейдите в админ-панель для их создания.</p>
-                    </div>
-                `;
-                return;
-            }
-            const grouped = {};
-            flatRulesItems.forEach(item => {
-                const cat = item.category || 'Без категории';
-                if (!grouped[cat]) grouped[cat] = [];
-                grouped[cat].push(item);
-            });
-            const categoryIcons = {
-                'Общие правила': 'fa-users',
-                'Административные нарушения': 'fa-gavel',
-                'Без категории': 'fa-tag'
-            };
-            let html = '';
-            let globalIndex = 0;
-            Object.keys(grouped).forEach(cat => {
-                const items = grouped[cat];
-                html += `
-                    <div class="category-header" data-category="${cat}">
-                        <h2 class="text-2xl font-semibold text-dark">${cat}</h2>
-                    </div>
-                `;
-                items.forEach((section) => {
-                    globalIndex++;
-                    const sectionIconMap = {
-                        'Нарушения имущества': 'fa-shield-halved',
-                        'Общение в игре и Discord': 'fa-comments',
-                        'Наказания': 'fa-gavel',
-                        'Административные нарушения': 'fa-gavel'
-                    };
-                    const secIcon = sectionIconMap[section.title] || 'fa-list';
-                    html += `
-                        <div class="rule-card" data-delay="${(globalIndex-1) * 100}">
-                            <div class="flex items-center gap-4 mb-4">
-                                <span class="rule-number">${globalIndex}</span>
-                                <h3 class="text-xl font-semibold text-dark flex items-center gap-2">
-                                    <i class="fas ${secIcon} text-brand/60"></i>
-                                    ${section.title}
-                                </h3>
-                            </div>
-                            <div>
-                                ${section.items && section.items.length > 0
-                                    ? section.items.map((item, itemIdx) => `
-                                        <div class="rule-item" data-delay="${(globalIndex-1) * 100 + (itemIdx+1) * 60}">
-                                            <i class="fas fa-circle-check"></i>
-                                            <span>${item}</span>
-                                        </div>
-                                    `).join('')
-                                    : '<p class="text-dark/40 italic">Пункты отсутствуют</p>'
-                                }
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-            container.innerHTML = html;
-            if (observer) observer.disconnect();
-            observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const el = entry.target;
-                        if (el.classList.contains('category-header')) {
-                            el.classList.add('visible');
-                        } else if (el.classList.contains('rule-card')) {
-                            el.classList.add('visible');
-                            el.querySelectorAll('.rule-item').forEach((item, idx) => {
-                                setTimeout(() => {
-                                    item.classList.add('visible');
-                                }, idx * 60);
-                            });
-                        } else if (el.classList.contains('rule-item')) {
-                            el.classList.add('visible');
-                        }
-                        observer.unobserve(el);
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-            document.querySelectorAll('.category-header, .rule-card, .rule-item').forEach(el => {
-                const rect = el.getBoundingClientRect();
-                const winHeight = window.innerHeight || document.documentElement.clientHeight;
-                if (rect.top < winHeight * 0.85 && rect.bottom > 0) {
-                    if (el.classList.contains('category-header')) {
-                        setTimeout(() => el.classList.add('visible'), 100);
-                    } else if (el.classList.contains('rule-card')) {
-                        setTimeout(() => {
-                            el.classList.add('visible');
-                            el.querySelectorAll('.rule-item').forEach((item, idx) => {
-                                setTimeout(() => {
-                                    item.classList.add('visible');
-                                }, idx * 60);
-                            });
-                        }, 200);
-                    } else if (el.classList.contains('rule-item')) {
-                        setTimeout(() => el.classList.add('visible'), 300);
-                    }
-                } else {
-                    observer.observe(el);
-                }
-            });
-        }
-
-        function initRules() {
-            const loaded = loadRulesFromStorage();
-            if (!loaded) {
-                rulesCategories = getDefaultRulesCategories();
-                flattenRules();
-                saveRulesToStorage();
-            }
-            renderRules();
-            updateSyncStatus(true);
-        }
-
-        async function updateOnline() {
-            const el = document.getElementById('online-count');
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                if (!resp.ok) throw new Error('Ошибка ответа');
-                const data = await resp.json();
-                if (data.online) {
-                    el.textContent = `${data.players.online}/${data.players.max}`;
-                    el.className = "badge-text font-semibold";
-                } else {
-                    el.textContent = "0/100";
-                    el.className = "badge-text font-semibold text-muted";
-                }
-            } catch {
-                el.textContent = "—";
-                el.className = "badge-text font-semibold text-muted";
-            }
-        }
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'rules_categories' || e.key === 'mugivara_main_data' || e.key === 'admin_rules_sections') {
+            function init() {
                 const loaded = loadRulesFromStorage();
-                if (loaded) {
-                    renderRules();
-                    updateSyncStatus(true);
-                }
+                if (!loaded) { rulesCategories = getDefaultRulesCategories(); flattenRules(); saveRulesToStorage(); }
+                renderRules(); updateSyncStatus(true);
             }
-        });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('mobile-menu-button');
-            if (btn) {
-                btn.addEventListener('click', toggleMobileMenu);
-            }
-            initRules();
-            setTimeout(updateOnline, 300);
-            setInterval(updateOnline, 15000);
-            setTimeout(checkRulesUpdates, 5000);
-            setInterval(checkRulesUpdates, 30000);
-        });
+            window.addEventListener('storage', e => {
+                if (e.key === 'rules_categories' || e.key === 'mugivara_main_data' || e.key === 'admin_rules_sections') {
+                    if (loadRulesFromStorage()) { renderRules(); updateSyncStatus(true); }
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                init();
+                setTimeout(checkRulesUpdates, 5000);
+                setInterval(checkRulesUpdates, 30000);
+            });
+        })();
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
+    <script src="assets/main.js"></script>
 </body>
 </html>

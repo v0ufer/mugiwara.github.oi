@@ -1,0 +1,398 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){try{var t=localStorage.getItem("mugivara-theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вики — Mugivara</title>
+    <meta name="description" content="Вики ванильного сервера Mugivara: философия, правила, миры, общение, аккаунт и крафты.">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>html,body{background:#0a0a0b;margin:0;padding:0;}html[data-theme="light"],html[data-theme="light"] body{background:#f7f9fb;color:#14181d;}#navbar-host{display:block;height:57.6px;}</style>
+
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .wiki-layout { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; }
+        /* Сайдбар без собственной прокрутки и без обрезки: обычный поток,
+           все пункты видны, страница просто длиннее */
+        .wiki-side { position: static; align-self: start; max-height: none; overflow: visible; }
+        .wiki-side .card { max-height: none; overflow: visible; }
+        .wiki-group-title {
+            font-weight: 700; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.12em;
+            color: var(--primary); margin: 1.3rem 0 0.5rem;
+        }
+        .wiki-nav-item {
+            display: block; padding: 0.5rem 0.8rem; border-radius: 8px; cursor: pointer;
+            color: var(--muted); font-size: 0.85rem; transition: background 0.2s ease, color 0.2s ease; margin-bottom: 2px;
+        }
+        .wiki-nav-item:hover { background: var(--primary-soft); color: var(--primary); }
+        .wiki-nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+        .wiki-nav-item i { width: 18px; margin-right: 4px; text-align: center; }
+
+        .wiki-body { max-width: 46rem; }
+        .wiki-prose h1 { font-size: clamp(1.7rem, 4vw, 2.3rem); margin-bottom: 1rem; }
+        .wiki-prose h2 { font-size: 1.35rem; margin: 2.2rem 0 0.8rem; color: var(--foreground); }
+        .wiki-prose h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--foreground); }
+        .wiki-prose p { color: var(--muted); margin-bottom: 1rem; line-height: 1.7; }
+        .wiki-prose ul { color: var(--muted); margin: 0 0 1.2rem 1.2rem; }
+        .wiki-prose li { margin-bottom: 0.4rem; line-height: 1.6; }
+        .wiki-prose code {
+            background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+            padding: 0.1rem 0.45rem; font-size: 0.85em; color: var(--primary);
+            font-family: 'Geist Mono', Consolas, monospace;
+        }
+        .callout {
+            border: 1px solid var(--primary-border); background: var(--primary-soft);
+            border-radius: 12px; padding: 1rem 1.2rem; color: var(--muted); font-size: 0.92rem; margin: 1.4rem 0;
+        }
+        .callout i { color: var(--primary); margin-right: 0.5rem; }
+
+        .wiki-tag-hero { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 1.5rem 0; }
+        .wiki-tag {
+            flex: 1; min-width: 160px; padding: 1rem; border-radius: 12px;
+            border: 1px solid var(--border); background: var(--card);
+            transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+        }
+        .wiki-tag:hover { border-color: var(--primary-border); transform: translateY(-3px); background: var(--card-hover); }
+        .wiki-tag .t { font-weight: 700; margin-bottom: 0.3rem; color: var(--foreground); }
+        .wiki-tag .d { color: var(--muted); font-size: 0.82rem; }
+
+        /* Таймлайн-блок для «Как проходит проверка» */
+        .steps { position: relative; margin: 1rem 0 1.5rem; padding-left: 2.2rem; }
+        .steps::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+        .step { position: relative; padding: 0.6rem 0 0.9rem; }
+        .step-n { position: absolute; left: -2.2rem; top: 0.6rem; width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+        .step h3 { font-size: 1rem; margin: 0 0 0.2rem; color: var(--foreground); }
+        .step p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+        /* ===== БЕГУЩАЯ СТРОКА (красные плашки) ===== */
+        .marquee-wrap {
+            overflow: hidden; border: 1px solid rgba(255,80,80,0.2); border-radius: 12px;
+            background: color-mix(in srgb, #ff3742 5%, var(--card)); padding: 0.75rem 0;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        }
+        .marquee-track { display: inline-flex; gap: 0.7rem; white-space: nowrap; will-change: transform; }
+        .marquee-track.animate { animation: marquee 32s linear infinite; }
+        .marquee-track:hover { animation-play-state: paused; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ban-chip {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; border-radius: 999px;
+            background: rgba(255,55,66,0.16); color: #ff8b92;
+            border: 1px solid rgba(255,55,66,0.35); font-size: 0.85rem; font-weight: 600;
+        }
+        .ban-chip i { color: #ff6b74; font-size: 0.85rem; }
+        .last-edit { font-size: 0.8rem; color: var(--muted); margin-top: 1.5rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+
+        .wiki-mobile-nav-btn { display: none; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); cursor: pointer; font-family: inherit; font-size: 0.85rem; margin: 0.8rem 0 0.8rem; }
+        .wiki-mobile-nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+        #wikiNavList { display: block; }
+
+        @media (max-width: 899px) {
+            .wiki-mobile-nav-btn { display: inline-flex; }
+            #wikiNavList { display: none; }
+            #wikiNavList.open { display: block; }
+        }
+        @media (min-width: 900px) {
+            .wiki-layout { grid-template-columns: 255px 1fr; }
+        }
+        .md-card { display: none; }
+        .md-card.open { display: block; }
+    </style>
+</head>
+<body>
+    <div id="navbar-host"></div>
+
+    <section class="section">
+        <div class="container wiki-layout">
+            <!-- ===== САЙДБАР ===== -->
+            <aside class="wiki-side">
+                <div class="card" style="padding:1.1rem;">
+                    <h1 style="font-size:1.15rem;margin-bottom:0.2rem;"><i class="fas fa-book-open" style="color:var(--primary);"></i> Вики</h1>
+                    <div style="color:var(--muted);font-size:0.78rem;margin-bottom:0.6rem;">Mugivara • 1.21.11</div>
+
+                    <button class="wiki-mobile-nav-btn" id="wikiNavToggle"><i class="fas fa-bars"></i> Навигация</button>
+
+                    <!-- Постоянный список разделов (виден всегда, на десктопе и в мобильном меню) -->
+                    <div id="wikiNavList">
+                        <div class="wiki-group-title">Мир игры</div>
+                        <div class="wiki-nav-item" data-top="philosophy"><i class="fas fa-feather"></i> Философия сервера</div>
+                        <div class="wiki-nav-item" data-top="fairplay"><i class="fas fa-shield-halved"></i> Честная игра</div>
+                        <div class="wiki-nav-item" data-top="territory"><i class="fas fa-map-pin"></i> Территория и постройки</div>
+                        <div class="wiki-nav-item" data-top="fishing"><i class="fas fa-fish"></i> Рыбалка и находки</div>
+                        <div class="wiki-nav-item" data-top="worlds"><i class="fas fa-door-open"></i> Миры и порталы</div>
+                        <div class="wiki-nav-item" data-top="mechanics"><i class="fas fa-cogs"></i> Мелкие механики</div>
+                        <div class="wiki-group-title">Общение</div>
+                        <div class="wiki-nav-item" data-top="voice"><i class="fas fa-microphone"></i> Голосовой чат и эмоции</div>
+                        <div class="wiki-nav-item" data-top="rules"><i class="fas fa-comment-dots"></i> Правила общения</div>
+                        <div class="wiki-group-title">Аккаунт</div>
+                        <div class="wiki-nav-item" data-top="account"><i class="fas fa-user"></i> Аккаунт и скин</div>
+                        <div class="wiki-nav-item" data-top="commands"><i class="fas fa-terminal"></i> Команды</div>
+                        <div class="wiki-group-title">Администрация</div>
+                        <div class="wiki-nav-item" data-top="warnings"><i class="fas fa-gavel"></i> Наказания</div>
+                        <div class="wiki-group-title">Крафты</div>
+                        <div class="wiki-nav-item" data-top="crafts"><i class="fas fa-hammer"></i> Кастомные крафты</div>
+                        <div style="margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);font-size:0.72rem;color:var(--muted);">
+                            <i class="far fa-clock"></i> Обновлено сегодня
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ===== КОНТЕНТ ===== -->
+            <article class="wiki-body wiki-prose">
+                <!-- МИР ИГРЫ: Философия -->
+                <div class="md-card open" id="philosophy">
+                    <h1>Философия сервера</h1>
+                    <p><b>Mugivara</b> — ванильный SMP на актуальной версии Minecraft (1.21.11). Здесь нет заготовленных ролей, фракций или квестов. Всё, что происходит на сервере, происходит потому, что кто-то из игроков решил это начать.</p>
+                    <h2>Мир без сценария</h2>
+                    <p>Карта общая и постоянная. Мир не ресетится, постройки остаются, история накапливается. Но никто заранее не решил, какой эта история будет. Торговля, конфликты, дипломатия, отыгровка — всё работает не потому что есть плагин, а потому что игроки договорились между собой.</p>
+                    <h2>Из чего это сделано</h2>
+                    <div class="wiki-tag-hero">
+                        <div class="wiki-tag"><div class="t">Ваниль</div><div class="d">Чистый выживач</div></div>
+                        <div class="wiki-tag"><div class="t">Сообщество</div><div class="d">Живые люди</div></div>
+                        <div class="wiki-tag"><div class="t">Спокойствие</div><div class="d">Без PvP</div></div>
+                        <div class="wiki-tag"><div class="t">Честность</div><div class="d">Без доната</div></div>
+                    </div>
+                    <p>Основа сервера — ванильный выживач: блоки, фермы, механизмы. Кастомных плагинов, дающих преимущества, нет, а донат отсутствует полностью.</p>
+                </div>
+
+                <!-- МИР ИГРЫ: Честная игра (ключевая статья из скриншота 2) -->
+                <div class="md-card" id="fairplay">
+                    <h1><i class="fas fa-shield-halved" style="color:#ff6b74;margin-right:8px;"></i>Честная игра и проверки</h1>
+                    <p>Mugivara — честный ванильный сервер. Мы против читов и стороннего софта, дающего преимущество. Администрация периодически проводит проверки игроков, чтобы сервер оставался честным для всех.</p>
+
+                    <h2>Запрещённые модификации</h2>
+                    <p>Следующие моды и читы под запретом. Это не весь список — если что-то даёт преимущество, оно тоже запрещено.</p>
+                    <div class="marquee-wrap">
+                        <div class="marquee-track" id="banTrack">
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Мини-карты с мобами и игроками</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Baritone</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Fabaritone</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> AutoFish</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> FreeCam</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Reach / KillAura</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> X-Ray</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Анти-кик / анти-крит</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Макросы и авто-клик</span>
+                            <span class="ban-chip"><i class="fas fa-ban"></i> Чит-ресурспаки</span>
+                        </div>
+                    </div>
+                    <p style="font-size:0.82rem;color:var(--muted-foreground);">Список неполный. Если сомневаешься — лучше спроси у администрации в Discord.</p>
+
+                    <h2>Как проходит проверка</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-n">1</span>
+                            <h3>Запрос проверки</h3>
+                            <p>Администратор просит подключиться через AnyDesk или TeamViewer.</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-n">2</span>
+                            <h3>3 минуты на ответ</h3>
+                            <p>У тебя есть три минуты, чтобы выйти в нужный режим и подтвердить готовность.</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-n">3</span>
+                            <h3>Совместный доступ</h3>
+                            <p>Администрация посмотрит, не запущены ли запрещённые программы, и проверит клиент.</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-n">4</span>
+                            <h3>Игнор или выход = блокировка</h3>
+                            <p>Отказ от проверки расценивается как подтверждение нарушений и ведёт к бану.</p>
+                        </div>
+                    </div>
+
+                    <h2>Другие ограничения</h2>
+                    <ul>
+                        <li>Запрещено использовать игровые баги для получения преимущества.</li>
+                        <li>Запрещена продажа игровых предметов или услуг за реальные деньги.</li>
+                        <li>Обязательно сообщай администрации о найденных багах и нарушениях.</li>
+                    </ul>
+                    <div class="callout"><i class="fas fa-handshake"></i>Честная игра — залог уютной атмосферы. Играем честно и чисто.</div>
+                </div>
+
+                <!-- МИР ИГРЫ: Территория -->
+                <div class="md-card" id="territory">
+                    <h1>Территория и постройки</h1>
+                    <p>На Mugivara нет приватных регионов — свобода строительства одна из главных ценностей. Но территория каждого игрока уважается.</p>
+                    <ul>
+                        <li>Территорией считается радиус 50 блоков от построек владельца.</li>
+                        <li>Чужие фермы и хранилища — только с разрешения владельца.</li>
+                        <li>Разрушение и гриферство в любом виде запрещены и ведут к бану.</li>
+                    </ul>
+                    <h2>Метки на карте</h2>
+                    <p>Поставь баннер и переименуй его в наковальне — название появится на Dynmap через несколько секунд.</p>
+                </div>
+
+                <!-- МИР ИГРЫ: Рыбалка -->
+                <div class="md-card" id="fishing">
+                    <h1>Рыбалка и редкие находки</h1>
+                    <p>Рыбалка работает на честных ванильных механиках, но имеет свой шарм.</p>
+                    <ul>
+                        <li><b>Ловля сокровищ.</b> Именованные удочки, чары и сёдла.</li>
+                        <li><b>Зачарованные книги.</b> Развитие без траты опыта.</li>
+                        <li><b>Редкости.</b> Изредка ловятся пластинки и другие редкости.</li>
+                    </ul>
+                </div>
+
+                <!-- МИР ИГРЫ: Миры и порталы -->
+                <div class="md-card" id="worlds">
+                    <h1>Миры и порталы</h1>
+                    <p>Помимо основного мира, на сервере есть дополнительные измерения и места для исследований.</p>
+                    <ul>
+                        <li><b>Энд и Недер</b> — открыты, как и в обычном Minecraft, со своей добычей.</li>
+                        <li><b>Лобби</b> — уютная стартовая зона, где можно встретить других игроков.</li>
+                        <li>Порталы между зонами построены вручную игроками и поддерживаются сообществом.</li>
+                    </ul>
+                    <div class="callout"><i class="fas fa-lightbulb"></i>Ищи помещения с порталами рядом со спарном — там удобно путешествовать.</div>
+                </div>
+
+                <!-- МИР ИГРЫ: Мелкие механики -->
+                <div class="md-card" id="mechanics">
+                    <h1>Мелкие механики мира</h1>
+                    <p>Несколько приятных механик, которые делают игру удобнее.</p>
+                    <ul>
+                        <li><b>Кастомные пластинки</b> — свой саундтрек через <code>/cd</code>.</li>
+                        <li><b>Dynmap</b> — онлайн-карта мира с игроками и метками.</li>
+                        <li><b>CoreProtect</b> — проверка, кто и что делал с блоками (<code>/co i</code>).</li>
+                        <li><b>Смена скина</b> — <code>/skin ник</code>, даже без лицензии.</li>
+                    </ul>
+                </div>
+
+                <!-- ОБЩЕНИЕ: голосовой чат -->
+                <div class="md-card" id="voice">
+                    <h1>Голосовой чат и эмоции</h1>
+                    <p>Для живого общения на сервере используется голосовой мод — так игроки слышат друг друга в радиусе действия.</p>
+                    <ul>
+                        <li><b>/hug имя</b> — обнять игрока.</li>
+                        <li><b>/kiss имя</b> — поцеловать в щёчку (в знак дружбы).</li>
+                        <li><b>/marry имя</b> — заключить брак с другим игроком.</li>
+                        <li><b>Дистанционный голос</b> — чем дальше игрок, тем тише он звучит.</li>
+                    </ul>
+                    <div class="callout"><i class="fas fa-heart"></i>Эмоции делают мир живым — пользуйся, но со вкусом.</div>
+                </div>
+
+                <!-- ОБЩЕНИЕ: правила -->
+                <div class="md-card" id="rules">
+                    <h1>Правила общения</h1>
+                    <p>Несколько простых правил помогают сохранять приятную атмосферу в игре и Discord.</p>
+                    <ul>
+                        <li>Не оскорбляй игроков и не переходи на личности.</li>
+                        <li>Не флуди и не спамь в чате.</li>
+                        <li>Политика, религия и провокационные темы — под запретом.</li>
+                        <li>Не распространяй чужие личные данные.</li>
+                    </ul>
+                    <h2>Наказания</h2>
+                    <ul>
+                        <li><b>Предупреждение</b> — за незначительные нарушения.</li>
+                        <li><b>Мут</b> — от 10 минут до 7 дней.</li>
+                        <li><b>Бан</b> — за грубые и повторные нарушения.</li>
+                    </ul>
+                </div>
+
+                <!-- АККАУНТ -->
+                <div class="md-card" id="account">
+                    <h1>Аккаунт и скин</h1>
+                    <p>Играть можно как с лицензии, так и с пиратки — сервер одинаково открыт для всех.</p>
+                    <ul>
+                        <li><code>/skin ник</code> — установить скин без лицензии.</li>
+                        <li><code>/ping</code> — узнать пинг до сервера.</li>
+                    </ul>
+                    <div class="callout"><i class="fas fa-user-shield"></i>Ник можно сменить — обратись к администрации, и тебе помогут.</div>
+                </div>
+
+                <!-- АККАУНТ: команды -->
+                <div class="md-card" id="commands">
+                    <h1>Полезные команды</h1>
+                    <h3>Выглядеть</h3>
+                    <ul>
+                        <li><code>/skin ник</code> — установить скин.</li>
+                    </ul>
+                    <h3>Общение</h3>
+                    <ul>
+                        <li><code>/msg ник текст</code> — личное сообщение.</li>
+                        <li><code>/ping</code> — пинг до сервера.</li>
+                    </ul>
+                    <h3>Расследования</h3>
+                    <ul>
+                        <li><code>/co i</code> — режим «Шерлока Холмса».</li>
+                    </ul>
+                    <h3>Музыка</h3>
+                    <ul>
+                        <li><code>/cd create remote "ссылка" "имя"</code> — кастомная пластинка.</li>
+                    </ul>
+                </div>
+
+                <!-- АДМИНИСТРАЦИЯ -->
+                <div class="md-card" id="warnings">
+                    <h1>Предупреждения и наказания</h1>
+                    <p>Администрация следит за порядком. Наказания выдаются за нарушение правил или читерство.</p>
+                    <ul>
+                        <li><b>Предупреждение</b> — замечание без последствий для игры.</li>
+                        <li><b>Мут</b> — блокировка чата на срок.</li>
+                        <li><b>Бан</b> — блокировка входа, от временного до постоянного.</li>
+                        <li>Обход блокировок ведёт к ужесточению наказания.</li>
+                    </ul>
+                    <div class="callout"><i class="fas fa-gavel"></i>Если считаешь, что наказали ошибочно — напиши в Discord, мы разберёмся.</div>
+                </div>
+
+                <!-- КРАФТЫ -->
+                <div class="md-card" id="crafts">
+                    <h1>Кастомные крафты</h1>
+                    <p>На сервере есть несколько полезных рецептов, которых нет в обычном Minecraft.</p>
+                    <ul>
+                        <li><b>Блок света</b> — для ночных построек и декора.</li>
+                        <li><b>Невидимая рамка</b> — для аккуратного декора.</li>
+                        <li><b>Переработанное дерево</b> — больше заготовок из того же леса.</li>
+                    </ul>
+                    <p>Точные схемы крафтов уточняй у администрации или в Discord — они регулярно обновляются.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <div id="footer-host"></div>
+
+    <script>
+        (function() {
+            var toggle = document.getElementById('wikiNavToggle');
+            if (toggle) toggle.addEventListener('click', function() { document.getElementById('wikiNavList').classList.toggle('open'); });
+
+            var items = document.querySelectorAll('.wiki-nav-item[data-top]');
+            items.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var id = item.getAttribute('data-top');
+                    document.querySelectorAll('.md-card').forEach(function(c) { c.classList.remove('open'); });
+                    var target = document.getElementById(id);
+                    if (target) target.classList.add('open');
+                    document.querySelectorAll('.wiki-nav-item.active').forEach(function(a) { a.classList.remove('active'); });
+                    item.classList.add('active');
+                    // Без scrollIntoView: статья открывается на месте, страница не проматывается
+                });
+            });
+
+            // Подсвечиваем первую статью как активную при загрузке страницы
+            var firstNav = document.querySelector('.wiki-nav-item[data-top="philosophy"]');
+            if (firstNav) firstNav.classList.add('active');
+
+            // Бегущая строка: клонируем контент для бесшовного цикла
+            var track = document.getElementById('banTrack');
+            if (track) {
+                track.innerHTML = track.innerHTML + track.innerHTML;
+                track.classList.add('animate');
+            }
+        })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
+    <script src="assets/main.js"></script>
+</body>
+</html>

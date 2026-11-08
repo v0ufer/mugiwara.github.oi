@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <script>(function(){try{var t=localStorage.getItem("mugivara-theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игроки — Mugivara</title>
+    <meta name="description" content="Игроки ванильного сервера Mugivara.">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>html,body{background:#0a0a0b;margin:0;padding:0;}html[data-theme="light"],html[data-theme="light"] body{background:#f7f9fb;color:#14181d;}#navbar-host{display:block;height:57.6px;}</style>
+
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div id="navbar-host"></div>
+
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">Игроки</h1>
+            <p class="section-sub">Кто сейчас онлайн — аватары подгружаются автоматически с сервера.</p>
+
+            <div style="text-align:center;margin-bottom:2rem;">
+                <div class="card" style="display:inline-block;padding:1rem 1.8rem;">
+                    <span class="online-dot" style="margin-right:0.4rem;"></span>
+                    <span class="text-muted">Сейчас онлайн:</span>
+                    <b style="color:var(--primary);font-size:1.3rem;" data-online="count">Загрузка...</b>
+                </div>
+            </div>
+
+            <div class="player-list" data-players style="justify-content:flex-start;gap:1.2rem;"></div>
+
+            <div class="card" style="margin-top:2.5rem;">
+                <h3 style="margin-bottom:0.8rem;">Как попасть в список</h3>
+                <p class="text-muted">Список игроков заполняется автоматически на основе данных с сервера через mcstatus API. Появляется тот, кто онлайн в данный момент.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-host"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
+    <script src="assets/main.js"></script>
+</body>
+</html>

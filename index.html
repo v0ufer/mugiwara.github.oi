@@ -1,1019 +1,229 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){try{var t=localStorage.getItem("mugivara-theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugivara — Ванильное выживание</title>
+    <title>Mugivara — самый уютный ванильный сервер Minecraft</title>
+    <meta name="description" content="Приватный ванильный сервер Minecraft Mugivara. Чистое выживание без PvP, дружелюбное сообщество и настоящие приключения.">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0099CC">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#000000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=optional" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --bg-primary: #FDFBF8;
-            --bg-secondary: #FFFFFF;
-            --bg-navbar: rgba(253, 251, 248, 0.55);
-            --bg-mobile: rgba(253, 251, 248, 0.92);
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --text-muted: #888888;
-            --border-color: #EAEAEA;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --shadow-color: rgba(0,0,0,0.03);
-            --hover-bg: rgba(0,153,204,0.06);
-            --badge-bg: rgba(234, 234, 234, 0.6);
-            --badge-border: #EAEAEA;
-            --brand: #0099CC;
-        }
-        body.dark-theme {
-            --bg-primary: #333333;
-            --bg-secondary: #444444;
-            --bg-navbar: rgba(51, 51, 51, 0.85);
-            --bg-mobile: rgba(51, 51, 51, 0.92);
-            --text-primary: #EAEAEA;
-            --text-secondary: #AAAAAA;
-            --text-muted: #888888;
-            --border-color: #555555;
-            --card-bg: rgba(68, 68, 68, 0.7);
-            --shadow-color: rgba(0,0,0,0.2);
-            --hover-bg: rgba(0,153,204,0.12);
-            --badge-bg: rgba(85, 85, 85, 0.6);
-            --badge-border: #555555;
-        }
+    <style>html,body{background:#0a0a0b;margin:0;padding:0;}html[data-theme="light"],html[data-theme="light"] body{background:#f7f9fb;color:#14181d;}#navbar-host{display:block;height:57.6px;}</style>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-weight: 400;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--border-color); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #0099CC; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0077A3; }
-        * { scrollbar-width: thin; scrollbar-color: #0099CC var(--border-color); }
-
-        #navbar {
-            background: var(--bg-navbar) !important;
-            backdrop-filter: blur(30px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-            border-bottom: 1px solid var(--border-color) !important;
-            box-shadow: 0 4px 30px var(--shadow-color) !important;
-            transition: background 0.3s ease, border-color 0.3s ease;
-        }
-        #navbar .text-white { color: var(--text-primary) !important; }
-        #navbar .text-neutral-300 { color: var(--text-primary) !important; }
-        #navbar .text-white\/80 { color: var(--text-secondary) !important; }
-        #navbar .border-white\/10 { border-color: var(--border-color) !important; }
-        #navbar .bg-white\/5 { background-color: var(--hover-bg) !important; }
-
-        .nav-link {
-            color: var(--text-secondary) !important;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-        }
-        .nav-link:hover {
-            color: #0099CC !important;
-            transform: translateY(-1px);
-        }
-        .nav-link.text-white\/80 { color: var(--text-secondary) !important; }
-        .nav-link.text-white\/80:hover { color: #0099CC !important; }
-
-        .nav-btn {
-            padding: 0.4rem 1.2rem;
-            font-size: 0.75rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            font-family: 'Inter', system-ui, sans-serif;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .nav-btn-ip {
-            background: rgba(0,153,204,0.08);
-            border-color: rgba(0,153,204,0.12);
-            color: var(--text-primary);
-        }
-        .nav-btn-ip:hover {
-            background: rgba(0,153,204,0.15);
-            border-color: #0099CC;
-            color: #0099CC;
-        }
-        .nav-btn-discord {
-            background: #5865F2;
-            color: #fff;
-            border: none;
-        }
-        .nav-btn-discord:hover {
-            background: #4752C4;
-        }
-
-        .theme-btn {
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            padding: 0;
-            flex-shrink: 0;
-        }
-        .theme-btn:hover {
-            border-color: #0099CC;
-            color: #0099CC;
-            transform: scale(1.05);
-        }
-        .theme-btn .sun-icon { display: inline; }
-        .theme-btn .moon-icon { display: none; }
-        body.dark-theme .theme-btn .sun-icon { display: none; }
-        body.dark-theme .theme-btn .moon-icon { display: inline; }
-
-        #mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        background 0.3s ease;
-            background: var(--bg-mobile) !important;
-            backdrop-filter: blur(30px) saturate(180%) !important;
-            border-top: 1px solid var(--border-color) !important;
-            padding: 0 1.5rem;
-        }
-        #mobile-menu.open {
-            max-height: 600px;
-            opacity: 1;
-            padding: 1.5rem 1.5rem;
-        }
-        #mobile-menu .text-white { color: var(--text-primary) !important; }
-        #mobile-menu .border-neutral-800 { border-color: var(--border-color) !important; }
-        #mobile-menu .bg-neutral-800 { background-color: var(--hover-bg) !important; }
-        #mobile-menu .bg-neutral-800:hover { background-color: rgba(0,153,204,0.12) !important; }
-        #mobile-menu .border-neutral-600 { border-color: var(--border-color) !important; }
-
-        .mobile-theme-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-        }
-        .mobile-theme-row .theme-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        .mobile-theme-row .ip-btn {
-            flex: 1;
-            text-align: left;
-            padding: 10px 16px;
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 9999px;
-            color: var(--text-primary);
-            font-size: 13px;
-            font-family: 'Inter', system-ui, sans-serif;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .mobile-theme-row .ip-btn:hover {
-            border-color: #0099CC;
-            background: rgba(0,153,204,0.08);
-        }
-        .mobile-theme-row .ip-btn i {
-            color: #0099CC;
-            font-size: 14px;
-        }
-
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 5px;
-            background: transparent;
-            border: none;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .hamburger span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--text-primary);
-            border-radius: 2px;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: center;
-        }
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-        .hamburger:hover span {
-            background: #0099CC;
-        }
-
-        .hero-bg {
-            background: var(--bg-primary);
-            min-height: 100dvh;
-            position: relative;
-            overflow: hidden;
-            transition: background 0.3s ease;
-        }
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(var(--border-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.3;
-        }
-        .hero-bg::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 40%, rgba(0,153,204,0.04) 0%, transparent 60%),
-                        radial-gradient(circle at 70% 60%, rgba(0,153,204,0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .hero-content { position: relative; z-index: 2; }
-
-        .logo-z {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            background: var(--bg-secondary);
-            border-radius: 14px;
-            box-shadow: 0 8px 24px rgba(0,153,204,0.15), 0 2px 6px rgba(0,0,0,0.04);
-            font-size: 28px;
-            font-weight: 800;
-            color: #0099CC;
-            transition: transform 0.2s ease, background 0.3s ease;
-            line-height: 1;
-        }
-        .logo-z:hover { transform: scale(1.05); }
-
-        .hero-logo {
-            max-width: 800px;
-            width: 95%;
-            height: auto;
-            margin: 0 auto 20px auto;
-            display: block;
-        }
-        .hero-logo:hover {
-            transform: scale(1.02);
-            transition: transform 0.3s ease;
-        }
-
-        .btn-premium {
-            padding: 0.6rem 1.8rem;
-            font-size: 0.85rem;
-            letter-spacing: 0.06em;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid transparent;
-            font-family: 'Inter', system-ui, sans-serif;
-            text-transform: uppercase;
-            text-decoration: none;
-        }
-        .btn-premium-primary {
-            background: #0099CC;
-            color: #FFFFFF;
-            border-color: #0099CC;
-        }
-        .btn-premium-primary:hover {
-            background: #0077A3;
-            border-color: #0077A3;
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(0,153,204,0.2);
-            color: #FFFFFF;
-        }
-        .btn-premium-secondary {
-            background: rgba(0,153,204,0.06);
-            color: var(--text-primary);
-            border-color: rgba(0,153,204,0.12);
-        }
-        .btn-premium-secondary:hover {
-            background: rgba(0,153,204,0.12);
-            border-color: #0099CC;
-            transform: translateY(-2px) scale(1.02);
-            color: var(--text-primary);
-        }
-
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            transition: all 0.4s ease;
-            border-radius: 16px;
-        }
-        .glass-card:hover {
-            border-color: #0099CC;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 48px rgba(0,153,204,0.08);
-        }
-
-        .section {
-            opacity: 0;
-            transform: translateY(50px) scale(0.97);
-            transition: all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
-            will-change: transform, opacity;
-        }
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        .section .stagger-child {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.15s;
-        }
-        .section.visible .stagger-child {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section-bg-light { background-color: var(--bg-primary); }
-        .section-bg-gray { background-color: var(--bg-secondary); }
-
-        .text-brand { color: #0099CC; }
-        .text-dark { color: var(--text-primary); }
-        .text-muted { color: var(--text-muted); }
-        .border-brand { border-color: #0099CC; }
-
-        .faq-answer {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
-        }
-        .faq-item.open .faq-answer {
-            max-height: 240px;
-            opacity: 1;
-            padding-top: 20px;
-            padding-bottom: 24px;
-        }
-        .faq-item.open .faq-icon { transform: rotate(180deg); }
-
-        .online-dot {
-            animation: pulse-dot 2s infinite;
-            background-color: #0099CC;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        #online-count { color: var(--text-primary) !important; }
-
-        .player-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid var(--border-color);
-            transition: all 0.3s ease;
-            object-fit: cover;
-            background: var(--bg-primary);
-        }
-        .player-avatar:hover {
-            transform: scale(1.1);
-            border-color: #0099CC;
-        }
-        .player-item .player-name {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 400;
-            max-width: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .badge-new {
-            background: rgba(0,153,204,0.08);
-            color: #0099CC;
-            border: 1px solid rgba(0,153,204,0.15);
-        }
-        .badge-popular {
-            background: rgba(255,215,0,0.08);
-            color: #B8860B;
-            border: 1px solid rgba(255,215,0,0.15);
-        }
-        .badge-updated {
-            background: rgba(0,153,204,0.06);
-            color: #0077A3;
-            border: 1px solid rgba(0,153,204,0.1);
-        }
-
-        .stat-number {
-            display: inline-block;
-            font-weight: 700;
-            font-size: 2rem;
-            transition: all 0.3s ease;
-            color: #0099CC;
-        }
-        .stat-number.count-up {
-            animation: countUp 0.8s ease forwards;
-        }
-        @keyframes countUp {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        footer {
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border-color);
-            padding: 2rem 0;
-            transition: background 0.3s ease;
-        }
-
-        .badge-header {
-            background: var(--badge-bg);
-            border-color: var(--badge-border);
-            color: var(--text-secondary);
-        }
-        .badge-header .badge-text {
-            color: var(--text-primary);
-        }
-
-        /* Скрываем кнопку темы на мобилках */
-        @media (max-width: 767px) {
-            .theme-btn.desktop-only {
-                display: none !important;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .hero-logo { max-width: 450px; width: 95%; }
-            .stat-number { font-size: 1.5rem; }
-            .player-avatar { width: 40px; height: 40px; }
-            .player-item .player-name { font-size: 10px; max-width: 50px; }
-            .logo-z { width: 40px; height: 40px; font-size: 22px; }
-        }
-        @media (max-width: 480px) {
-            .hero-logo { max-width: 340px; width: 98%; }
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 2000;
-            animation: toastSlide 0.4s ease;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-        @keyframes toastSlide {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .toast.success { background: #E6F7F0; border: 1px solid #0099CC; color: #0077A3; }
-        .toast.error { background: #FDE8E8; border: 1px solid #FF6B6B; color: #CC3333; }
-        .toast.info { background: #FFF4E6; border: 1px solid #FFAA44; color: #995522; }
-
-        .icon-fw { width: 1.25em; text-align: center; }
-    </style>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-<body id="app-body">
+<body>
+    <div id="navbar-host"></div>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav id="navbar" class="fixed top-0 w-full backdrop-blur-md border-b z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="logo-z">Z</div>
-                <span class="text-xl sm:text-2xl tracking-wider text-dark font-bold">MUGIVARA</span>
-            </div>
-
-            <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="index.html" class="text-brand font-semibold nav-link"><i class="fas fa-home icon-fw"></i> Главная</a>
-                <a href="wiki.html" class="nav-link"><i class="fas fa-book icon-fw"></i> Вики</a>
-                <a href="mapa.html" class="nav-link"><i class="fas fa-map icon-fw"></i> Карта</a>
-                <a href="rules.html" class="nav-link"><i class="fas fa-scroll icon-fw"></i> Правила</a>
-                <a href="apply.html" class="nav-link"><i class="fas fa-pen-to-square icon-fw"></i> Заявка</a>
-            </div>
-
-            <div class="flex items-center gap-2 sm:gap-3">
-                <div class="hidden sm:flex items-center gap-1.5 badge-header px-3 py-1.5 rounded-full border text-xs">
-                    <div class="w-1.5 h-1.5 bg-brand rounded-full online-dot"></div>
-                    <span class="badge-text font-medium">Онлайн:</span>
-                    <span id="online-count" class="badge-text font-semibold">Загрузка...</span>
-                </div>
-
-                <button onclick="copyIP()" class="nav-btn nav-btn-ip flex items-center gap-1.5">
-                    <i class="fas fa-copy text-xs"></i>
-                    <span id="ip-text" class="hidden sm:inline">play.mugivaracraft.ru</span>
-                    <span class="sm:hidden">IP</span>
-                </button>
-
-                <a href="https://discord.gg/W226UHyv6f" target="_blank"
-                   class="nav-btn nav-btn-discord flex items-center gap-1.5">
-                    <i class="fab fa-discord"></i>
-                    <span class="hidden sm:inline">DISCORD</span>
-                </a>
-
-                <!-- Кнопка темы только на десктопе -->
-                <button class="theme-btn desktop-only" id="theme-toggle-desktop" aria-label="Переключить тему">
-                    <span class="sun-icon"><i class="fas fa-sun"></i></span>
-                    <span class="moon-icon"><i class="fas fa-moon"></i></span>
-                </button>
-
-                <button id="mobile-menu-button" class="md:hidden hamburger" aria-label="Открыть меню" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-
-        <div id="mobile-menu" class="md:hidden">
-            <div class="flex flex-col gap-3 text-base font-medium">
-                <a href="index.html" class="text-brand py-2"><i class="fas fa-home w-5"></i> Главная</a>
-                <a href="wiki.html" class="hover:text-brand transition py-2"><i class="fas fa-book w-5"></i> Вики</a>
-                <a href="mapa.html" class="hover:text-brand transition py-2"><i class="fas fa-map w-5"></i> Карта</a>
-                <a href="rules.html" class="hover:text-brand transition py-2"><i class="fas fa-scroll w-5"></i> Правила</a>
-                <a href="apply.html" class="hover:text-brand transition py-2"><i class="fas fa-pen-to-square w-5"></i> Заявка</a>
-                <div class="mobile-theme-row">
-                    <button onclick="copyIP()" class="ip-btn">
-                        <i class="fas fa-copy"></i>
-                        <span>play.mugivaracraft.ru</span>
-                    </button>
-                    <button class="theme-btn" id="theme-toggle-mobile" aria-label="Переключить тему">
-                        <span class="sun-icon"><i class="fas fa-sun"></i></span>
-                        <span class="moon-icon"><i class="fas fa-moon"></i></span>
-                    </button>
+    <!-- ===== HERO (как на фото rpf.su) ===== -->
+    <section class="hero" id="hero">
+        <div class="hero-grid"></div>
+        <div class="container hero-inner">
+            <div>
+                <span class="badge" style="margin-bottom:1.4rem;display:inline-flex;"><i class="fas fa-gamepad"></i> Версия 1.21.11 · Ванильное выживание</span>
+                <h1 class="hero-title">MUGIVARA — <span class="grad-text">самое уютное выживание</span> в Minecraft</h1>
+                <p class="hero-text">
+                    Приватный сервер, который точно тебе подойдёт. Чистое ванильное выживание без PvP:
+                    построй дом, создай своё комьюнити, найди друзей — и участвуй в ивентах.
+                </p>
+                <div class="hero-actions">
+                    <a href="apply.html" class="btn btn-primary"><i class="fas fa-pen-to-square"></i> Подать заявку <i class="fas fa-arrow-right" style="font-size:0.8rem;"></i></a>
+                    <a href="#join" class="btn btn-outline">Как попасть</a>
                 </div>
             </div>
-        </div>
-    </nav>
-
-    <!-- ===== HERO ===== -->
-    <section class="hero-bg flex items-center relative pt-16" id="heroSection">
-        <div class="hero-content max-w-5xl mx-auto px-4 sm:px-6 text-center w-full">
-            <div class="inline-flex items-center gap-2 badge-header px-4 py-1.5 rounded-full border mb-5 text-xs tracking-wider">
-                <div class="w-1.5 h-1.5 bg-brand rounded-full animate-pulse"></div>
-                <span class="badge-text font-medium">1.21.11 • ЧИСТОЕ ВЫЖИВАНИЕ</span>
-            </div>
-
-            <img src="logotip.png" alt="Mugivara" class="hero-logo" id="heroLogo" onerror="this.style.display='none'; document.getElementById('fallbackTitle').style.display='block';">
-            <h1 class="hero-title-fallback" id="fallbackTitle" style="display:none; font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(3rem,10vw,7rem);letter-spacing:0.05em;text-transform:uppercase;color:var(--text-primary);">MUGIVARA</h1>
-
-            <p class="text-lg sm:text-xl md:text-2xl text-dark/60 mb-8 max-w-2xl mx-auto px-4 font-light">
-                Ванильное выживание без PvP.<br>
-                Спокойная атмосфера и настоящие приключения
-            </p>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center px-4">
-                <a href="https://discord.gg/W226UHyv6f" class="btn-premium btn-premium-primary">
-                    ПРИСОЕДИНЯЙСЯ <i class="fas fa-arrow-right text-xs"></i>
-                </a>
-                <a href="#about" class="btn-premium btn-premium-secondary">
-                    УЗНАТЬ БОЛЬШЕ
-                </a>
+            <div class="hero-img-wrap">
+                <img src="photohero.png" alt="Игроки на сервере Mugivara" class="hero-img"
+                     onerror="this.src='logotip.png'; this.onerror=null;">
             </div>
         </div>
     </section>
 
-    <!-- ===== ABOUT ===== -->
-    <section id="about" class="section py-16 sm:py-24 section-bg-light relative">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 section-content">
-            <div class="grid md:grid-cols-2 gap-10 sm:gap-16 items-center">
-                <div>
-                    <h2 class="text-3xl sm:text-4xl font-semibold mb-5 text-dark stagger-child">Настоящее ванильное выживание</h2>
-                    <div class="space-y-5 text-base sm:text-lg text-dark/60 stagger-child">
-                        <p>Mugivara — это сервер для тех, кто любит классический Minecraft. Никакого PvP, донатных привилегий и магазинов. Только вы, мир и ваши друзья.</p>
-                        <p class="text-dark font-medium">Версия: 1.21.11</p>
-                    </div>
-                    <div class="mt-10 grid grid-cols-3 gap-4 stagger-child" id="statsContainer">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-brand"><span class="stat-number" data-target="10000">0</span></div>
-                            <div class="text-xs text-dark/40">блоков</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-brand"><span class="stat-number" data-target="0.01">0</span>%</div>
-                            <div class="text-xs text-dark/40">PvP</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-brand"><span class="stat-number" data-target="99.9">0</span>%</div>
-                            <div class="text-xs text-dark/40">Ванилла</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="glass-card p-6 sm:p-8 stagger-child">
-                    <h3 class="text-brand uppercase tracking-widest text-xs mb-4">Наши преимущества</h3>
-                    <ul class="space-y-4 text-sm text-dark/60">
-                        <li class="flex gap-3 items-start"><i class="fas fa-leaf text-brand/60 mt-0.5"></i><span>Спокойное выживание в красивом мире</span></li>
-                        <li class="flex gap-3 items-start"><i class="fas fa-users text-brand/60 mt-0.5"></i><span>Дружелюбное сообщество</span></li>
-                        <li class="flex gap-3 items-start"><i class="fas fa-house text-brand/60 mt-0.5"></i><span>Полная свобода строительства</span></li>
-                        <li class="flex gap-3 items-start"><i class="fas fa-shield-halved text-brand/60 mt-0.5"></i><span>Без привата</span></li>
-                    </ul>
+    <!-- ===== ДОБРО ПОЖАЛОВАТЬ ===== -->
+    <section class="section" style="padding-top:4rem;padding-bottom:2rem;">
+        <div class="container" style="max-width:56rem;">
+            <div class="card reveal" style="text-align:center;padding:2.2rem 2rem;background:linear-gradient(135deg, color-mix(in srgb,var(--primary) 8%, var(--card)), var(--card));">
+                <span class="badge" style="margin-bottom:1rem;"><i class="fas fa-feather-pointed"></i> Добро пожаловать в Mugivara</span>
+                <h2 style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:0.8rem;">Здесь история пишется каждым игроком</h2>
+                <p class="text-muted" style="font-size:1.02rem;line-height:1.7;">
+                    Мы — сервер, где важен не донат и не привилегии, а люди и их постройки.
+                    Здесь база рядом со спавном превращается в город, а случайное знакомство — в крепкое комьюнити.
+                    Никакого PvP и гриферов — только спокойное выживание, общие фермы и настоящие приключения.
+                </p>
+                <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1.2rem;color:var(--muted);font-size:0.85rem;flex-wrap:wrap;">
+                    <span><i class="fas fa-circle-check" style="color:var(--primary);"></i> Без PvP</span>
+                    <span style="opacity:0.4;">•</span>
+                    <span><i class="fas fa-circle-check" style="color:var(--primary);"></i> Без доната</span>
+                    <span style="opacity:0.4;">•</span>
+                    <span><i class="fas fa-circle-check" style="color:var(--primary);"></i> Постоянный мир</span>
+                    <span style="opacity:0.4;">•</span>
+                    <span><i class="fas fa-circle-check" style="color:var(--primary);"></i> Живое сообщество</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ===== WIKI / РЕКОМЕНДАЦИИ ===== -->
-    <section id="wiki" class="section py-16 sm:py-24 section-bg-gray relative">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 section-content">
-            <div class="text-center mb-12 sm:mb-16">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-dark stagger-child">Рекомендации для приятной игры</h2>
+    <!-- ===== STATS ===== -->
+    <section class="section" style="padding-top:2rem;">
+        <div class="container">
+            <div class="grid-3">
+                <div class="card card-hover reveal" style="text-align:center;">
+                    <div class="stat-num" data-count="0" data-suffix="%">0%</div>
+                    <div class="text-muted" style="font-size:0.85rem;">PvP — спокойная игра</div>
+                </div>
+                <div class="card card-hover reveal" style="text-align:center;">
+                    <div class="stat-num" id="onlineStat"><span data-online="count">—</span></div>
+                    <div class="text-muted" style="font-size:0.85rem;">игроков онлайн</div>
+                </div>
+                <div class="card card-hover reveal" style="text-align:center;">
+                    <div class="stat-num" data-count="100" data-suffix="%">0%</div>
+                    <div class="text-muted" style="font-size:0.85rem;">честного выживания</div>
+                </div>
             </div>
-            <div class="grid md:grid-cols-2 gap-6 sm:gap-10">
-                <div class="glass-card p-6 sm:p-8 stagger-child">
-                    <div class="flex items-center gap-3 mb-5">
-                        <i class="fas fa-palette text-2xl text-brand/60"></i>
-                        <h3 class="text-xl font-semibold text-dark">Ресурс-паки</h3>
-                        <span class="badge badge-popular ml-auto"><i class="fas fa-fire"></i> Популярное</span>
-                    </div>
-                    <div class="space-y-5 text-sm text-dark/60">
-                        <div><div class="font-medium text-dark">Vanilla Tweaks</div><p class="text-dark/30 text-xs mt-0.5">Улучшенные текстуры, звуки и удобства.</p><a href="https://vanillatweaks.net" target="_blank" class="text-brand/60 text-xs hover:underline">Скачать <i class="fas fa-arrow-right text-[10px]"></i></a></div>
-                        <div><div class="font-medium text-dark">Faithful 32x / 64x</div><p class="text-dark/30 text-xs mt-0.5">Классический Faithful в высоком разрешении.</p></div>
-                        <div><div class="font-medium text-dark">Bare Bones</div><p class="text-dark/30 text-xs mt-0.5">Минималистичный пак для производительности.</p></div>
+        </div>
+    </section>
+
+    <!-- ===== ЧТО ЭТО ЗА СЕРВЕР ===== -->
+    <section class="section" id="about">
+        <div class="container">
+            <h2 class="section-title">Что это за сервер</h2>
+            <p class="section-sub">Настоящее ванильное выживание для тех, кто любит классический Minecraft и живое сообщество.</p>
+            <div class="grid-2">
+                <div class="card reveal">
+                    <h3 style="margin-bottom:0.8rem;">Формат</h3>
+                    <p class="text-muted">Ванильный SMP без PvP. Никаких приватов, доната и магазинов — только ты, мир и друзья.</p>
+                </div>
+                <div class="card reveal">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+                        <div>
+                            <div style="font-weight:600;color:var(--foreground);">Доступ</div>
+                            <div class="text-muted" style="font-size:0.9rem;">По заявке</div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;color:var(--foreground);">Версия</div>
+                            <div class="text-muted" style="font-size:0.9rem;">1.21.11</div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;color:var(--foreground);">PvP</div>
+                            <div class="text-muted" style="font-size:0.9rem;">Выключено</div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;color:var(--foreground);">Сообщество</div>
+                            <div class="text-muted" style="font-size:0.9rem;">Discord + TikTok</div>
+                        </div>
                     </div>
                 </div>
-                <div class="glass-card p-6 sm:p-8 stagger-child">
-                    <div class="flex items-center gap-3 mb-5">
-                        <i class="fas fa-puzzle-piece text-2xl text-brand/60"></i>
-                        <h3 class="text-xl font-semibold text-dark">Рекомендуемые моды</h3>
-                        <span class="badge badge-new ml-auto"><i class="fas fa-star"></i> Обновлено</span>
-                    </div>
-                    <div class="space-y-3 text-sm text-dark/60">
-                        <div class="flex justify-between"><span>Sodium + Iris</span><span class="text-dark/40 text-xs">Обязательно</span></div>
-                        <div>Xaero's Minimap</div><div>AppleSkin</div><div>ReplayMod</div><div>Entity Culling</div>
-                    </div>
-                    <p class="text-xs text-dark/20 mt-6">Сервер полностью ванильный. Моды ставятся только на клиент.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ПОЧЕМУ МЫ ===== -->
+    <section class="section" style="padding-top:0;">
+        <div class="container">
+            <h2 class="section-title">Почему именно мы</h2>
+            <p class="section-sub">Моменты, ради которых стоит зайти к нам.</p>
+            <div class="grid-4">
+                <div class="card card-hover reveal">
+                    <i class="fas fa-heart" style="font-size:1.4rem;color:var(--primary);margin-bottom:0.8rem;"></i>
+                    <h3 style="font-size:1.05rem;margin-bottom:0.4rem;">Своя атмосфера</h3>
+                    <p class="text-muted" style="font-size:0.9rem;">Уютное сообщество, где каждый игрок — часть истории.</p>
                 </div>
+                <div class="card card-hover reveal">
+                    <i class="fas fa-people-group" style="font-size:1.4rem;color:var(--primary);margin-bottom:0.8rem;"></i>
+                    <h3 style="font-size:1.05rem;margin-bottom:0.4rem;">Живой мир</h3>
+                    <p class="text-muted" style="font-size:0.9rem;">Постройки и история, которые накапливаются и остаются.</p>
+                </div>
+                <div class="card card-hover reveal">
+                    <i class="fas fa-link" style="font-size:1.4rem;color:var(--primary);margin-bottom:0.8rem;"></i>
+                    <h3 style="font-size:1.05rem;margin-bottom:0.4rem;">Связь вне игры</h3>
+                    <p class="text-muted" style="font-size:0.9rem;">Discord и TikTok — мы всегда на связи.</p>
+                </div>
+                <div class="card card-hover reveal">
+                    <i class="fas fa-leaf" style="font-size:1.4rem;color:var(--primary);margin-bottom:0.8rem;"></i>
+                    <h3 style="font-size:1.05rem;margin-bottom:0.4rem;">Спокойствие</h3>
+                    <p class="text-muted" style="font-size:0.9rem;">Без PvP и гриферов — только свобода строительства.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== КАК ПОПАСТЬ ===== -->
+    <section class="section" id="join" style="padding-top:0;">
+        <div class="container" style="max-width:52rem;">
+            <h2 class="section-title">Как попасть на сервер</h2>
+            <p class="section-sub">Три простых шага — и ты в игре.</p>
+            <div style="display:grid;gap:1.2rem;">
+                <div class="card reveal" style="display:flex;gap:1.2rem;align-items:flex-start;">
+                    <div style="font-size:1.6rem;font-weight:800;color:var(--primary);opacity:0.7;">01</div>
+                    <div>
+                        <h3 style="font-size:1.05rem;margin-bottom:0.3rem;">Заполни заявку</h3>
+                        <p class="text-muted" style="font-size:0.9rem;">Расскажи о себе: ник, возраст и чего ждёшь от сервера.</p>
+                    </div>
+                </div>
+                <div class="card reveal" style="display:flex;gap:1.2rem;align-items:flex-start;">
+                    <div style="font-size:1.6rem;font-weight:800;color:var(--primary);opacity:0.7;">02</div>
+                    <div>
+                        <h3 style="font-size:1.05rem;margin-bottom:0.3rem;">Дождись одобрения</h3>
+                        <p class="text-muted" style="font-size:0.9rem;">Обычно ответ приходит в течение суток — тебе напишут в Discord или Telegram.</p>
+                    </div>
+                </div>
+                <div class="card reveal" style="display:flex;gap:1.2rem;align-items:flex-start;">
+                    <div style="font-size:1.6rem;font-weight:800;color:var(--primary);opacity:0.7;">03</div>
+                    <div>
+                        <h3 style="font-size:1.05rem;margin-bottom:0.3rem;">Заходи и играй</h3>
+                        <p class="text-muted" style="font-size:0.9rem;">Как только заявку одобрят — подключайся к <b style="color:var(--foreground);">play.mugivaracraft.ru</b>.</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:2rem;">
+                <a href="apply.html" class="btn btn-primary"><i class="fas fa-pen-to-square"></i> Подать заявку</a>
             </div>
         </div>
     </section>
 
     <!-- ===== FAQ ===== -->
-    <section id="faq" class="section py-16 sm:py-24 section-bg-light relative">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 section-content">
-            <div class="text-center mb-12 sm:mb-16">
-                <h2 class="text-3xl sm:text-4xl font-semibold text-dark stagger-child">Часто задаваемые вопросы</h2>
-                <span class="badge badge-popular mt-3"><i class="fas fa-fire"></i> Популярное</span>
+    <section class="section" id="faq" style="padding-top:0;">
+        <div class="container" style="max-width:46rem;">
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <p class="section-sub">Коротко о главном: как попасть, во что играть и почему у нас.</p>
+            <div class="faq-item reveal">
+                <button>Как попасть на сервер? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">Сначала заполни заявку на странице «Заявка»: укажи ник, возраст и пару слов о себе. Администрация обычно отвечает в течение суток — тебе пришлют подтверждение в Discord или Telegram. После одобрения подключайся к play.mugivaracraft.ru на версии 1.21.11.</div>
             </div>
-            <div class="space-y-3 stagger-child">
-                <div class="glass-card overflow-hidden">
-                    <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-brandLight/30 transition-colors">
-                            <span class="font-medium text-sm sm:text-base text-dark">Можно ли играть с модами?</span>
-                            <i class="faq-icon fas fa-chevron-down text-dark/30 transition-transform duration-500 text-xs"></i>
-                        </button>
-                        <div class="faq-answer px-6 text-dark/50 text-sm">Да. Сервер полностью ванильный — любые моды и ресурс-паки разрешены на клиенте.</div>
-                    </div>
-                </div>
-                <div class="glass-card overflow-hidden">
-                    <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-brandLight/30 transition-colors">
-                            <span class="font-medium text-sm sm:text-base text-dark">Нужна ли официальная лицензия?</span>
-                            <i class="faq-icon fas fa-chevron-down text-dark/30 transition-transform duration-500 text-xs"></i>
-                        </button>
-                        <div class="faq-answer px-6 text-dark/50 text-sm">Нет, на нашем сервере можно играть как с лицензии, так и с пиратки.</div>
-                    </div>
-                </div>
-                <div class="glass-card overflow-hidden">
-                    <div class="faq-item">
-                        <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-brandLight/30 transition-colors">
-                            <span class="font-medium text-sm sm:text-base text-dark">Есть ли донат и привилегии?</span>
-                            <i class="faq-icon fas fa-chevron-down text-dark/30 transition-transform duration-500 text-xs"></i>
-                        </button>
-                        <div class="faq-answer px-6 text-dark/50 text-sm">Нет. Сервер полностью бесплатный и честный.</div>
-                    </div>
-                </div>
+            <div class="faq-item reveal">
+                <button>Можно ли играть с модами? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">Да. Сервер полностью ванильный, поэтому любые моды и ресурс-паки разрешены на клиенте. Единственное условие — они не должны давать преимуществ в честной игре: никаких читов и эксплойтов. Оптимизацию вроде Sodium, Iris и мини-карту ставить можно и даже рекомендуется.</div>
+            </div>
+            <div class="faq-item reveal">
+                <button>Нужна ли официальная лицензия? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">Нет. Играть можно как с лицензионной версии Minecraft, так и с пиратки. Единственное отличие — на сервере настроен вход без проверки лицензии, так что оба варианта полностью равны. Свою внешность можно поменять командой /skin прямо в игре.</div>
+            </div>
+            <div class="faq-item reveal">
+                <button>Есть ли донат и привилегии? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">Нет. Сервер полностью бесплатный и честный: доната, магазина и платных привилегий нет. Все имеют равные возможности — того, кто покупает преимущества за деньги, здесь попросту не существует.</div>
+            </div>
+            <div class="faq-item reveal">
+                <button>Насколько строгие правила? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">Мы за спокойную игру без PvP, гриферства и токсичности. Запрещено разрушать чужие постройки, использовать чужие фермы без разрешения и оскорблять игроков. За нарушение — предупреждение, мут или бан. Подробности есть в правилах сервера.</div>
+            </div>
+            <div class="faq-item reveal">
+                <button>Что делать, если заявку отклонили? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer">Не переживай — это не конец. Обычно отказ связан с неполной анкетой или слишком молодым возрастом. Прочитай ответ администрации, дополни заявку или напиши нам в Discord — разберёмся и поможем попасть на сервер.</div>
+            </div>
+            <div style="text-align:center;margin-top:2rem;">
+                <a href="apply.html" class="btn btn-primary"><i class="fas fa-pen-to-square"></i> Подать заявку</a>
             </div>
         </div>
     </section>
 
-    <!-- ===== COMMUNITY / ОНЛАЙН ===== -->
-    <section id="community" class="section py-16 sm:py-24 section-bg-gray relative">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center section-content">
-            <h2 class="text-3xl sm:text-4xl font-semibold mb-4 text-dark stagger-child">Сейчас на сервере</h2>
-            <p class="text-dark/40 mb-6 px-4 text-sm stagger-child">Игроки онлайн</p>
+    <div id="footer-host"></div>
 
-            <div class="stagger-child">
-                <div class="inline-flex items-center gap-3 glass-card px-6 py-3 rounded-full">
-                    <div class="w-2.5 h-2.5 bg-brand rounded-full animate-pulse"></div>
-                    <span class="text-dark/60 text-sm">Онлайн:</span>
-                    <span id="online-count-hero" class="text-dark font-bold text-xl">Загрузка...</span>
-                </div>
-            </div>
-
-            <div class="player-online-list stagger-child" id="playerList">
-                <!-- Загружается через JS -->
-            </div>
-
-            <div class="mt-8 flex flex-wrap items-center justify-center gap-4 stagger-child">
-                <span class="badge badge-popular"><i class="fas fa-fire"></i> Популярное</span>
-                <span class="badge badge-new"><i class="fas fa-star"></i> Новое</span>
-                <span class="badge badge-updated"><i class="fas fa-rotate"></i> Обновлено</span>
-            </div>
-
-            <div class="mt-10 flex flex-col sm:flex-row gap-5 justify-center stagger-child">
-                <a href="https://discord.gg/W226UHyv6f" target="_blank" class="glass-card flex-1 max-w-xs mx-auto p-6 transition-all">
-                    <i class="fab fa-discord text-5xl text-[#5865F2] mb-4"></i>
-                    <div class="text-lg font-semibold text-dark">Discord</div>
-                    <div class="text-dark/40 text-sm">Общение и поддержка</div>
-                </a>
-                <a href="https://tiktok.com/@mugiwara_craft" target="_blank" class="glass-card flex-1 max-w-xs mx-auto p-6 transition-all">
-                    <i class="fab fa-tiktok text-5xl text-[#FF0050] mb-4"></i>
-                    <div class="text-lg font-semibold text-dark">TikTok</div>
-                    <div class="text-dark/40 text-sm">Видео с сервера</div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-dark/30 text-xs">
-            <p class="text-dark/60">© 2026 Mugivara • Чистое ванильное выживание</p>
-            <p class="mt-1 text-dark/30">IP: play.mugivaracraft.ru • Версия 1.21.11</p>
-        </div>
-    </footer>
-
-    <script>
-        // ===== ТЕМА =====
-        (function() {
-            const body = document.body;
-            const savedTheme = localStorage.getItem('mugivara-theme');
-            if (savedTheme === 'dark') {
-                body.classList.add('dark-theme');
-            }
-            // Обе кнопки (десктоп и мобильная) работают одинаково
-            const toggleBtns = document.querySelectorAll('.theme-btn');
-            toggleBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    body.classList.toggle('dark-theme');
-                    const isDark = body.classList.contains('dark-theme');
-                    localStorage.setItem('mugivara-theme', isDark ? 'dark' : 'light');
-                });
-            });
-        })();
-
-        // ===== ОСТАЛЬНАЯ ЛОГИКА =====
-        function copyIP() {
-            navigator.clipboard.writeText("play.mugivaracraft.ru").then(() => {
-                const el = document.getElementById("ip-text");
-                const old = el.textContent;
-                el.textContent = "СКОПИРОВАНО ✓";
-                setTimeout(() => {
-                    if (el.classList.contains('hidden')) {
-                        document.getElementById("ip-text").textContent = "IP";
-                    } else {
-                        el.textContent = old;
-                    }
-                }, 2000);
-            });
-        }
-
-        function toggleFAQ(btn) {
-            const item = btn.parentElement;
-            const isOpen = item.classList.contains('open');
-            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
-            if (!isOpen) item.classList.add('open');
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const btn = document.getElementById('mobile-menu-button');
-            const isOpen = menu.classList.contains('open');
-            if (isOpen) {
-                menu.classList.remove('open');
-                btn.classList.remove('active');
-                btn.setAttribute('aria-expanded', 'false');
-                btn.setAttribute('aria-label', 'Открыть меню');
-            } else {
-                menu.classList.add('open');
-                btn.classList.add('active');
-                btn.setAttribute('aria-expanded', 'true');
-                btn.setAttribute('aria-label', 'Закрыть меню');
-            }
-        }
-
-        function animateNumbers() {
-            const numbers = document.querySelectorAll('.stat-number');
-            numbers.forEach(num => {
-                const target = parseFloat(num.dataset.target);
-                const isFloat = target % 1 !== 0;
-                const duration = 1200;
-                const startTime = performance.now();
-
-                num.classList.add('count-up');
-
-                function updateNumber(time) {
-                    const elapsed = time - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const eased = 1 - Math.pow(1 - progress, 3);
-                    const value = eased * target;
-
-                    if (isFloat) {
-                        num.textContent = value.toFixed(1);
-                    } else {
-                        num.textContent = Math.round(value);
-                    }
-
-                    if (progress < 1) {
-                        requestAnimationFrame(updateNumber);
-                    } else {
-                        if (isFloat) {
-                            num.textContent = target.toFixed(1);
-                        } else {
-                            num.textContent = target;
-                        }
-                    }
-                }
-
-                requestAnimationFrame(updateNumber);
-            });
-        }
-
-        function initObserver() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        if (entry.target.id === 'about') {
-                            animateNumbers();
-                        }
-                    }
-                });
-            }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
-
-            document.querySelectorAll('.section').forEach(s => observer.observe(s));
-
-            setTimeout(() => {
-                document.querySelectorAll('.section').forEach(s => {
-                    const rect = s.getBoundingClientRect();
-                    if (rect.top < window.innerHeight * 0.85) {
-                        s.classList.add('visible');
-                    }
-                });
-            }, 100);
-        }
-
-        function checkHeroImage() {
-            const hero = document.getElementById('heroSection');
-            const img = new Image();
-            const style = getComputedStyle(hero);
-            const bgImage = style.backgroundImage;
-            const match = bgImage.match(/url\(["']?(.*?)["']?\)/);
-            if (match && match[1]) {
-                img.src = match[1];
-                img.onload = () => {
-                    hero.classList.add('has-image');
-                };
-                img.onerror = () => {
-                    hero.classList.remove('has-image');
-                };
-            }
-        }
-
-        let lastOnlineCount = 0;
-
-        async function updateOnlineFull() {
-            const el = document.getElementById('online-count');
-            const elHero = document.getElementById('online-count-hero');
-            const playerList = document.getElementById('playerList');
-
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-                const resp = await fetch('https://api.mcstatus.io/v2/status/java/mc.mugivaracraft.ru', {
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-
-                if (!resp.ok) throw new Error('Ошибка ответа');
-                const data = await resp.json();
-
-                if (data.online) {
-                    const count = data.players.online;
-
-                    if (count !== lastOnlineCount) {
-                        el.classList.add('pulse');
-                        elHero.classList.add('pulse');
-                        setTimeout(() => {
-                            el.classList.remove('pulse');
-                            elHero.classList.remove('pulse');
-                        }, 400);
-                        lastOnlineCount = count;
-                    }
-
-                    el.textContent = `${count}/${data.players.max}`;
-                    elHero.textContent = count;
-                    el.className = "badge-text font-semibold";
-                    elHero.className = "text-dark font-bold text-xl";
-
-                    if (data.players.sample && data.players.sample.length > 0) {
-                        renderPlayerAvatars(data.players.sample.map(p => p.name));
-                    } else {
-                        renderPlayerAvatars([]);
-                    }
-                } else {
-                    el.textContent = "0/100";
-                    elHero.textContent = "0";
-                    el.className = "badge-text font-semibold text-muted";
-                    elHero.className = "text-dark/40 font-bold text-xl";
-                    renderPlayerAvatars([]);
-                }
-            } catch (error) {
-                console.warn('⚠️ Ошибка получения онлайна:', error.message);
-                el.textContent = "—";
-                elHero.textContent = "—";
-                el.className = "badge-text font-semibold text-muted";
-                elHero.className = "text-dark/40 font-bold text-xl";
-                renderPlayerAvatars([]);
-            }
-        }
-
-        function renderPlayerAvatars(names) {
-            const container = document.getElementById('playerList');
-            if (!names || names.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-            container.innerHTML = names.map(name => `
-                <div class="player-item">
-                    <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/48"
-                         alt="${name}"
-                         class="player-avatar"
-                         loading="lazy"
-                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22%3E%3Crect width=%2248%22 height=%2248%22 fill=%22%23EAEAEA%22/%3E%3Ctext x=%2224%22 y=%2232%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2220%22 font-family=%22sans-serif%22%3E${name.charAt(0).toUpperCase()}%3C/text%3E%3C/svg%3E'">
-                    <span class="player-name">${name}</span>
-                </div>
-            `).join('');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('mobile-menu-button');
-            if (btn) {
-                btn.addEventListener('click', toggleMobileMenu);
-            }
-            setTimeout(updateOnlineFull, 300);
-            setInterval(updateOnlineFull, 15000);
-
-            initObserver();
-            setTimeout(checkHeroImage, 500);
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
+    <script src="assets/main.js"></script>
 </body>
 </html>
