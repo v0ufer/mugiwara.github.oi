@@ -109,6 +109,15 @@
         if (theme === "light") root.setAttribute("data-theme", "light");
         else root.removeAttribute("data-theme");
         try { localStorage.setItem("mugivara-theme", theme); } catch (e) {}
+        var hb = document.getElementById("hotbarTheme");
+        if (hb) {
+            var moon = hb.querySelector(".hotbar-moon");
+            var sun = hb.querySelector(".hotbar-sun");
+            if (moon && sun) {
+                moon.style.display = theme === "light" ? "none" : "";
+                sun.style.display = theme === "light" ? "" : "none";
+            }
+        }
     }
 
     function initTheme() {
@@ -301,6 +310,283 @@
         }, { passive: true });
     }
 
+    /* ===== ХОТБАР В СТИЛЕ MINECRAFT ===== */
+    var HOTBAR_ITEMS = [
+        { key: "1", label: "Главная", icon: "fa-house", href: "index.html", page: "index" },
+        { key: "2", label: "Итоги сезона", icon: "fa-trophy", href: "wrapped.html", page: "wrapped" },
+        { key: "3", label: "Игроки", icon: "fa-users", href: "players.html", page: "players" },
+        { key: "4", label: "Вики", icon: "fa-book", href: "mechanics.html", page: "mechanics" },
+        { key: "5", label: "Правила", icon: "fa-scroll", href: "rules.html", page: "rules" },
+        { key: "6", label: "Карта", icon: "fa-map", href: "mapa.html", page: "mapa" },
+        { key: "7", label: "Заявка", icon: "fa-paper-plane", href: "apply.html", page: "apply" },
+        { key: "8", label: "О сервере", icon: "fa-circle-info", href: "about.html", page: "about" }
+    ];
+
+    function buildHotbar() {
+        var page = currentPage();
+        var slots = HOTBAR_ITEMS.map(function (item) {
+            var active = item.page === page ? " active" : "";
+            return '<a class="hotbar-slot' + active + '" href="' + item.href + '" data-key="' + item.key + '" aria-label="' + item.label + '">' +
+                '<i class="fas ' + item.icon + '" aria-hidden="true"></i>' +
+                '<span class="hotbar-num">' + item.key + '</span>' +
+                '<span class="hotbar-tip">' + item.label + '</span>' +
+            '</a>';
+        }).join("");
+
+        var light = document.documentElement.getAttribute("data-theme") === "light";
+        slots += '<button class="hotbar-slot hotbar-theme" id="hotbarTheme" data-key="9" aria-label="Переключить тему">' +
+            '<i class="fas fa-moon hotbar-moon" aria-hidden="true"' + (light ? ' style="display:none"' : "") + '></i>' +
+            '<i class="fas fa-sun hotbar-sun" aria-hidden="true"' + (light ? "" : ' style="display:none"') + '></i>' +
+            '<span class="hotbar-num">9</span>' +
+            '<span class="hotbar-tip">Сменить тему</span>' +
+        '</button>';
+
+        return '<nav class="hotbar" id="hotbar" aria-label="Быстрая навигация по серверу">' +
+            '<div class="hotbar-inner">' + slots + '</div>' +
+        '</nav>';
+    }
+
+    function initHotbar() {
+        document.body.insertAdjacentHTML("beforeend", buildHotbar());
+        var themeBtn = document.getElementById("hotbarTheme");
+        if (themeBtn) {
+            themeBtn.addEventListener("click", function () {
+                var isLight = document.documentElement.getAttribute("data-theme") === "light";
+                applyTheme(isLight ? "dark" : "light");
+            });
+        }
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+            var t = e.target;
+            if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
+            var n = parseInt(e.key, 10);
+            if (!n || n < 1 || n > 9) return;
+            var slot = document.querySelector('.hotbar-slot[data-key="' + n + '"]');
+            if (!slot) return;
+            e.preventDefault();
+            slot.click();
+        });
+    }
+
+    /* ===== ДОСТИЖЕНИЯ В СТИЛЕ MINECRAFT =====
+       Показываются только при первом заходе на сайт: дальше флаг
+       остаётся в localStorage и тосты больше не появляются. */
+    var ACHV_FIRST_VISIT = null;
+    var ACHV_SEEN = [];
+    var ACHV_QUEUE = [];
+    var ACHV_BUSY = false;
+
+    function isFirstVisit() {
+        if (ACHV_FIRST_VISIT !== null) return ACHV_FIRST_VISIT;
+        var marked = null;
+        try { marked = localStorage.getItem("mugivara-visited"); } catch (e) {}
+        ACHV_FIRST_VISIT = !marked;
+        if (!marked) {
+            try { localStorage.setItem("mugivara-visited", String(Date.now())); } catch (e) {}
+        }
+        return ACHV_FIRST_VISIT;
+    }
+
+    function grantAchievement(id, name, desc, icon) {
+        if (!isFirstVisit()) return;
+        if (ACHV_SEEN.indexOf(id) !== -1) return;
+        ACHV_SEEN.push(id);
+        ACHV_QUEUE.push({ name: name, desc: desc || "", icon: icon || "fa-medal" });
+        pumpAchievements();
+    }
+
+    function pumpAchievements() {
+        if (ACHV_BUSY || !ACHV_QUEUE.length) return;
+        ACHV_BUSY = true;
+        var a = ACHV_QUEUE.shift();
+        var stack = document.getElementById("achvStack");
+        if (!stack) {
+            stack = document.createElement("div");
+            stack.id = "achvStack";
+            stack.className = "achv-stack";
+            stack.setAttribute("aria-live", "polite");
+            document.body.appendChild(stack);
+        }
+        var el = document.createElement("div");
+        el.className = "achv";
+        el.innerHTML =
+            '<div class="achv-icon"><i class="fas ' + a.icon + '" aria-hidden="true"></i></div>' +
+            '<div class="achv-text">' +
+                '<div class="achv-title">Достижение получено!</div>' +
+                '<div class="achv-name">' + a.name + '</div>' +
+                (a.desc ? '<div class="achv-desc">' + a.desc + '</div>' : "") +
+            '</div>';
+        stack.appendChild(el);
+        var stay = 4200 + (a.desc ? 400 : 0);
+        setTimeout(function () {
+            el.classList.add("out");
+            setTimeout(function () {
+                el.remove();
+                ACHV_BUSY = false;
+                pumpAchievements();
+            }, 380);
+        }, stay);
+    }
+
+    function initAchievements() {
+        if (!isFirstVisit()) return;
+
+        setTimeout(function () {
+            grantAchievement("welcome", "Добро пожаловать", "Ты на сервере Mugivara", "fa-door-open");
+        }, 900);
+
+        var pageAchv = {
+            wrapped: ["page-wrapped", "Итоги подведены", "Сезон прожит не зря", "fa-trophy"],
+            players: ["page-players", "Свои люди", "Заглянул в список игроков", "fa-users"],
+            mechanics: ["page-wiki", "Книжный червь", "Открыл вики сервера", "fa-book"],
+            rules: ["page-rules", "Законопослушный", "Прочитал правила", "fa-scroll"],
+            mapa: ["page-mapa", "Картограф", "Изучил карту мира", "fa-map"],
+            apply: ["page-apply", "Смельчак", "Открыл заявку на сервер", "fa-paper-plane"],
+            about: ["page-about", "Историк", "Узнал о сервере больше", "fa-circle-info"]
+        };
+        setTimeout(function () {
+            var a = pageAchv[currentPage()];
+            if (a) grantAchievement(a[0], a[1], a[2], a[3]);
+        }, 2400);
+
+        [
+            ["#about", "achv-about", "Любопытный", "Дочитал, что это за сервер", "fa-magnifying-glass"],
+            ["#join", "achv-join", "На низком старте", "Узнал, как попасть в игру", "fa-rocket"],
+            ["#faq", "achv-faq", "Знаток", "Прочитал все вопросы", "fa-comments"]
+        ].forEach(function (cfg) {
+            var el = document.querySelector(cfg[0]);
+            if (!el || !("IntersectionObserver" in window)) return;
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    grantAchievement(cfg[1], cfg[2], cfg[3], cfg[4]);
+                    io.disconnect();
+                });
+            }, { threshold: 0.35 });
+            io.observe(el);
+        });
+    }
+
+    /* ===== ЧАСТИЦЫ ПРИ КЛИКЕ ===== */
+    function initParticles() {
+        var canvas = document.createElement("canvas");
+        canvas.id = "fx-particles";
+        canvas.setAttribute("aria-hidden", "true");
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        var parts = [];
+        var raf = null;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var colors = ["#00A2FF", "#66d2ff", "#f4f5f7", "#3a3a42"];
+
+        function resize() {
+            canvas.width = Math.floor(window.innerWidth * dpr);
+            canvas.height = Math.floor(window.innerHeight * dpr);
+            canvas.style.width = window.innerWidth + "px";
+            canvas.style.height = window.innerHeight + "px";
+        }
+        resize();
+        window.addEventListener("resize", resize, { passive: true });
+
+        function loop(now) {
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            for (var i = parts.length - 1; i >= 0; i--) {
+                var p = parts[i];
+                var age = now - p.born;
+                if (age > p.life) { parts.splice(i, 1); continue; }
+                p.vy += 0.22;
+                p.x += p.vx;
+                p.y += p.vy;
+                ctx.globalAlpha = 1 - Math.pow(age / p.life, 2);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+            }
+            ctx.globalAlpha = 1;
+            if (parts.length) {
+                raf = requestAnimationFrame(loop);
+            } else {
+                raf = null;
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            }
+        }
+
+        window.addEventListener("pointerdown", function (e) {
+            for (var i = 0; i < 16; i++) {
+                var ang = Math.random() * Math.PI * 2;
+                var spd = 1.1 + Math.random() * 3.6;
+                parts.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd - 1.4,
+                    size: 2 + Math.floor(Math.random() * 4),
+                    life: 420 + Math.random() * 460,
+                    born: performance.now(),
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+            if (!raf) raf = requestAnimationFrame(loop);
+        }, { passive: true });
+    }
+
+    /* ===== ПАРАЛЛАКС БЛОКОВ В HERO ===== */
+    function initHeroParallax() {
+        var hero = document.querySelector(".hero");
+        if (!hero) return;
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        var wrap = document.createElement("div");
+        wrap.className = "hero-blocks";
+        wrap.setAttribute("aria-hidden", "true");
+
+        var specs = [
+            { l: 5, t: 16, s: 76, d: 26 },
+            { l: 14, t: 74, s: 44, d: 15 },
+            { l: 83, t: 10, s: 58, d: 22 },
+            { l: 91, t: 66, s: 88, d: 33 },
+            { l: 63, t: 86, s: 38, d: 12 },
+            { l: 36, t: 6, s: 30, d: 9 },
+            { l: 47, t: 90, s: 52, d: 18 }
+        ];
+
+        specs.forEach(function (sp, i) {
+            var b = document.createElement("div");
+            b.className = "hero-block";
+            b.style.left = sp.l + "%";
+            b.style.top = sp.t + "%";
+            b.style.width = sp.s + "px";
+            b.style.height = sp.s + "px";
+            b.style.opacity = (0.34 + (i % 3) * 0.12).toFixed(2);
+            b.setAttribute("data-depth", sp.d);
+            wrap.appendChild(b);
+        });
+        hero.insertBefore(wrap, hero.firstChild);
+
+        var grid = hero.querySelector(".hero-grid");
+        var raf = null;
+        var dx = 0;
+        var dy = 0;
+
+        function apply() {
+            raf = null;
+            var blocks = wrap.children;
+            for (var i = 0; i < blocks.length; i++) {
+                var d = parseFloat(blocks[i].getAttribute("data-depth")) || 10;
+                blocks[i].style.transform = "translate3d(" + (dx * d).toFixed(2) + "px," + (dy * d).toFixed(2) + "px,0)";
+            }
+            if (grid) grid.style.transform = "translate3d(" + (dx * 9).toFixed(2) + "px," + (dy * 9).toFixed(2) + "px,0)";
+        }
+
+        window.addEventListener("pointermove", function (e) {
+            dx = (e.clientX / window.innerWidth - 0.5) * 2;
+            dy = (e.clientY / window.innerHeight - 0.5) * 2;
+            if (!raf) raf = requestAnimationFrame(apply);
+        }, { passive: true });
+    }
+
     /* ===== ПЕРЕХОДЫ МЕЖДУ СТРАНИЦАМИ ОТКЛЮЧЕНЫ =====
        Обычная навигация браузера: без оверлеев, затуханий и задержек,
        чтобы не было никаких подёргиваний. */
@@ -321,6 +607,10 @@
         initReveal();
         initCounters();
         initFixtures();
+        initHotbar();
+        initAchievements();
+        initParticles();
+        initHeroParallax();
         initPageTransitions();
     });
 })();
